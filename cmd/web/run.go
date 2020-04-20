@@ -1,7 +1,6 @@
 package web
 
 import (
-	"crypto/tls"
 	"net"
 	"os"
 
@@ -13,43 +12,40 @@ import (
 
 // Run .
 func Run(cnf *configure.Configure) {
-	l, e := listen(&cnf.HTTP)
+	l, e := net.Listen("tcp", cnf.HTTP.Addr)
+	if e == nil {
+		if ce := logger.Logger.Check(zap.InfoLevel, "listen success"); ce != nil {
+			ce.Write(
+				zap.String("addr", cnf.HTTP.Addr),
+			)
+		}
+	}
+	defer l.Close()
+	server, e := NewServer(l)
 	if e != nil {
-		if ce := logger.Logger.Check(zap.FatalLevel, "listen error"); ce != nil {
+		os.Exit(1)
+	}
+
+	if cnf.HTTP.Safe() {
+		if ce := logger.Logger.Check(zap.InfoLevel, "https serve"); ce != nil {
+			ce.Write(
+				zap.String("addr", cnf.HTTP.Addr),
+			)
+		}
+		e = server.ServeTLS(cnf.HTTP.CertFile, cnf.HTTP.KeyFile)
+	} else {
+		if ce := logger.Logger.Check(zap.InfoLevel, "http serve"); ce != nil {
+			ce.Write(
+				zap.String("addr", cnf.HTTP.Addr),
+			)
+		}
+		e = server.Serve()
+	}
+	if e != nil {
+		if ce := logger.Logger.Check(zap.FatalLevel, "serve error"); ce != nil {
 			ce.Write(
 				zap.Error(e),
 			)
 		}
-		os.Exit(1)
 	}
-	defer l.Close()
-}
-func listen(cnf *configure.HTTP) (l net.Listener, e error) {
-	if cnf.Safe() {
-		var cert tls.Certificate
-		cert, e = tls.LoadX509KeyPair(cnf.CertFile, cnf.KeyFile)
-		if e != nil {
-			return
-		}
-		l, e = tls.Listen("tcp", cnf.Addr, &tls.Config{
-			Certificates: []tls.Certificate{cert},
-		})
-		if e == nil {
-			if ce := logger.Logger.Check(zap.InfoLevel, "https listen"); ce != nil {
-				ce.Write(
-					zap.String("addr", cnf.Addr),
-				)
-			}
-		}
-	} else {
-		l, e = net.Listen("tcp", cnf.Addr)
-		if e == nil {
-			if ce := logger.Logger.Check(zap.InfoLevel, "http listen"); ce != nil {
-				ce.Write(
-					zap.String("addr", cnf.Addr),
-				)
-			}
-		}
-	}
-	return
 }
