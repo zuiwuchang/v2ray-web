@@ -1,0 +1,29 @@
+<mat-toolbar class="header" color="primary">
+  <a routerLink="/">
+    <button class="menu-btn" mat-icon-button i18n-matTooltip matTooltip="Home Tooltip">
+      <mat-icon>home</mat-icon>
+    </button>
+  </a>
+  <a href="https://gitlab.com/king011/v2ray-web" target="_blank">
+    <button class="menu-btn" mat-icon-button i18n-matTooltip matTooltip="Source Tooltip">
+      <mat-icon>code</mat-icon>
+    </button>
+  </a>
+  <a routerLink="/license">
+    <button class="menu-btn" mat-icon-button i18n-matTooltip matTooltip="License Tooltip">
+      <mat-icon>import_contacts</mat-icon>
+    </button>
+  </a>
+  <a routerLink="/about">
+    <button class="menu-btn" mat-icon-button i18n-matTooltip matTooltip="About Tooltip">
+      <mat-icon>info</mat-icon>
+    </button>
+  </a>
+  <span style="flex: 1 1 auto;"></span>
+  <span>right</span>
+</mat-toolbar>
+<div class="router">
+  123
+  <div i18n>License Tooltip</div>
+  <router-outlet></router-outlet>
+</div>
