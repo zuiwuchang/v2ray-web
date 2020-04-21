@@ -34,6 +34,7 @@ func (s *Server) setAPI() {
 	s.apis = map[string]handlerFunc{
 		"/api/app/restore": s.restore,
 		"/api/app/login":   s.login,
+		"/api/app/logout":  s.logout,
 	}
 }
 
@@ -83,7 +84,18 @@ func (s *Server) ServeHTTP(response http.ResponseWriter, request *http.Request) 
 }
 
 func (s *Server) restore(helper Helper) (e error) {
-	helper.RenderJSON(nil)
+	c, e := helper.request.Cookie(cookie.CookieName)
+	if e != nil {
+		if e == http.ErrNoCookie {
+			e = nil
+		}
+		return
+	}
+	session, e := cookie.FromCookie(c.Value)
+	if e != nil {
+		return
+	}
+	helper.RenderJSON(session)
 	return
 }
 func (s *Server) login(helper Helper) (e error) {
@@ -109,10 +121,19 @@ func (s *Server) login(helper Helper) (e error) {
 		return
 	}
 	http.SetCookie(helper.response, &http.Cookie{
-		Name:   cookie.CookieName,
-		Value:  val,
-		MaxAge: int(cookie.MaxAge()),
+		Name:     cookie.CookieName,
+		Value:    val,
+		MaxAge:   int(cookie.MaxAge()),
+		HttpOnly: true,
 	})
 	helper.RenderJSON(&session)
+	return
+}
+func (s *Server) logout(helper Helper) (e error) {
+	http.SetCookie(helper.response, &http.Cookie{
+		Name:     cookie.CookieName,
+		MaxAge:   -1,
+		HttpOnly: true,
+	})
 	return
 }

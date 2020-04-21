@@ -23,7 +23,7 @@
             <div>
                 <mat-form-field class="full-width">
                     <mat-label i18n>Name</mat-label>
-                    <input [disabled]="disabled" cdkFocusInitial matInput required [(ngModel)]="name" name="name"
+                    <input matInput [disabled]="disabled" cdkFocusInitial required [(ngModel)]="name" name="name"
                         i18n-placeholder placeholder="Default Name : killer">
                     <mat-error i18n>Name Invalid</mat-error>
                 </mat-form-field>
@@ -31,8 +31,12 @@
             <div>
                 <mat-form-field class="full-width">
                     <mat-label i18n>password</mat-label>
-                    <input type="password" [disabled]="disabled" matInput required minlength="1" [(ngModel)]="password"
-                        name="password" i18n-placeholder placeholder="Default Password : 19890604">
+                    <input matInput [type]="visibility ? 'text' : 'password'" [disabled]="disabled" required
+                        minlength="1" [(ngModel)]="password" name="password" i18n-placeholder
+                        placeholder="Default Password : 19890604">
+                    <button type="button" mat-icon-button matSuffix (click)="visibility = !visibility">
+                        <mat-icon>{{visibility ? 'visibility' : 'visibility_off'}}</mat-icon>
+                    </button>
                     <mat-error i18n>Password Invalid</mat-error>
                 </mat-form-field>
             </div>

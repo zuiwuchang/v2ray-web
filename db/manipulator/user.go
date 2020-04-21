@@ -1,6 +1,8 @@
 package manipulator
 
 import (
+	"crypto/sha512"
+	"encoding/hex"
 	"fmt"
 
 	"gitlab.com/king011/v2ray-web/cookie"
@@ -12,6 +14,22 @@ import (
 
 // User 用戶 操縱器
 type User struct {
+}
+
+// Init 初始化 bucket
+func (m User) Init(tx *bolt.Tx) (e error) {
+	bucket, e := tx.CreateBucketIfNotExists(data.UserBucket)
+	if e != nil {
+		return
+	}
+	cursor := bucket.Cursor()
+	k, _ := cursor.First()
+	if k != nil {
+		return
+	}
+	password := sha512.Sum512([]byte("19890604"))
+	e = bucket.Put([]byte("killer"), utils.StringToBytes(hex.EncodeToString(password[:])))
+	return
 }
 
 // Login 登入

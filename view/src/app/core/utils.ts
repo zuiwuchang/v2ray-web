@@ -12,7 +12,7 @@ export namespace Utils {
     }
     export function resolveHttpError(e) {
         if (e.status != 500) {
-            return `${e.status}`
+            return `${e.status} ${e.statusText}`
         }
         if (isString(e.error)) {
             return `${e.status} ${e.error}`

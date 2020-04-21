@@ -1,11 +1,17 @@
 package manipulator
 
 import (
+	"os"
+
 	"github.com/boltdb/bolt"
 	"gitlab.com/king011/v2ray-web/configure"
 	"gitlab.com/king011/v2ray-web/logger"
 	"go.uber.org/zap"
 )
+
+type manipulator interface {
+	Init(tx *bolt.Tx) (e error)
+}
 
 var _db *bolt.DB
 
@@ -27,6 +33,21 @@ func Init(cnf *configure.Database) (e error) {
 		)
 	}
 
+	e = db.Update(func(tx *bolt.Tx) (e error) {
+		buckets := []manipulator{
+			User{},
+		}
+		for i := 0; i < len(buckets); i++ {
+			e = buckets[i].Init(tx)
+			if e != nil {
+				return
+			}
+		}
+		return
+	})
+	if e != nil {
+		os.Exit(1)
+	}
 	_db = db
 	return
 }

@@ -32,7 +32,8 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
   name: string
   password: string
-  remember: boolean = true
+  remember = true
+  visibility = false
   ngOnInit(): void {
     this.sessionService.ready.then((data) => {
       this._ready = data

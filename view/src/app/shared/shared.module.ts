@@ -13,6 +13,8 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatInputModule } from '@angular/material/input';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatDividerModule } from '@angular/material/divider';
 
 import { NavigationBarComponent } from './navigation-bar/navigation-bar.component';
 import { LoginComponent } from './login/login.component';
@@ -25,7 +27,7 @@ import { LoginComponent } from './login/login.component';
     MatIconModule, MatToolbarModule, MatButtonModule,
     MatTooltipModule, MatProgressSpinnerModule, MatDialogModule,
     MatProgressBarModule, MatFormFieldModule, MatSlideToggleModule,
-    MatInputModule,
+    MatInputModule, MatMenuModule, MatDividerModule,
   ],
   exports: [
     NavigationBarComponent,

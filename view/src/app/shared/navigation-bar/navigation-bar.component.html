@@ -30,7 +30,48 @@
         <mat-spinner color="accent" diameter='32'></mat-spinner>
     </ng-template>
     <ng-template #sessionView>
-        <span>session</span>
+        <button mat-icon-button i18n-matTooltip matTooltip="Menu Tooltip" [matMenuTriggerFor]="menu">
+            <mat-icon>apps</mat-icon>
+        </button>
+        <mat-menu #menu="matMenu">
+            <a routerLink="/v2ray/settings">
+                <button mat-menu-item>
+                    <mat-icon>settings</mat-icon>
+                    <ng-container i18n>V2ray Setting</ng-container>
+                </button>
+            </a>
+            <a routerLink="/v2ray/subscription">
+                <button mat-menu-item>
+                    <mat-icon>group_work</mat-icon>
+                    <ng-container i18n>Subscription Setting</ng-container>
+                </button>
+            </a>
+            <mat-divider></mat-divider>
+            <a routerLink="/iptables/template">
+                <button mat-menu-item>
+                    <mat-icon>whatshot</mat-icon>
+                    <ng-container i18n>iptables Template</ng-container>
+                </button>
+            </a>
+            <a routerLink="/iptables/save">
+                <button mat-menu-item>
+                    <mat-icon>vpn_lock</mat-icon>
+                    <ng-container i18n>iptables-save</ng-container>
+                </button>
+            </a>
+            <mat-divider></mat-divider>
+            <a routerLink="/user">
+                <button mat-menu-item>
+                    <mat-icon>supervised_user_circle</mat-icon>
+                    <ng-container i18n>User Management</ng-container>
+                </button>
+            </a>
+            <mat-divider></mat-divider>
+            <button mat-menu-item (click)="onClickLogout()">
+                <mat-icon>exit_to_app</mat-icon>
+                <ng-container i18n>Logout</ng-container>
+            </button>
+        </mat-menu>
     </ng-template>
     <ng-template #loginView>
         <button mat-icon-button i18n-matTooltip matTooltip="Login Tooltip" (click)="onClickLogin()">

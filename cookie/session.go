@@ -15,8 +15,8 @@ func init() {
 
 // Session user session info
 type Session struct {
-	Name string
-	Root bool
+	Name string `json:"name,omitempty"`
+	Root bool   `json:"root,omitempty"`
 }
 
 // Cookie encode to cookie

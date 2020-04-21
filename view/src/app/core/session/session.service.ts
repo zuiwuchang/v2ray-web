@@ -57,7 +57,7 @@ export class SessionService {
         password: password,
         remember: remember,
       }).toPromise()
-      if (response && isString(response)) {
+      if (response) {
         console.info(`login success`, response)
         this._subject.next(response)
       } else {

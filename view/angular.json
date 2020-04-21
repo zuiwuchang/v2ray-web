@@ -81,9 +81,6 @@
           "configurations": {
             "production": {
               "browserTarget": "view:build:production"
-            },
-            "zh": {
-              "browserTarget": "view:build:zh"
             }
           }
         },
