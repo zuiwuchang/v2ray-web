@@ -30,3 +30,8 @@ func Init(cnf *configure.Database) (e error) {
 	_db = db
 	return
 }
+
+// DB .
+func DB() *bolt.DB {
+	return _db
+}

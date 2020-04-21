@@ -4,6 +4,12 @@
   "newProjectRoot": "projects",
   "projects": {
     "view": {
+      "i18n": {
+        "sourceLocale": "en-US",
+        "locales": {
+          "zh-Hant": "src/locale/zh-Hant.xlf"
+        },
+      },
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -17,6 +23,10 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            "i18nLocale": "zh-Hant",
+            "i18nFormat": "xlf",
+            "i18nFile": "src/locale/zh-Hant.xlf",
+            "i18nMissingTranslation": "warning",
             "outputPath": "dist/view",
             "index": "src/index.html",
             "main": "src/main.ts",
@@ -71,6 +81,9 @@
           "configurations": {
             "production": {
               "browserTarget": "view:build:production"
+            },
+            "zh": {
+              "browserTarget": "view:build:zh"
             }
           }
         },

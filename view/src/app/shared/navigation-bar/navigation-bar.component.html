@@ -1,0 +1,40 @@
+<mat-toolbar class="header" color="primary">
+    <a routerLink="/">
+        <button mat-icon-button i18n-matTooltip matTooltip="Home Tooltip">
+            <mat-icon>home</mat-icon>
+        </button>
+    </a>
+    <a href="https://gitlab.com/king011/v2ray-web" target="_blank">
+        <button mat-icon-button i18n-matTooltip matTooltip="Source Tooltip">
+            <mat-icon>code</mat-icon>
+        </button>
+    </a>
+    <a routerLink="/license">
+        <button mat-icon-button i18n-matTooltip matTooltip="License Tooltip">
+            <mat-icon>import_contacts</mat-icon>
+        </button>
+    </a>
+    <a routerLink="/about">
+        <button mat-icon-button i18n-matTooltip matTooltip="About Tooltip">
+            <mat-icon>info</mat-icon>
+        </button>
+    </a>
+    <span style="flex: 1 1 auto;"></span>
+    <ng-container *ngIf="ready; then readyView; else loadingView">
+    </ng-container>
+    <ng-template #readyView>
+        <ng-container *ngIf="session; then sessionView; else loginView">
+        </ng-container>
+    </ng-template>
+    <ng-template #loadingView>
+        <mat-spinner color="accent" diameter='32'></mat-spinner>
+    </ng-template>
+    <ng-template #sessionView>
+        <span>session</span>
+    </ng-template>
+    <ng-template #loginView>
+        <button mat-icon-button i18n-matTooltip matTooltip="Login Tooltip" (click)="onClickLogin()">
+            <mat-icon>input</mat-icon>
+        </button>
+    </ng-template>
+</mat-toolbar>

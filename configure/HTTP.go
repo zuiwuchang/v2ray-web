@@ -44,7 +44,6 @@ func (c *HTTP) Format(basePath string) (e error) {
 			c.KeyFile = filepath.Clean(basePath + "/" + c.KeyFile)
 		}
 	}
-
 	if c.Maxage > 0 {
 		c.Maxage *= time.Millisecond
 	} else {

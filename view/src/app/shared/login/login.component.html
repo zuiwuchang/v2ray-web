@@ -1,0 +1,50 @@
+<h1 mat-dialog-title i18n>Login</h1>
+
+<ng-container *ngIf="ready;then readyView;else notReadyView"></ng-container>
+<ng-template #notReadyView>
+    <div mat-dialog-content>
+        <p>
+            <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+        </p>
+        <p>
+            <ng-container i18n>connecting to server, please wait...</ng-container>
+        </p>
+    </div>
+</ng-template>
+<ng-template #readyView>
+    <ng-container *ngIf="session;then sessionVIew;else loginVIew"></ng-container>
+</ng-template>
+<ng-template #sessionVIew>
+    <ng-container i18n>Welcome {{session?.name}}, you have logged in</ng-container>
+</ng-template>
+<ng-template #loginVIew>
+    <form (submit)="onSubmit()" #loginForm="ngForm">
+        <div mat-dialog-content class="view">
+            <div>
+                <mat-form-field class="full-width">
+                    <mat-label i18n>Name</mat-label>
+                    <input [disabled]="disabled" cdkFocusInitial matInput required [(ngModel)]="name" name="name"
+                        i18n-placeholder placeholder="Default Name : killer">
+                    <mat-error i18n>Name Invalid</mat-error>
+                </mat-form-field>
+            </div>
+            <div>
+                <mat-form-field class="full-width">
+                    <mat-label i18n>password</mat-label>
+                    <input type="password" [disabled]="disabled" matInput required minlength="1" [(ngModel)]="password"
+                        name="password" i18n-placeholder placeholder="Default Password : 19890604">
+                    <mat-error i18n>Password Invalid</mat-error>
+                </mat-form-field>
+            </div>
+            <div>
+                <mat-slide-toggle [disabled]="disabled" [(ngModel)]="remember" name="remember">
+                    <ng-container i18n>Remember me</ng-container>
+                </mat-slide-toggle>
+            </div>
+        </div>
+        <div mat-dialog-actions>
+            <button type="submit" mat-button i18n [disabled]="disabled || loginForm.invalid">Submit</button>
+            <button type="button" mat-button (click)="onClose()" i18n>Close</button>
+        </div>
+    </form>
+</ng-template>

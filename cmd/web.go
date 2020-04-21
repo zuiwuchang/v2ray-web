@@ -6,6 +6,7 @@ import (
 	"github.com/spf13/cobra"
 	"gitlab.com/king011/v2ray-web/cmd/web"
 	"gitlab.com/king011/v2ray-web/configure"
+	"gitlab.com/king011/v2ray-web/cookie"
 	"gitlab.com/king011/v2ray-web/db/manipulator"
 	"gitlab.com/king011/v2ray-web/logger"
 	"gitlab.com/king011/v2ray-web/utils"
@@ -31,6 +32,12 @@ func init() {
 
 			// init logger
 			e = logger.Init(basePaht, &cnf.Logger)
+			if e != nil {
+				log.Fatalln(e)
+			}
+
+			// init cookie
+			e = cookie.Init(cnf.HTTP.Secret, cnf.HTTP.Maxage)
 			if e != nil {
 				log.Fatalln(e)
 			}

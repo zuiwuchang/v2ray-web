@@ -1,17 +1,17 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { LOCALE_ID, NgModule } from '@angular/core';
+import { NgModule } from '@angular/core';
+import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
-import { MatIconModule } from '@angular/material/icon';
-import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatButtonModule } from '@angular/material/button';
-import { MatTooltipModule } from '@angular/material/tooltip';
+import { ToasterModule, ToasterService } from 'angular2-toaster';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HomeComponent } from './app/home/home.component';
 import { AboutComponent } from './app/about/about.component';
 import { LicenseComponent } from './app/license/license.component';
+
+import { SharedModule } from './shared/shared.module';
 
 @NgModule({
   declarations: [
@@ -22,12 +22,13 @@ import { LicenseComponent } from './app/license/license.component';
   ],
   imports: [
     BrowserModule,
-    BrowserAnimationsModule,
-    MatIconModule, MatToolbarModule, MatButtonModule,
-    MatTooltipModule,
-    AppRoutingModule
+    BrowserAnimationsModule, HttpClientModule,
+
+    SharedModule,
+    AppRoutingModule,
+    ToasterModule.forRoot(),
   ],
-  providers: [{ provide: LOCALE_ID, useValue: 'zh-Hant' }],
+  providers: [ToasterService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
