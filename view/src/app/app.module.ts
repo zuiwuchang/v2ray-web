@@ -8,8 +8,6 @@ import { ToasterModule, ToasterService } from 'angular2-toaster';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HomeComponent } from './app/home/home.component';
-import { AboutComponent } from './app/about/about.component';
-import { LicenseComponent } from './app/license/license.component';
 
 import { SharedModule } from './shared/shared.module';
 import { IptablesSaveComponent } from './app/iptables/iptables-save/iptables-save.component';
@@ -21,8 +19,6 @@ import { V2raySubscriptionComponent } from './app/v2ray/v2ray-subscription/v2ray
   declarations: [
     AppComponent,
     HomeComponent,
-    AboutComponent,
-    LicenseComponent,
     IptablesSaveComponent,
     IptablesTemplateComponent,
     V2raySettingComponent,

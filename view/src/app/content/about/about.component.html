@@ -1,0 +1,41 @@
+<p>
+    <mat-card>
+        <mat-card-title>
+            V2ray Web
+        </mat-card-title>
+        <mat-card-content>
+            <p>Project V 是一個有趣的項目，爲突破愚者的牆提供了有力的幫助。v2ray 是 Project V 的核心項目</p>
+            <p>然 v2ray
+                沒有爲桌面系統提供統一的訪問ui程式，縱然可以在linux下方便的使用命令獲得支持，但這在我爲身邊非計算機人士推廣時造成了一定困擾，且出於工作的拖累我也不得不偶爾工作在狗屎的windows下，此時windows狗屎一樣的命令接口讓人絕望。故我決定花點時間來爲桌面系統提供一個一致化的訪問接口。
+            </p>
+
+            <p>我在考慮過多種方案後，最終決定將這個ui程式以web方式提供，便是你現在使用的這個程式 v2ray web</p>
+            <p>和其它方案比起來 選擇使用 web 接口 主要出於如下考量 </p>
+            <ul>
+                <li>v2ray-core 源碼使用 golang 書寫,我希望能直接將v2ray-core 作爲庫調用，這比調用第三方進程 可以爲用戶提供更好的體驗和程式碼上更好的控制通信。</li>
+                <li>桌面系統沒有一個很好的 跨平臺 ui方案 特別是對於使用golang作爲代碼語言時,縱然有qt可選且qt quick 很讓人舒服但這會讓打包的程序變得過於龐大，qt庫可能比本程式還大許多。</li>
+                <li>所有系統都支持了瀏覽器，且在ie死亡的今天，各瀏覽器保持了相同或基本類似的訪問標準，使用web提供訪問接口可以更簡單的爲平臺提供相同的訪問體驗。</li>
+                <li>只需要增加很小的打包後程式大小就可以爲用戶提供 <a mat-button href="https://material.angular.io/">google material</a> 風格的ui。
+                </li>
+                <li>使用 golang 實現一個簡單的web服務器，就跟吃糖一樣簡單，任何人張口就能完成。</li>
+                <li>有時可能需要控制遠程系統上的v2ray，或者一個沒有ui界面系統上的v2ray，比如我之前有一個openwrt虛擬機上有運行一套v2ray-core，或者聽說一些網友在路由器上使用v2ray。使用web接口可以很好的控制這些系統上的v2ray。同時使golang來實現也很容易對這些系統進行部署。
+                </li>
+            </ul>
+        </mat-card-content>
+
+        <p>這個系統在 linux64 和windows64 經過測試,理論上可以運行在 mac 上 然本人太窮不配使用 mac 也不願爲mac任何投入，mac遇到問題請向天祈禱，其它問題請發佈到源碼的 <a mat-button
+                href="https://gitlab.com/king011/v2ray-web/-/issues/new">issues</a> 。</p>
+        <mat-list>
+            <mat-list-item>
+                <mat-icon matListIcon color="accent">done</mat-icon>
+                <p matLine>Linux Mint 19.1 Tessa</p>
+                <p matLine>amd64</p>
+            </mat-list-item>
+            <mat-list-item>
+                <mat-icon matListIcon color="accent">done</mat-icon>
+                <p matLine>Windows 10</p>
+                <p matLine>amd64</p>
+            </mat-list-item>
+        </mat-list>
+    </mat-card>
+</p>

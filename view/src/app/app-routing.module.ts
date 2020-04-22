@@ -1,8 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { HomeComponent } from './app/home/home.component';
-import { AboutComponent } from './app/about/about.component';
-import { LicenseComponent } from './app/license/license.component';
 import { IptablesSaveComponent } from './app/iptables/iptables-save/iptables-save.component';
 import { IptablesTemplateComponent } from './app/iptables/iptables-template/iptables-template.component';
 import { V2raySettingComponent } from './app/v2ray/v2ray-setting/v2ray-setting.component';
@@ -14,12 +12,8 @@ const routes: Routes = [
     component: HomeComponent,
   },
   {
-    path: 'about',
-    component: AboutComponent,
-  },
-  {
-    path: 'license',
-    component: LicenseComponent,
+    path: 'content',
+    loadChildren: () => import('./content/content.module').then(m => m.ContentModule),
   },
   {
     path: 'user',
