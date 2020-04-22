@@ -19,7 +19,7 @@ type User struct {
 
 // Init 初始化 bucket
 func (m User) Init(tx *bolt.Tx) (e error) {
-	bucket, e := tx.CreateBucketIfNotExists(data.UserBucket)
+	bucket, e := tx.CreateBucketIfNotExists([]byte(data.UserBucket))
 	if e != nil {
 		return
 	}
@@ -36,7 +36,7 @@ func (m User) Init(tx *bolt.Tx) (e error) {
 // Login 登入
 func (m User) Login(name, password string) (result *cookie.Session, e error) {
 	e = _db.View(func(t *bolt.Tx) (e error) {
-		bucket := t.Bucket(data.UserBucket)
+		bucket := t.Bucket([]byte(data.UserBucket))
 		if bucket == nil {
 			e = fmt.Errorf("bucket not exist : %s", data.UserBucket)
 			return
@@ -59,7 +59,7 @@ func (m User) Login(name, password string) (result *cookie.Session, e error) {
 // List 返回用戶 列表
 func (m User) List() (result []data.User, e error) {
 	e = _db.View(func(t *bolt.Tx) (e error) {
-		bucket := t.Bucket(data.UserBucket)
+		bucket := t.Bucket([]byte(data.UserBucket))
 		if bucket == nil {
 			e = fmt.Errorf("bucket not exist : %s", data.UserBucket)
 			return
@@ -87,7 +87,7 @@ func (m User) Add(name, password string) (e error) {
 		return
 	}
 	e = _db.Update(func(t *bolt.Tx) (e error) {
-		bucket := t.Bucket(data.UserBucket)
+		bucket := t.Bucket([]byte(data.UserBucket))
 		if bucket == nil {
 			e = fmt.Errorf("bucket not exist : %s", data.UserBucket)
 			return
@@ -111,7 +111,7 @@ func (m User) Remove(name string) (e error) {
 		return
 	}
 	e = _db.Update(func(t *bolt.Tx) (e error) {
-		bucket := t.Bucket(data.UserBucket)
+		bucket := t.Bucket([]byte(data.UserBucket))
 		if bucket == nil {
 			e = fmt.Errorf("bucket not exist : %s", data.UserBucket)
 			return
@@ -134,7 +134,7 @@ func (m User) Password(name, password string) (e error) {
 		return
 	}
 	e = _db.Update(func(t *bolt.Tx) (e error) {
-		bucket := t.Bucket(data.UserBucket)
+		bucket := t.Bucket([]byte(data.UserBucket))
 		if bucket == nil {
 			e = fmt.Errorf("bucket not exist : %s", data.UserBucket)
 			return

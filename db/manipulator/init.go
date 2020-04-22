@@ -36,6 +36,7 @@ func Init(cnf *configure.Database) (e error) {
 	e = db.Update(func(tx *bolt.Tx) (e error) {
 		buckets := []manipulator{
 			User{},
+			Settings{},
 		}
 		for i := 0; i < len(buckets); i++ {
 			e = buckets[i].Init(tx)

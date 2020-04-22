@@ -1,0 +1,37 @@
+<ng-container *ngIf="ready;then readyView;else notReadyView"></ng-container>
+
+<ng-template #notReadyView>
+    <div mat-dialog-content>
+        <p>
+            <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+        </p>
+        <p>
+            <ng-container i18n>connecting to server, please wait...</ng-container>
+        </p>
+    </div>
+</ng-template>
+<ng-template #readyView>
+    <ng-container *ngIf="err;then errView;else okView"></ng-container>
+</ng-template>
+<ng-template #errView>
+    <p>
+        {{err}}
+    </p>
+    <button mat-stroked-button color="primary" i18n (click)="load()">Refresh</button>
+
+</ng-template>
+<ng-template #okView>
+    <mat-card>
+        <mat-card-title i18n>V2ray Setting</mat-card-title>
+        <mat-card-content>
+            <textarea [disabled]="disabled" rows="15" spellcheck="false" autocapitalize="off" autocomplete="off"
+                autocorrect="off" style="box-sizing: border-box; overflow-x: auto; padding-right: 20px;resize:none; "
+                [(ngModel)]="text"></textarea>
+        </mat-card-content>
+        <mat-card-actions>
+            <button mat-stroked-button [disabled]="disabled || isNotChange" (click)="onClickSave()" i18n>Save</button>
+            <button mat-stroked-button [disabled]="disabled" (click)="onClickTest()" i18n>Test</button>
+            <button mat-stroked-button [disabled]="disabled" (click)="onClickResetDefault()" i18n>Reset Default</button>
+        </mat-card-actions>
+    </mat-card>
+</ng-template>

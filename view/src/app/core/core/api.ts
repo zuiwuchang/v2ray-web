@@ -9,5 +9,12 @@ export const ServerAPI = {
         add: `${root}/user/add`,
         remove: `${root}/user/remove`,
         password: `${root}/user/password`,
-    }
+    },
+    v2ray: {
+        settings: {
+            get: `${root}/v2ray/settings/get`,
+            put: `${root}/v2ray/settings/put`,
+            test: `${root}/v2ray/settings/test`,
+        },
+    },
 }

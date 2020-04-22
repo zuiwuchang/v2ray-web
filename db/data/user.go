@@ -1,7 +1,7 @@
 package data
 
 // UserBucket .
-var UserBucket = []byte("user")
+const UserBucket = "user"
 
 // User 用戶
 type User struct {

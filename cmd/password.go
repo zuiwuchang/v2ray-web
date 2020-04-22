@@ -34,7 +34,7 @@ func init() {
 
 			pwd := sha512.Sum512([]byte(password))
 			e = db.Update(func(t *bolt.Tx) (e error) {
-				bucket := t.Bucket(data.UserBucket)
+				bucket := t.Bucket([]byte(data.UserBucket))
 				if bucket == nil {
 					e = fmt.Errorf("bucket not exist : %s", data.UserBucket)
 					return

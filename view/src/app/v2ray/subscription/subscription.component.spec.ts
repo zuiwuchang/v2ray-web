@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { V2raySubscriptionComponent } from './v2ray-subscription.component';
+import { SubscriptionComponent } from './subscription.component';
 
-describe('V2raySubscriptionComponent', () => {
-  let component: V2raySubscriptionComponent;
-  let fixture: ComponentFixture<V2raySubscriptionComponent>;
+describe('SubscriptionComponent', () => {
+  let component: SubscriptionComponent;
+  let fixture: ComponentFixture<SubscriptionComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ V2raySubscriptionComponent ]
+      declarations: [ SubscriptionComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(V2raySubscriptionComponent);
+    fixture = TestBed.createComponent(SubscriptionComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

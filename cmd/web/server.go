@@ -1,17 +1,22 @@
 package web
 
 import (
+	"bytes"
 	"errors"
 	"io"
 	"io/ioutil"
 	"net"
 	"net/http"
+	"text/template"
 
 	"gitlab.com/king011/v2ray-web/cookie"
 
+	"gitlab.com/king011/v2ray-web/db/data"
 	"gitlab.com/king011/v2ray-web/db/manipulator"
 	"gitlab.com/king011/v2ray-web/logger"
 	"go.uber.org/zap"
+	"v2ray.com/core"
+	"v2ray.com/ext/tools/conf/serial"
 )
 
 type handlerFunc func(Helper) error
@@ -32,13 +37,16 @@ func NewServer(l net.Listener) (server *Server, e error) {
 }
 func (s *Server) setAPI() {
 	s.apis = map[string]handlerFunc{
-		"/api/app/restore":   s.restore,
-		"/api/app/login":     s.login,
-		"/api/app/logout":    s.logout,
-		"/api/user/list":     s.userList,
-		"/api/user/add":      s.userAdd,
-		"/api/user/remove":   s.userRemove,
-		"/api/user/password": s.userPassword,
+		"/api/app/restore":         s.restore,
+		"/api/app/login":           s.login,
+		"/api/app/logout":          s.logout,
+		"/api/user/list":           s.userList,
+		"/api/user/add":            s.userAdd,
+		"/api/user/remove":         s.userRemove,
+		"/api/user/password":       s.userPassword,
+		"/api/v2ray/settings/get":  s.v2rayGet,
+		"/api/v2ray/settings/put":  s.v2rayPut,
+		"/api/v2ray/settings/test": s.v2rayTest,
 	}
 }
 
@@ -160,6 +168,7 @@ func (s *Server) logout(helper Helper) (e error) {
 	http.SetCookie(helper.response, &http.Cookie{
 		Path:     "/",
 		Name:     cookie.CookieName,
+		Value:    "expired",
 		MaxAge:   -1,
 		HttpOnly: true,
 	})
@@ -230,5 +239,83 @@ func (s *Server) userPassword(helper Helper) (e error) {
 	}
 	var mUser manipulator.User
 	e = mUser.Password(params.Name, params.Password)
+	return
+}
+func (s *Server) v2rayGet(helper Helper) (e error) {
+	e = s.checkSession(helper)
+	if e != nil {
+		return
+	}
+	var mSettings manipulator.Settings
+	text, e := mSettings.GetV2ray()
+	if e != nil {
+		return
+	}
+	helper.RenderJSON(text)
+	return
+}
+func (s *Server) v2rayPut(helper Helper) (e error) {
+	e = s.checkSession(helper)
+	if e != nil {
+		return
+	}
+	var params struct {
+		Text string
+	}
+	e = helper.BodyJSON(&params)
+	if e != nil {
+		return
+	}
+	var mSettings manipulator.Settings
+	e = mSettings.PutV2ray(params.Text)
+	if e != nil {
+		return
+	}
+	return
+}
+func (s *Server) v2rayTest(helper Helper) (e error) {
+	e = s.checkSession(helper)
+	if e != nil {
+		return
+	}
+	var params struct {
+		Text string
+	}
+	e = helper.BodyJSON(&params)
+	if e != nil {
+		return
+	}
+	outbound := &data.Outbound{
+		Name:     "測試",
+		Add:      "127.0.0.1",
+		Port:     "1989",
+		Net:      "tcp",
+		Security: "auto",
+		UserID:   "83b81e69-b1c7-077f-10d9-75b015b24651",
+	}
+	t := template.New("v2ray")
+	t, e = t.Parse(params.Text)
+	if e != nil {
+		return
+	}
+	ctx, e := outbound.ToContext()
+	if e != nil {
+		return
+	}
+	var buffer bytes.Buffer
+	e = t.Execute(&buffer, ctx)
+	if e != nil {
+		return
+	}
+	// v2ray
+	cnf, e := serial.LoadJSONConfig(&buffer)
+	if e != nil {
+		return
+	}
+	server, e := core.New(cnf)
+	if e != nil {
+		return
+	}
+	server.Close()
 	return
 }

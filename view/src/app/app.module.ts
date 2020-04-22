@@ -12,8 +12,6 @@ import { HomeComponent } from './app/home/home.component';
 import { SharedModule } from './shared/shared.module';
 import { IptablesSaveComponent } from './app/iptables/iptables-save/iptables-save.component';
 import { IptablesTemplateComponent } from './app/iptables/iptables-template/iptables-template.component';
-import { V2raySettingComponent } from './app/v2ray/v2ray-setting/v2ray-setting.component';
-import { V2raySubscriptionComponent } from './app/v2ray/v2ray-subscription/v2ray-subscription.component';
 
 @NgModule({
   declarations: [
@@ -21,8 +19,6 @@ import { V2raySubscriptionComponent } from './app/v2ray/v2ray-subscription/v2ray
     HomeComponent,
     IptablesSaveComponent,
     IptablesTemplateComponent,
-    V2raySettingComponent,
-    V2raySubscriptionComponent,
   ],
   imports: [
     BrowserModule,
