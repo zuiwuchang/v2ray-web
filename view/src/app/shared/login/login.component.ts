@@ -55,7 +55,6 @@ export class LoginComponent implements OnInit, OnDestroy {
       await this.sessionService.login(this.name, password, this.remember)
     } catch (e) {
       console.warn(e)
-      console.log(this.i18nService.get('error'))
       this.toasterService.pop('error',
         this.i18nService.get('error'),
         Utils.resolveError(e),

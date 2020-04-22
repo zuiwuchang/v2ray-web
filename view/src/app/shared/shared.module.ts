@@ -18,10 +18,11 @@ import { MatDividerModule } from '@angular/material/divider';
 
 import { NavigationBarComponent } from './navigation-bar/navigation-bar.component';
 import { LoginComponent } from './login/login.component';
+import { ConfirmComponent } from './dialog/confirm/confirm.component';
 
 
 @NgModule({
-  declarations: [NavigationBarComponent, LoginComponent],
+  declarations: [NavigationBarComponent, LoginComponent, ConfirmComponent],
   imports: [
     CommonModule, RouterModule, FormsModule,
     MatIconModule, MatToolbarModule, MatButtonModule,
@@ -31,9 +32,11 @@ import { LoginComponent } from './login/login.component';
   ],
   exports: [
     NavigationBarComponent,
+    ConfirmComponent,
   ],
   entryComponents: [
     LoginComponent,
+    ConfirmComponent,
   ],
 })
 export class SharedModule { }

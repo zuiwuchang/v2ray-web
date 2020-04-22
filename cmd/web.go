@@ -14,7 +14,7 @@ import (
 
 func init() {
 	var filename string
-	basePaht := utils.BasePath()
+	basePath := utils.BasePath()
 	cmd := &cobra.Command{
 		Use:   `web`,
 		Short: `Start V2Ray web control server.`,
@@ -25,13 +25,13 @@ func init() {
 			if e != nil {
 				log.Fatalln(e)
 			}
-			e = cnf.Format(basePaht)
+			e = cnf.Format(basePath)
 			if e != nil {
 				log.Fatalln(e)
 			}
 
 			// init logger
-			e = logger.Init(basePaht, &cnf.Logger)
+			e = logger.Init(basePath, &cnf.Logger)
 			if e != nil {
 				log.Fatalln(e)
 			}
@@ -54,7 +54,7 @@ func init() {
 	flasg := cmd.Flags()
 	flasg.StringVarP(&filename,
 		"config", "c",
-		utils.Abs(basePaht, "v2ray-web.jsonnet"),
+		utils.Abs(basePath, "v2ray-web.jsonnet"),
 		"Config file for Web",
 	)
 	rootCmd.AddCommand(cmd)

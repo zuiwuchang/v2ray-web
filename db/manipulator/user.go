@@ -3,6 +3,7 @@ package manipulator
 import (
 	"crypto/sha512"
 	"encoding/hex"
+	"errors"
 	"fmt"
 
 	"gitlab.com/king011/v2ray-web/cookie"
@@ -50,6 +51,101 @@ func (m User) Login(name, password string) (result *cookie.Session, e error) {
 				Root: true,
 			}
 		}
+		return
+	})
+	return
+}
+
+// List 返回用戶 列表
+func (m User) List() (result []data.User, e error) {
+	e = _db.View(func(t *bolt.Tx) (e error) {
+		bucket := t.Bucket(data.UserBucket)
+		if bucket == nil {
+			e = fmt.Errorf("bucket not exist : %s", data.UserBucket)
+			return
+		}
+		bucket.ForEach(func(k, v []byte) error {
+			result = append(result, data.User{
+				Name:     utils.BytesToString(k),
+				Password: utils.BytesToString(v),
+			})
+			return nil
+		})
+		return
+	})
+	return
+}
+
+// Add 添加用戶
+func (m User) Add(name, password string) (e error) {
+	if name == "" {
+		e = errors.New("name not support empty")
+		return
+	}
+	if password == "" {
+		e = errors.New("password not support empty")
+		return
+	}
+	e = _db.Update(func(t *bolt.Tx) (e error) {
+		bucket := t.Bucket(data.UserBucket)
+		if bucket == nil {
+			e = fmt.Errorf("bucket not exist : %s", data.UserBucket)
+			return
+		}
+		key := utils.StringToBytes(name)
+		v := bucket.Get(key)
+		if v != nil {
+			e = fmt.Errorf("user already exists : %s", name)
+			return
+		}
+		e = bucket.Put(key, utils.StringToBytes(password))
+		return
+	})
+	return
+}
+
+// Remove 刪除用戶
+func (m User) Remove(name string) (e error) {
+	if name == "" {
+		e = errors.New("name not support empty")
+		return
+	}
+	e = _db.Update(func(t *bolt.Tx) (e error) {
+		bucket := t.Bucket(data.UserBucket)
+		if bucket == nil {
+			e = fmt.Errorf("bucket not exist : %s", data.UserBucket)
+			return
+		}
+		key := utils.StringToBytes(name)
+		e = bucket.Delete(key)
+		return
+	})
+	return
+}
+
+// Password 修改密碼
+func (m User) Password(name, password string) (e error) {
+	if name == "" {
+		e = errors.New("name not support empty")
+		return
+	}
+	if password == "" {
+		e = errors.New("password not support empty")
+		return
+	}
+	e = _db.Update(func(t *bolt.Tx) (e error) {
+		bucket := t.Bucket(data.UserBucket)
+		if bucket == nil {
+			e = fmt.Errorf("bucket not exist : %s", data.UserBucket)
+			return
+		}
+		key := utils.StringToBytes(name)
+		v := bucket.Get(key)
+		if v == nil {
+			e = fmt.Errorf("user not exists : %s", name)
+			return
+		}
+		e = bucket.Put(key, utils.StringToBytes(password))
 		return
 	})
 	return

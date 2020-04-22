@@ -1,0 +1,15 @@
+<mat-list>
+    <mat-list-item *ngFor="let node of source">
+        <mat-icon matListIcon>account_circle</mat-icon>
+        <h3 matLine>{{node.name}}</h3>
+        <button mat-icon-button i18n-matTooltip matTooltip="edit" (click)="onClickEdit(node)" [disabled]="disabled">
+            <mat-icon>create</mat-icon>
+        </button>
+        <button mat-icon-button i18n-matTooltip matTooltip="delete" (click)="onClickDelete(node)" [disabled]="disabled">
+            <mat-icon>delete</mat-icon>
+        </button>
+    </mat-list-item>
+</mat-list>
+<button mat-icon-button i18n-matTooltip matTooltip="add" (click)="onClickAdd()" [disabled]="disabled">
+    <mat-icon>add</mat-icon>
+</button>

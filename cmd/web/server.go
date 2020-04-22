@@ -32,9 +32,13 @@ func NewServer(l net.Listener) (server *Server, e error) {
 }
 func (s *Server) setAPI() {
 	s.apis = map[string]handlerFunc{
-		"/api/app/restore": s.restore,
-		"/api/app/login":   s.login,
-		"/api/app/logout":  s.logout,
+		"/api/app/restore":   s.restore,
+		"/api/app/login":     s.login,
+		"/api/app/logout":    s.logout,
+		"/api/user/list":     s.userList,
+		"/api/user/add":      s.userAdd,
+		"/api/user/remove":   s.userRemove,
+		"/api/user/password": s.userPassword,
 	}
 }
 
@@ -82,8 +86,7 @@ func (s *Server) ServeHTTP(response http.ResponseWriter, request *http.Request) 
 	}
 	helper.RenderText(http.StatusNotFound, "route not found")
 }
-
-func (s *Server) restore(helper Helper) (e error) {
+func (s *Server) getSession(helper Helper) (session *cookie.Session, e error) {
 	c, e := helper.request.Cookie(cookie.CookieName)
 	if e != nil {
 		if e == http.ErrNoCookie {
@@ -91,7 +94,26 @@ func (s *Server) restore(helper Helper) (e error) {
 		}
 		return
 	}
+	session, e = cookie.FromCookie(c.Value)
+	return
+}
+func (s *Server) checkSession(helper Helper) (e error) {
+	c, e := helper.request.Cookie(cookie.CookieName)
+	if e != nil {
+		return
+	}
 	session, e := cookie.FromCookie(c.Value)
+	if e != nil {
+		return
+	}
+	if !session.Root {
+		e = errors.New("Permission denied")
+		return
+	}
+	return
+}
+func (s *Server) restore(helper Helper) (e error) {
+	session, e := s.getSession(helper)
 	if e != nil {
 		return
 	}
@@ -120,20 +142,93 @@ func (s *Server) login(helper Helper) (e error) {
 	if e != nil {
 		return
 	}
-	http.SetCookie(helper.response, &http.Cookie{
+	c := &http.Cookie{
+		Path:     "/",
 		Name:     cookie.CookieName,
 		Value:    val,
-		MaxAge:   int(cookie.MaxAge()),
 		HttpOnly: true,
-	})
+	}
+	if params.Remember {
+		c.MaxAge = int(cookie.MaxAge())
+	}
+	http.SetCookie(helper.response, c)
+
 	helper.RenderJSON(&session)
 	return
 }
 func (s *Server) logout(helper Helper) (e error) {
 	http.SetCookie(helper.response, &http.Cookie{
+		Path:     "/",
 		Name:     cookie.CookieName,
 		MaxAge:   -1,
 		HttpOnly: true,
 	})
+	return
+}
+func (s *Server) userList(helper Helper) (e error) {
+	e = s.checkSession(helper)
+	if e != nil {
+		return
+	}
+
+	var mUser manipulator.User
+	result, e := mUser.List()
+	if e != nil {
+		return
+	}
+	helper.RenderJSON(result)
+	return
+}
+func (s *Server) userAdd(helper Helper) (e error) {
+	e = s.checkSession(helper)
+	if e != nil {
+		return
+	}
+
+	var params struct {
+		Name     string
+		Password string
+	}
+	e = helper.BodyJSON(&params)
+	if e != nil {
+		return
+	}
+	var mUser manipulator.User
+	e = mUser.Add(params.Name, params.Password)
+	return
+}
+func (s *Server) userRemove(helper Helper) (e error) {
+	e = s.checkSession(helper)
+	if e != nil {
+		return
+	}
+
+	var params struct {
+		Name string
+	}
+	e = helper.BodyJSON(&params)
+	if e != nil {
+		return
+	}
+	var mUser manipulator.User
+	e = mUser.Remove(params.Name)
+	return
+}
+func (s *Server) userPassword(helper Helper) (e error) {
+	e = s.checkSession(helper)
+	if e != nil {
+		return
+	}
+
+	var params struct {
+		Name     string
+		Password string
+	}
+	e = helper.BodyJSON(&params)
+	if e != nil {
+		return
+	}
+	var mUser manipulator.User
+	e = mUser.Password(params.Name, params.Password)
 	return
 }

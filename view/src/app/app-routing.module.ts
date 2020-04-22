@@ -3,7 +3,6 @@ import { Routes, RouterModule } from '@angular/router';
 import { HomeComponent } from './app/home/home.component';
 import { AboutComponent } from './app/about/about.component';
 import { LicenseComponent } from './app/license/license.component';
-import { UserComponent } from './app/user/user.component';
 import { IptablesSaveComponent } from './app/iptables/iptables-save/iptables-save.component';
 import { IptablesTemplateComponent } from './app/iptables/iptables-template/iptables-template.component';
 import { V2raySettingComponent } from './app/v2ray/v2ray-setting/v2ray-setting.component';
@@ -24,7 +23,7 @@ const routes: Routes = [
   },
   {
     path: 'user',
-    component: UserComponent,
+    loadChildren: () => import('./user/user.module').then(m => m.UserModule),
   },
   {
     path: 'iptables/template',

@@ -12,7 +12,6 @@ import { AboutComponent } from './app/about/about.component';
 import { LicenseComponent } from './app/license/license.component';
 
 import { SharedModule } from './shared/shared.module';
-import { UserComponent } from './app/user/user.component';
 import { IptablesSaveComponent } from './app/iptables/iptables-save/iptables-save.component';
 import { IptablesTemplateComponent } from './app/iptables/iptables-template/iptables-template.component';
 import { V2raySettingComponent } from './app/v2ray/v2ray-setting/v2ray-setting.component';
@@ -24,7 +23,6 @@ import { V2raySubscriptionComponent } from './app/v2ray/v2ray-subscription/v2ray
     HomeComponent,
     AboutComponent,
     LicenseComponent,
-    UserComponent,
     IptablesSaveComponent,
     IptablesTemplateComponent,
     V2raySettingComponent,
