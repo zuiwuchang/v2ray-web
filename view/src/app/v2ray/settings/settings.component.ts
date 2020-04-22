@@ -34,11 +34,10 @@ export class SettingsComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this._closed = true
   }
-  async load() {
+  load() {
     this.err = null
     this._ready = false
-    try {
-      const text = await this.httpClient.get<string>(ServerAPI.v2ray.settings.get).toPromise()
+    this.httpClient.get<string>(ServerAPI.v2ray.settings.get).toPromise().then((text) => {
       if (this._closed) {
         return
       }
@@ -48,15 +47,15 @@ export class SettingsComponent implements OnInit, OnDestroy {
         this.text = ''
       }
       this._text = text
-    } catch (e) {
+    }, (e) => {
       if (this._closed) {
         return
       }
-      console.log(e)
+      console.warn(e)
       this.err = Utils.resolveError(e)
-    } finally {
+    }).finally(() => {
       this._ready = true
-    }
+    })
   }
 
   onClickSave() {

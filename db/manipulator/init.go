@@ -37,6 +37,7 @@ func Init(cnf *configure.Database) (e error) {
 		buckets := []manipulator{
 			User{},
 			Settings{},
+			Subscription{},
 		}
 		for i := 0; i < len(buckets); i++ {
 			e = buckets[i].Init(tx)

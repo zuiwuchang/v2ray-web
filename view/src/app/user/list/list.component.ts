@@ -42,6 +42,7 @@ export class ListComponent implements OnInit, OnDestroy {
       if (this._closed) {
         return
       }
+      console.warn(e)
       this.toasterService.pop('error',
         this.i18nService.get('error'),
         Utils.resolveError(e),
@@ -54,6 +55,7 @@ export class ListComponent implements OnInit, OnDestroy {
   onClickEdit(node: User) {
     this.matDialog.open(PasswordComponent, {
       data: node.name,
+      disableClose: true,
     })
   }
   onClickDelete(node: User) {

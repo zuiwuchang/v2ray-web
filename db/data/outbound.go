@@ -1,7 +1,6 @@
 package data
 
 import (
-	"encoding/gob"
 	"encoding/json"
 	"strconv"
 	"strings"
@@ -11,42 +10,36 @@ import (
 	"gitlab.com/king011/v2ray-web/subscription"
 )
 
-func init() {
-	gob.Register(Outbound{})
-}
-
 // Outbound 可用的 出棧 配置
 type Outbound struct {
-	// 數據庫記錄
-	ID int64 `json:"-"`
 
 	// 給人類看的 名稱
-	Name string `json:"ps"`
+	Name string `json:"ps,omitempty"`
 
 	// 連接地址
-	Add string `json:"add"`
+	Add string `json:"add,omitempty"`
 	// 連接端口
-	Port string `json:"port"`
+	Port string `json:"port,omitempty"`
 	// 連接主機名
-	Host string `json:"host"`
+	Host string `json:"host,omitempty"`
 
 	// 加密方案
-	TLS string `json:"tls"`
+	TLS string `json:"tls,omitempty"`
 
 	// 使用的網路協議
-	Net string `json:"net"`
+	Net string `json:"net,omitempty"`
 
 	// websocket 請求路徑
-	Path string `json:"path"`
+	Path string `json:"path,omitempty"`
 
 	// 用戶身份識別碼
-	UserID string `json:"id"`
+	UserID string `json:"id,omitempty"`
 	// 另外一個可選的用戶id
-	AlterID string `json:"AID"`
+	AlterID string `json:"AID,omitempty"`
 	// Security 加密方式
-	Security string `json:"type"`
+	Security string `json:"type,omitempty"`
 	// 用戶等級
-	Level string `json:"v"`
+	Level string `json:"v,omitempty"`
 }
 
 // ToContext .

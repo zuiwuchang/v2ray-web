@@ -16,5 +16,11 @@ export const ServerAPI = {
             put: `${root}/v2ray/settings/put`,
             test: `${root}/v2ray/settings/test`,
         },
+        subscription: {
+            list: `${root}/v2ray/subscription/list1`,
+            get: `${root}/v2ray/subscription/get1`,
+            put: `${root}/v2ray/subscription/put1`,
+            add: `${root}/v2ray/subscription/add1`,
+        },
     },
 }
