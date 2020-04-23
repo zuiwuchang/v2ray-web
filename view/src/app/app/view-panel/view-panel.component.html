@@ -1,0 +1,23 @@
+<mat-expansion-panel>
+    <mat-expansion-panel-header>
+        <mat-panel-title>
+            <ng-container *ngIf="panel.id==0;then manualName;else autoName"></ng-container>
+            <ng-template #manualName>
+                <ng-container i18n>Manual Element</ng-container>
+            </ng-template>
+            <ng-template #autoName>
+                {{panel.name}}
+            </ng-template>
+        </mat-panel-title>
+    </mat-expansion-panel-header>
+    <button mat-icon-button i18n-matTooltip matTooltip="test speed" (click)="onClickTest()" [disabled]="disabled">
+        <mat-icon>network_check</mat-icon>
+    </button>
+    <button mat-icon-button i18n-matTooltip matTooltip="add element" (click)="onClickAdd()" [disabled]="disabled">
+        <mat-icon>add</mat-icon>
+    </button>
+    <button mat-icon-button *ngIf="panel.id!=0" i18n-matTooltip matTooltip="update subscription"
+        (click)="onClickUpdate()" [disabled]="disabled">
+        <mat-icon>update</mat-icon>
+    </button>
+</mat-expansion-panel>

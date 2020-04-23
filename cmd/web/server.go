@@ -51,7 +51,8 @@ func (s *Server) setAPI() {
 		"/api/v2ray/subscription/put":    s.subscriptionPut,
 		"/api/v2ray/subscription/add":    s.subscriptionAdd,
 		"/api/v2ray/subscription/remove": s.subscriptionRemove,
-		"/api/element/list":              s.elementList,
+		"/api/proxy/list":                s.proxyList,
+		"/api/proxy/update":              s.proxyUpdate,
 	}
 }
 
@@ -394,7 +395,7 @@ func (s *Server) subscriptionRemove(helper Helper) (e error) {
 	helper.RenderJSON(params.ID)
 	return
 }
-func (s *Server) elementList(helper Helper) (e error) {
+func (s *Server) proxyList(helper Helper) (e error) {
 	e = s.checkSession(helper)
 	if e != nil {
 		return
@@ -406,11 +407,45 @@ func (s *Server) elementList(helper Helper) (e error) {
 	}
 
 	helper.RenderJSON(&struct {
-		Element      []*data.Element
-		Subscription []*data.Subscription
+		Element      []*data.Element      `json:"element,omitempty"`
+		Subscription []*data.Subscription `json:"subscription,omitempty"`
 	}{
 		element,
 		subscription,
 	})
+	return
+}
+func (s *Server) proxyUpdate(helper Helper) (e error) {
+	e = s.checkSession(helper)
+	if e != nil {
+		return
+	}
+	var params struct {
+		ID uint64
+	}
+	e = helper.BodyJSON(&params)
+	if e != nil {
+		return
+	}
+	var mSubscription manipulator.Subscription
+	info, e := mSubscription.Get(params.ID)
+	if e != nil {
+		return
+	}
+	outbounds, e := requestSubscription(info.URL)
+	if e != nil {
+		return
+	}
+	count := len(outbounds)
+	if count == 0 {
+		e = errors.New("outbound empty")
+		return
+	}
+	var mElement manipulator.Element
+	result, e := mElement.Puts(info.ID, outbounds)
+	if e != nil {
+		return
+	}
+	helper.RenderJSON(result)
 	return
 }

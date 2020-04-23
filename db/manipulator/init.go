@@ -38,6 +38,7 @@ func Init(cnf *configure.Database) (e error) {
 			User{},
 			Settings{},
 			Subscription{},
+			Element{},
 		}
 		for i := 0; i < len(buckets); i++ {
 			e = buckets[i].Init(tx)

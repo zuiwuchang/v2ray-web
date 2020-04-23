@@ -16,6 +16,14 @@
           <context context-type="linenumber">10</context>
         </context-group>
         <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app/home/home.component.html</context>
+          <context context-type="linenumber">9</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app/view/view.component.html</context>
+          <context context-type="linenumber">8</context>
+        </context-group>
+        <context-group purpose="location">
           <context context-type="sourcefile">src/app/user/list/list.component.html</context>
           <context context-type="linenumber">8</context>
         </context-group>
@@ -49,6 +57,10 @@
           <context context-type="sourcefile">src/app/v2ray/subscription/subscription-add/subscription-add.component.html</context>
           <context context-type="linenumber">13</context>
         </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/v2ray/subscription/subscription-edit/subscription-edit.component.html</context>
+          <context context-type="linenumber">13</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="5314f3960d1a662e977d8f0a5a3943120824255c" datatype="html">
         <source>Default Name : killer</source>
@@ -69,6 +81,10 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/v2ray/subscription/subscription-add/subscription-add.component.html</context>
+          <context context-type="linenumber">15</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/v2ray/subscription/subscription-edit/subscription-edit.component.html</context>
           <context context-type="linenumber">15</context>
         </context-group>
       </trans-unit>
@@ -134,6 +150,10 @@
           <context context-type="sourcefile">src/app/v2ray/subscription/subscription-add/subscription-add.component.html</context>
           <context context-type="linenumber">29</context>
         </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/v2ray/subscription/subscription-edit/subscription-edit.component.html</context>
+          <context context-type="linenumber">29</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="f4e529ae5ffd73001d1ff4bbdeeb0a72e342e5c8" datatype="html">
         <source>Close</source>
@@ -155,6 +175,10 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/v2ray/subscription/subscription-add/subscription-add.component.html</context>
+          <context context-type="linenumber">30</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/v2ray/subscription/subscription-edit/subscription-edit.component.html</context>
           <context context-type="linenumber">30</context>
         </context-group>
       </trans-unit>
@@ -359,6 +383,60 @@
           <context context-type="linenumber">20</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="bd8031684042b2017b2fa8365970e7c8ae5d99b5" datatype="html">
+        <source>Welcome, you are using the v2ray-web, please log in online.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app/home/home.component.html</context>
+          <context context-type="linenumber">20</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="c8d1785038d461ec66b5799db21864182b35900a" datatype="html">
+        <source>Refresh</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app/view/view.component.html</context>
+          <context context-type="linenumber">19</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/user/list/list.component.html</context>
+          <context context-type="linenumber">19</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/v2ray/settings/settings.component.html</context>
+          <context context-type="linenumber">20</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/v2ray/subscription/subscription.component.html</context>
+          <context context-type="linenumber">19</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="1ce10725dc63c260a06f4e1ee69a5b6ac9181ce6" datatype="html">
+        <source>Manual Element</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app/view-panel/view-panel.component.html</context>
+          <context context-type="linenumber">6</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="8eab328b660ddb298fed494af1d0a4eb726d2450" datatype="html">
+        <source>test speed</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app/view-panel/view-panel.component.html</context>
+          <context context-type="linenumber">13</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="5731c861d8ad343c4c1584450f506a85503c6c5f" datatype="html">
+        <source>add element</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app/view-panel/view-panel.component.html</context>
+          <context context-type="linenumber">16</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="9e13c1a5b08b67fb2af61f9b8a6044b9811a1590" datatype="html">
+        <source>update subscription</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app/view-panel/view-panel.component.html</context>
+          <context context-type="linenumber">19</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="94be6ae6ec1f87bedc67020629343b27fdbece0a" datatype="html">
         <source>Add User</source>
         <context-group purpose="location">
@@ -371,21 +449,6 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/user/password/password.component.html</context>
           <context context-type="linenumber">2</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="c8d1785038d461ec66b5799db21864182b35900a" datatype="html">
-        <source>Refresh</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/user/list/list.component.html</context>
-          <context context-type="linenumber">19</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/v2ray/settings/settings.component.html</context>
-          <context context-type="linenumber">20</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/v2ray/subscription/subscription.component.html</context>
-          <context context-type="linenumber">19</context>
         </context-group>
       </trans-unit>
       <trans-unit id="a568d6cc7b8a3f14399663426bb1b4fc137b1a8d" datatype="html">
@@ -455,12 +518,27 @@
           <context context-type="sourcefile">src/app/v2ray/subscription/subscription-add/subscription-add.component.html</context>
           <context context-type="linenumber">20</context>
         </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/v2ray/subscription/subscription-edit/subscription-edit.component.html</context>
+          <context context-type="linenumber">20</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="f0f44340cc5bd835edd0b8d16b17f7481b9c67c0" datatype="html">
         <source>Subscription URL Invalid</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/v2ray/subscription/subscription-add/subscription-add.component.html</context>
           <context context-type="linenumber">23</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/v2ray/subscription/subscription-edit/subscription-edit.component.html</context>
+          <context context-type="linenumber">23</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="93edc2addb9cffc17465420433289c8db9700846" datatype="html">
+        <source>Change Subscription</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/v2ray/subscription/subscription-edit/subscription-edit.component.html</context>
+          <context context-type="linenumber">2</context>
         </context-group>
       </trans-unit>
     </body>

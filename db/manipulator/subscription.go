@@ -81,6 +81,38 @@ func (m Subscription) Put(node *data.Subscription) (e error) {
 	return
 }
 
+// Get 返回記錄
+func (m Subscription) Get(id uint64) (result *data.Subscription, e error) {
+	e = _db.View(func(t *bolt.Tx) (e error) {
+		result, e = m.get(t, id)
+		return
+	})
+	return
+}
+func (m Subscription) get(t *bolt.Tx, id uint64) (result *data.Subscription, e error) {
+	bucket := t.Bucket([]byte(data.SubscriptionBucket))
+	if bucket == nil {
+		e = fmt.Errorf("bucket not exist : %s", data.SubscriptionBucket)
+		return
+	}
+	key, e := data.EncodeID(id)
+	if e != nil {
+		return
+	}
+	val := bucket.Get(key)
+	if val == nil {
+		e = fmt.Errorf("key not exist : %s.%v", data.SubscriptionBucket, id)
+		return
+	}
+	var node data.Subscription
+	e = node.Decode(val)
+	if e != nil {
+		return
+	}
+	result = &node
+	return
+}
+
 // Add 添加記錄
 func (m Subscription) Add(node *data.Subscription) (e error) {
 	e = _db.Update(func(t *bolt.Tx) (e error) {

@@ -9,6 +9,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { ConfirmComponent } from 'src/app/shared/dialog/confirm/confirm.component';
 import { AddComponent } from '../add/add.component';
 import { PasswordComponent } from '../password/password.component';
+import { SessionService } from 'src/app/core/session/session.service';
 @Component({
   selector: 'app-list',
   templateUrl: './list.component.html',
@@ -19,6 +20,7 @@ export class ListComponent implements OnInit, OnDestroy {
     private toasterService: ToasterService,
     private i18nService: I18nService,
     private matDialog: MatDialog,
+    private sessionService: SessionService,
   ) { }
   private _ready = false
   get ready(): boolean {
@@ -35,7 +37,12 @@ export class ListComponent implements OnInit, OnDestroy {
     return this._source
   }
   ngOnInit(): void {
-    this.load()
+    this.sessionService.ready.then(() => {
+      if (this._closed) {
+        return
+      }
+      this.load()
+    })
   }
   ngOnDestroy(): void {
     this._closed = true

@@ -1,6 +1,6 @@
 <ng-container *ngIf="ready;then readyView;else notReadyView"></ng-container>
 <ng-template #notReadyView>
-    <div mat-dialog-content>
+    <div>
         <p>
             <mat-progress-bar mode="indeterminate"></mat-progress-bar>
         </p>

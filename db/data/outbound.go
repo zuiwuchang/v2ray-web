@@ -2,8 +2,14 @@ package data
 
 import (
 	"encoding/json"
+	"fmt"
+	"net"
 	"strconv"
 	"strings"
+
+	"go.uber.org/zap"
+
+	"gitlab.com/king011/v2ray-web/logger"
 
 	"gitlab.com/king011/v2ray-web/utils"
 
@@ -85,8 +91,22 @@ func (o *Outbound) ToContext() (context *OutboundContext, e error) {
 	if e != nil {
 		return
 	}
+	ip, e := net.LookupIP(o.Add)
+	var str string
+	if e == nil {
+		if len(ip) > 0 {
+			str = fmt.Sprint(ip[0])
+		}
+	} else {
+		if ce := logger.Logger.Check(zap.WarnLevel, "LookupIP error"); ce != nil {
+			ce.Write(
+				zap.Error(e),
+			)
+		}
+	}
 	context = &OutboundContext{
 		Outbound:       o,
+		AddIP:          str,
 		Vnext:          utils.BytesToString(vnextBytes),
 		StreamSettings: utils.BytesToString(streamSettingsBytes),
 	}
@@ -98,4 +118,5 @@ type OutboundContext struct {
 	Outbound       *Outbound
 	Vnext          string
 	StreamSettings string
+	AddIP          string
 }

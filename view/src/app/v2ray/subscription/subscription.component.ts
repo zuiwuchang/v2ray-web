@@ -4,7 +4,8 @@ import { ServerAPI } from 'src/app/core/core/api';
 import { Utils } from 'src/app/core/utils';
 import { ToasterService } from 'angular2-toaster';
 import { I18nService } from 'src/app/core/i18n/i18n.service';
-import { isString, isArray } from 'util';
+import { SessionService } from 'src/app/core/session/session.service';
+import { isArray } from 'util';
 import { Element } from './subscription';
 import { MatDialog } from '@angular/material/dialog';
 import { SubscriptionAddComponent } from './subscription-add/subscription-add.component';
@@ -22,6 +23,7 @@ export class SubscriptionComponent implements OnInit, OnDestroy {
     private toasterService: ToasterService,
     private i18nService: I18nService,
     private matDialog: MatDialog,
+    private sessionService: SessionService,
   ) { }
   private _ready = false
   get ready(): boolean {
@@ -38,7 +40,12 @@ export class SubscriptionComponent implements OnInit, OnDestroy {
   }
   err: any
   ngOnInit(): void {
-    this.load()
+    this.sessionService.ready.then(() => {
+      if (this._closed) {
+        return
+      }
+      this.load()
+    })
   }
   ngOnDestroy() {
     this._closed = true

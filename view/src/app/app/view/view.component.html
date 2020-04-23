@@ -1,5 +1,4 @@
 <ng-container *ngIf="ready;then readyView;else notReadyView"></ng-container>
-
 <ng-template #notReadyView>
     <div>
         <p>
@@ -11,11 +10,19 @@
     </div>
 </ng-template>
 <ng-template #readyView>
-    <ng-container *ngIf="session;then sessionView;else notSessionView"></ng-container>
+    <ng-container *ngIf="err;then errView;else okView"></ng-container>
 </ng-template>
-<ng-template #sessionView>
-    <app-view></app-view>
+<ng-template #errView>
+    <p>
+        {{err}}
+    </p>
+    <button mat-stroked-button color="primary" i18n (click)="load()">Refresh</button>
+
 </ng-template>
-<ng-template #notSessionView>
-    <p style="text-align: center;" i18n>Welcome, you are using the v2ray-web, please log in online.</p>
+<ng-template #okView>
+    <p>
+        <mat-accordion>
+            <app-view-panel *ngFor="let panel of source.items" [panel]="panel"></app-view-panel>
+        </mat-accordion>
+    </p>
 </ng-template>

@@ -19,7 +19,7 @@ type Element struct {
 	// 所屬的 訂閱組 如果爲0 則爲 自定義節點
 	Subscription uint64 `json:"subscription,omitempty"`
 	// 節點信息
-	Outbound Outbound `json:"outbound,omitempty"`
+	Outbound *Outbound `json:"outbound,omitempty"`
 }
 
 // Decode 由 []byte 解碼

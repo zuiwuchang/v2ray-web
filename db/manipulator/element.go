@@ -2,6 +2,7 @@ package manipulator
 
 import (
 	"fmt"
+	"log"
 
 	"github.com/boltdb/bolt"
 	"gitlab.com/king011/v2ray-web/db/data"
@@ -13,9 +14,18 @@ import (
 type Element struct {
 }
 
+// Init 初始化 bucket
+func (m Element) Init(tx *bolt.Tx) (e error) {
+	_, e = tx.CreateBucketIfNotExists([]byte(data.ElementBucket))
+	if e != nil {
+		return
+	}
+	return
+}
+
 // List 返回 所有記錄
 func (m Element) List() (result []*data.Element, subscription []*data.Subscription, e error) {
-	e = _db.View(func(t *bolt.Tx) (e error) {
+	e = _db.Update(func(t *bolt.Tx) (e error) {
 		// 返回 組信息
 		var mSubscription Subscription
 		subscription, e = mSubscription.list(t)
@@ -43,6 +53,77 @@ func (m Element) List() (result []*data.Element, subscription []*data.Subscripti
 			}
 			return nil
 		})
+		return
+	})
+	return
+}
+
+// Puts 更新記錄
+func (m Element) Puts(subscription uint64, outbounds []*data.Outbound) (result []data.Element, e error) {
+	e = _db.Update(func(t *bolt.Tx) (e error) {
+		// 返回 組信息
+		var mSubscription Subscription
+		_, e = mSubscription.get(t, subscription)
+		if e != nil {
+			log.Println(e)
+			return
+		}
+		bucket := t.Bucket([]byte(data.ElementBucket))
+		if bucket == nil {
+			e = fmt.Errorf("bucket not exist : %s", data.ElementBucket)
+			return
+		}
+
+		// 刪除組
+		key, e := data.EncodeID(subscription)
+		if e != nil {
+			log.Println(e)
+			return
+		}
+		if bucket.Bucket(key) != nil {
+			e = bucket.DeleteBucket(key)
+			if e != nil {
+				log.Println(e)
+				return
+			}
+		}
+
+		// 創建新組
+		bucket, e = bucket.CreateBucket(key)
+		if e != nil {
+			log.Println(e)
+			return
+		}
+		// 插入記錄
+		count := len(outbounds)
+		arrs := make([]data.Element, count)
+		var val []byte
+		for i := 0; i < count; i++ {
+			arrs[i].ID, e = bucket.NextSequence()
+			if e != nil {
+				log.Println(e)
+				return
+			}
+			key, e = data.EncodeID(arrs[i].ID)
+			if e != nil {
+				log.Println(e)
+				return
+			}
+			arrs[i].Outbound = outbounds[i]
+			arrs[i].Subscription = subscription
+			val, e = arrs[i].Encoder()
+			if e != nil {
+				log.Println(e)
+				return
+			}
+
+			e = bucket.Put(key, val)
+			if e != nil {
+				log.Println(e)
+				return
+			}
+		}
+		result = arrs
 		return
 	})
 	return

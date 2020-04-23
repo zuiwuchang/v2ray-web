@@ -1,7 +1,7 @@
 <ng-container *ngIf="ready;then readyView;else notReadyView"></ng-container>
 
 <ng-template #notReadyView>
-    <div mat-dialog-content>
+    <div>
         <p>
             <mat-progress-bar mode="indeterminate"></mat-progress-bar>
         </p>
@@ -33,5 +33,12 @@
             <button mat-stroked-button [disabled]="disabled" (click)="onClickTest()" i18n>Test</button>
             <button mat-stroked-button [disabled]="disabled" (click)="onClickResetDefault()" i18n>Reset Default</button>
         </mat-card-actions>
+    </mat-card>
+    <br>
+    <mat-card>
+        <mat-card-title>Context</mat-card-title>
+        <mat-card-content>
+            <pre>{{contextText}}</pre>
+        </mat-card-content>
     </mat-card>
 </ng-template>

@@ -23,4 +23,8 @@ export const ServerAPI = {
             remove: `${root}/v2ray/subscription/remove`,
         },
     },
+    proxy: {
+        list: `${root}/proxy/list`,
+        update: `${root}/proxy/update`,
+    },
 }
