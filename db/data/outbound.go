@@ -20,7 +20,7 @@ import (
 type Outbound struct {
 
 	// 給人類看的 名稱
-	Name string `json:"ps,omitempty"`
+	Name string `json:"name,omitempty"`
 
 	// 連接地址
 	Add string `json:"add,omitempty"`
@@ -39,13 +39,13 @@ type Outbound struct {
 	Path string `json:"path,omitempty"`
 
 	// 用戶身份識別碼
-	UserID string `json:"id,omitempty"`
+	UserID string `json:"userID,omitempty"`
 	// 另外一個可選的用戶id
-	AlterID string `json:"AID,omitempty"`
+	AlterID string `json:"alterID,omitempty"`
 	// Security 加密方式
-	Security string `json:"type,omitempty"`
+	Security string `json:"security,omitempty"`
 	// 用戶等級
-	Level string `json:"v,omitempty"`
+	Level string `json:"level,omitempty"`
 }
 
 // ToContext .

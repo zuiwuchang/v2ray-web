@@ -8,7 +8,9 @@
             <ng-template #autoName>
                 {{panel.name}}
             </ng-template>
+            - {{panel.source.length}}
         </mat-panel-title>
+
     </mat-expansion-panel-header>
     <button mat-icon-button i18n-matTooltip matTooltip="test speed" (click)="onClickTest()" [disabled]="disabled">
         <mat-icon>network_check</mat-icon>
@@ -20,4 +22,11 @@
         (click)="onClickUpdate()" [disabled]="disabled">
         <mat-icon>update</mat-icon>
     </button>
+    <mat-list>
+        <mat-list-item *ngFor="let item of panel.source">
+            <mat-icon matListIcon>grade</mat-icon>
+            <p matLine>{{item.outbound.name}}</p>
+            <p matLine> {{item.outbound.net}} {{item.outbound.tls}}</p>
+        </mat-list-item>
+    </mat-list>
 </mat-expansion-panel>

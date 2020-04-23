@@ -75,10 +75,19 @@ export class Element {
         }
     }
     static compare(l: Element, r: Element): number {
-        if (l.outbound.name == r.outbound.name) {
+        if (l.outbound.net != r.outbound.net) {
+            return l.outbound.net > r.outbound.net ? 1 : -1
+        }
+        if (l.outbound.tls != r.outbound.tls) {
+            return l.outbound.tls > r.outbound.tls ? 1 : -1
+        }
+        if (l.outbound.name != r.outbound.name) {
+            return l.outbound.name > r.outbound.name ? 1 : -1
+        }
+        if (l.id != r.id) {
             return l.id > r.id ? 1 : -1
         }
-        return l.outbound.name > r.outbound.name ? 1 : -1
+        return 0
     }
 }
 export class Outbound {

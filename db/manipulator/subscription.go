@@ -157,6 +157,18 @@ func (m Subscription) Remove(id uint64) (e error) {
 			return
 		}
 		// 刪除 訂閱
+		bucket = t.Bucket([]byte(data.ElementBucket))
+		if bucket == nil {
+			e = fmt.Errorf("bucket not exist : %s", data.ElementBucket)
+			return
+		}
+		e = bucket.DeleteBucket(key)
+		if e != nil {
+			if e == bolt.ErrBucketNotFound {
+				e = nil
+			}
+			return
+		}
 		return
 	})
 	return

@@ -16,6 +16,38 @@ import (
 	"go.uber.org/zap"
 )
 
+// Outbound 可用的 出棧 配置
+type Outbound struct {
+
+	// 給人類看的 名稱
+	Name string `json:"ps,omitempty"`
+
+	// 連接地址
+	Add string `json:"add,omitempty"`
+	// 連接端口
+	Port string `json:"port,omitempty"`
+	// 連接主機名
+	Host string `json:"host,omitempty"`
+
+	// 加密方案
+	TLS string `json:"tls,omitempty"`
+
+	// 使用的網路協議
+	Net string `json:"net,omitempty"`
+
+	// websocket 請求路徑
+	Path string `json:"path,omitempty"`
+
+	// 用戶身份識別碼
+	UserID string `json:"id,omitempty"`
+	// 另外一個可選的用戶id
+	AlterID string `json:"AID,omitempty"`
+	// Security 加密方式
+	Security string `json:"type,omitempty"`
+	// 用戶等級
+	Level string `json:"v,omitempty"`
+}
+
 func requestSubscription(url string) (result []*data.Outbound, e error) {
 	response, e := http.Get(url)
 	if e != nil {
@@ -48,12 +80,24 @@ func requestSubscription(url string) (result []*data.Outbound, e error) {
 		}
 		node := analyzeString(str)
 		if node != nil {
-			result = append(result, node)
+			result = append(result, &data.Outbound{
+				Name:     node.Name,
+				Add:      node.Add,
+				Port:     node.Port,
+				Host:     node.Host,
+				TLS:      node.TLS,
+				Net:      node.Net,
+				Path:     node.Path,
+				UserID:   node.UserID,
+				AlterID:  node.AlterID,
+				Security: node.Security,
+				Level:    node.Level,
+			})
 		}
 	}
 	return
 }
-func analyzeString(str string) (result *data.Outbound) {
+func analyzeString(str string) (result *Outbound) {
 	str = strings.TrimSpace(str)
 	if !strings.HasPrefix(str, "vmess://") {
 		if ce := logger.Logger.Check(zap.WarnLevel, "not support outbound"); ce != nil {
@@ -75,7 +119,7 @@ func analyzeString(str string) (result *data.Outbound) {
 		return
 	}
 	b = replaceNumber.ReplaceAll(b, []byte(`":"$1",`))
-	var node data.Outbound
+	var node Outbound
 	e = json.Unmarshal(b, &node)
 	if e != nil {
 		if ce := logger.Logger.Check(zap.WarnLevel, "unmarshal outbound error"); ce != nil {
