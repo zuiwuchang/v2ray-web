@@ -22,56 +22,33 @@ func (m Subscription) Init(tx *bolt.Tx) (e error) {
 	}
 	return
 }
-
-// List 返回 所有記錄
-func (m Subscription) List() (result []*data.Subscription, e error) {
-	e = _db.View(func(t *bolt.Tx) (e error) {
-		bucket := t.Bucket([]byte(data.SubscriptionBucket))
-		if bucket == nil {
-			e = fmt.Errorf("bucket not exist : %s", data.SubscriptionBucket)
-			return
-		}
-		e = bucket.ForEach(func(k, v []byte) error {
-			var node data.Subscription
-			e := node.Decode(v)
-			if e == nil {
-				result = append(result, &node)
-			} else {
-				if ce := logger.Logger.Check(zap.WarnLevel, "Decode Subscription error"); ce != nil {
-					ce.Write(
-						zap.Error(e),
-					)
-				}
-			}
-			return nil
-		})
+func (m Subscription) list(t *bolt.Tx) (result []*data.Subscription, e error) {
+	bucket := t.Bucket([]byte(data.SubscriptionBucket))
+	if bucket == nil {
+		e = fmt.Errorf("bucket not exist : %s", data.SubscriptionBucket)
 		return
+	}
+	e = bucket.ForEach(func(k, v []byte) error {
+		var node data.Subscription
+		e := node.Decode(v)
+		if e == nil {
+			result = append(result, &node)
+		} else {
+			if ce := logger.Logger.Check(zap.WarnLevel, "Decode Subscription error"); ce != nil {
+				ce.Write(
+					zap.Error(e),
+				)
+			}
+		}
+		return nil
 	})
 	return
 }
 
-// Get 返回記錄
-func (m Subscription) Get(id uint64) (result *data.Subscription, e error) {
+// List 返回 所有記錄
+func (m Subscription) List() (result []*data.Subscription, e error) {
 	e = _db.View(func(t *bolt.Tx) (e error) {
-		bucket := t.Bucket([]byte(data.SubscriptionBucket))
-		if bucket == nil {
-			e = fmt.Errorf("bucket not exist : %s", data.SubscriptionBucket)
-			return
-		}
-		key, e := data.EncodeID(id)
-		if e != nil {
-			return
-		}
-		val := bucket.Get(key)
-		if val == nil {
-			e = fmt.Errorf("key not exist : %s.%v", data.SubscriptionBucket, id)
-			return
-		}
-		var node data.Subscription
-		e = node.Decode(val)
-		if e != nil {
-			result = &node
-		}
+		result, e = m.list(t)
 		return
 	})
 	return
@@ -126,6 +103,28 @@ func (m Subscription) Add(node *data.Subscription) (e error) {
 			return
 		}
 		e = bucket.Put(key, val)
+		return
+	})
+	return
+}
+
+// Remove 刪除記錄
+func (m Subscription) Remove(id uint64) (e error) {
+	e = _db.Update(func(t *bolt.Tx) (e error) {
+		bucket := t.Bucket([]byte(data.SubscriptionBucket))
+		if bucket == nil {
+			e = fmt.Errorf("bucket not exist : %s", data.SubscriptionBucket)
+			return
+		}
+		key, e := data.EncodeID(id)
+		if e != nil {
+			return
+		}
+		e = bucket.Delete(key)
+		if e != nil {
+			return
+		}
+		// 刪除 訂閱
 		return
 	})
 	return

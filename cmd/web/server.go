@@ -37,20 +37,21 @@ func NewServer(l net.Listener) (server *Server, e error) {
 }
 func (s *Server) setAPI() {
 	s.apis = map[string]handlerFunc{
-		"/api/app/restore":             s.restore,
-		"/api/app/login":               s.login,
-		"/api/app/logout":              s.logout,
-		"/api/user/list":               s.userList,
-		"/api/user/add":                s.userAdd,
-		"/api/user/remove":             s.userRemove,
-		"/api/user/password":           s.userPassword,
-		"/api/v2ray/settings/get":      s.v2rayGet,
-		"/api/v2ray/settings/put":      s.v2rayPut,
-		"/api/v2ray/settings/test":     s.v2rayTest,
-		"/api/v2ray/subscription/list": s.subscriptionList,
-		"/api/v2ray/subscription/get":  s.subscriptionGet,
-		"/api/v2ray/subscription/put":  s.subscriptionPut,
-		"/api/v2ray/subscription/add":  s.subscriptionAdd,
+		"/api/app/restore":               s.restore,
+		"/api/app/login":                 s.login,
+		"/api/app/logout":                s.logout,
+		"/api/user/list":                 s.userList,
+		"/api/user/add":                  s.userAdd,
+		"/api/user/remove":               s.userRemove,
+		"/api/user/password":             s.userPassword,
+		"/api/v2ray/settings/get":        s.v2rayGet,
+		"/api/v2ray/settings/put":        s.v2rayPut,
+		"/api/v2ray/settings/test":       s.v2rayTest,
+		"/api/v2ray/subscription/list":   s.subscriptionList,
+		"/api/v2ray/subscription/put":    s.subscriptionPut,
+		"/api/v2ray/subscription/add":    s.subscriptionAdd,
+		"/api/v2ray/subscription/remove": s.subscriptionRemove,
+		"/api/element/list":              s.elementList,
 	}
 }
 
@@ -336,27 +337,7 @@ func (s *Server) subscriptionList(helper Helper) (e error) {
 	helper.RenderJSON(result)
 	return
 }
-func (s *Server) subscriptionGet(helper Helper) (e error) {
-	e = s.checkSession(helper)
-	if e != nil {
-		return
-	}
-	var params struct {
-		ID uint64
-	}
-	e = helper.BodyJSON(&params)
-	if e != nil {
-		return
-	}
 
-	var mSubscription manipulator.Subscription
-	result, e := mSubscription.Get(params.ID)
-	if e != nil {
-		return
-	}
-	helper.RenderJSON(result)
-	return
-}
 func (s *Server) subscriptionPut(helper Helper) (e error) {
 	e = s.checkSession(helper)
 	if e != nil {
@@ -385,12 +366,51 @@ func (s *Server) subscriptionAdd(helper Helper) (e error) {
 	if e != nil {
 		return
 	}
-
 	var mSubscription manipulator.Subscription
 	e = mSubscription.Add(&params)
 	if e != nil {
 		return
 	}
 	helper.RenderJSON(params.ID)
+	return
+}
+func (s *Server) subscriptionRemove(helper Helper) (e error) {
+	e = s.checkSession(helper)
+	if e != nil {
+		return
+	}
+	var params struct {
+		ID uint64
+	}
+	e = helper.BodyJSON(&params)
+	if e != nil {
+		return
+	}
+	var mSubscription manipulator.Subscription
+	e = mSubscription.Remove(params.ID)
+	if e != nil {
+		return
+	}
+	helper.RenderJSON(params.ID)
+	return
+}
+func (s *Server) elementList(helper Helper) (e error) {
+	e = s.checkSession(helper)
+	if e != nil {
+		return
+	}
+	var mElement manipulator.Element
+	element, subscription, e := mElement.List()
+	if e != nil {
+		return
+	}
+
+	helper.RenderJSON(&struct {
+		Element      []*data.Element
+		Subscription []*data.Subscription
+	}{
+		element,
+		subscription,
+	})
 	return
 }

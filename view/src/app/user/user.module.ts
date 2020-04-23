@@ -13,6 +13,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatCardModule } from '@angular/material/card';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 import { UserRoutingModule } from './user-routing.module';
 import { ListComponent } from './list/list.component';
@@ -28,6 +29,7 @@ import { PasswordComponent } from './password/password.component';
     MatListModule, MatButtonModule, MatIconModule,
     MatTooltipModule, MatFormFieldModule, MatInputModule,
     MatCardModule, MatProgressSpinnerModule, MatDialogModule,
+    MatProgressBarModule,
     UserRoutingModule
   ],
   entryComponents: [AddComponent, PasswordComponent],

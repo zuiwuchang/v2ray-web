@@ -1,1 +1,49 @@
-<p>subscription works!</p>
+<ng-container *ngIf="ready;then readyView;else notReadyView"></ng-container>
+<ng-template #notReadyView>
+    <div mat-dialog-content>
+        <p>
+            <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+        </p>
+        <p>
+            <ng-container i18n>connecting to server, please wait...</ng-container>
+        </p>
+    </div>
+</ng-template>
+<ng-template #readyView>
+    <ng-container *ngIf="err;then errView;else okView"></ng-container>
+</ng-template>
+<ng-template #errView>
+    <p>
+        {{err}}
+    </p>
+    <button mat-stroked-button color="primary" i18n (click)="load()">Refresh</button>
+
+</ng-template>
+<ng-template #okView>
+    <mat-card>
+        <mat-card-title i18n>Subscription Setting</mat-card-title>
+        <mat-card-content>
+            <mat-list>
+                <mat-list-item *ngFor="let element of source">
+                    <mat-icon matListIcon>group_work</mat-icon>
+                    <h3 matLine>{{element.name}}</h3>
+                    <p matLine>{{element.url}}</p>
+                    <button mat-icon-button i18n-matTooltip matTooltip="edit" (click)="onClickEdit(element)"
+                        [disabled]="disabled">
+                        <mat-icon>create</mat-icon>
+                    </button>
+                    <button mat-icon-button i18n-matTooltip matTooltip="delete" (click)="onClickDelete(element)"
+                        [disabled]="disabled">
+                        <mat-icon>delete</mat-icon>
+                    </button>
+                </mat-list-item>
+            </mat-list>
+        </mat-card-content>
+        <mat-card-actions>
+            <button mat-icon-button i18n-matTooltip matTooltip="add" (click)="onClickAdd()" [disabled]="disabled">
+                <mat-icon>add</mat-icon>
+            </button>
+        </mat-card-actions>
+    </mat-card>
+
+</ng-template>

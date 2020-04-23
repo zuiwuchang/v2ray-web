@@ -34,7 +34,7 @@ func (s *Subscription) Encoder() (b []byte, e error) {
 	var buffer bytes.Buffer
 	encoder := gob.NewEncoder(&buffer)
 	e = encoder.Encode(s)
-	if e != nil {
+	if e == nil {
 		b = buffer.Bytes()
 	}
 	return

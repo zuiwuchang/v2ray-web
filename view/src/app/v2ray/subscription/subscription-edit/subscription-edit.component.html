@@ -1,0 +1,32 @@
+<h1 mat-dialog-title>
+    <ng-container i18n>Change Subscription</ng-container>
+    <mat-icon *ngIf="disabled">
+        <mat-spinner color="accent" diameter='32'></mat-spinner>
+    </mat-icon>
+</h1>
+
+<form #loginForm="ngForm">
+
+    <div mat-dialog-content class="view">
+        <div>
+            <mat-form-field class="full-width">
+                <mat-label i18n>Name</mat-label>
+                <input matInput [disabled]="disabled" cdkFocusInitial required [(ngModel)]="name" name="name">
+                <mat-error i18n>Name Invalid</mat-error>
+            </mat-form-field>
+        </div>
+        <div>
+            <mat-form-field class="full-width">
+                <mat-label i18n>Subscription URL</mat-label>
+                <input type="url" sharedUrlValidator matInput [disabled]="disabled" required minlength="1"
+                    [(ngModel)]="url" name="url">
+                <mat-error i18n>Subscription URL Invalid</mat-error>
+            </mat-form-field>
+        </div>
+    </div>
+    <div mat-dialog-actions>
+        <button type="button" mat-stroked-button i18n [disabled]="disabled || loginForm.invalid || isNotChanged"
+            (click)="onSave()">Submit</button>
+        <button type="button" mat-stroked-button i18n [disabled]="disabled" (click)="onClose()">Close</button>
+    </div>
+</form>

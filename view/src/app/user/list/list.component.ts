@@ -20,6 +20,11 @@ export class ListComponent implements OnInit, OnDestroy {
     private i18nService: I18nService,
     private matDialog: MatDialog,
   ) { }
+  private _ready = false
+  get ready(): boolean {
+    return this._ready
+  }
+  err: any
   private _closed = false
   private _disabled = false
   get disabled(): boolean {
@@ -30,6 +35,14 @@ export class ListComponent implements OnInit, OnDestroy {
     return this._source
   }
   ngOnInit(): void {
+    this.load()
+  }
+  ngOnDestroy(): void {
+    this._closed = true
+  }
+  load() {
+    this.err = null
+    this._ready = false
     this.httpClient.get<Array<User>>(ServerAPI.user.list).toPromise().then((data) => {
       if (this._closed) {
         return
@@ -43,14 +56,10 @@ export class ListComponent implements OnInit, OnDestroy {
         return
       }
       console.warn(e)
-      this.toasterService.pop('error',
-        this.i18nService.get('error'),
-        Utils.resolveError(e),
-      )
+      this.err = Utils.resolveError(e)
+    }).finally(() => {
+      this._ready = true
     })
-  }
-  ngOnDestroy(): void {
-    this._closed = true
   }
   onClickEdit(node: User) {
     this.matDialog.open(PasswordComponent, {

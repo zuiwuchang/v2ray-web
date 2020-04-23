@@ -10,7 +10,7 @@ func EncodeID(id uint64) (b []byte, e error) {
 	var buffer bytes.Buffer
 	encoder := gob.NewEncoder(&buffer)
 	e = encoder.Encode(id)
-	if e != nil {
+	if e == nil {
 		b = buffer.Bytes()
 	}
 	return
