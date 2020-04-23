@@ -67,6 +67,7 @@ function DisplayHelp(){
 case $1 in
 	l|linux)
 		export GOOS=linux
+		export CGO_ENABLED=0
 
 		createGoVersion
 		if [[ $2 == d ]]; then
@@ -90,6 +91,7 @@ case $1 in
 
 	d|darwin)
 		export GOOS=darwin
+		export CGO_ENABLED=0
 
 		createGoVersion
 		if [[ $2 == d ]]; then
@@ -113,6 +115,7 @@ case $1 in
 
 	w|windows)
 		export GOOS=windows
+		export CGO_ENABLED=0
 
 		createGoVersion
 		if [[ $2 == d ]]; then
