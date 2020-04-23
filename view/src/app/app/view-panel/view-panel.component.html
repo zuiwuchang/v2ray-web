@@ -27,6 +27,29 @@
             <mat-icon matListIcon>grade</mat-icon>
             <p matLine>{{item.outbound.name}}</p>
             <p matLine> {{item.outbound.net}} {{item.outbound.tls}}</p>
+
+            <button mat-icon-button i18n-matTooltip matTooltip="start" (click)="onClickStart(item)"
+                [disabled]="disabled">
+                <mat-icon>play_arrow</mat-icon>
+            </button>
+            <button mat-icon-button i18n-matTooltip matTooltip="stop" (click)="onClickStop(item)" [disabled]="disabled">
+                <mat-icon>stop</mat-icon>
+            </button>
+            <button mat-icon-button i18n-matTooltip matTooltip="set iptables" (click)="onClickSetIPTables(item)"
+                [disabled]="disabled">
+                <mat-icon>whatshot</mat-icon>
+            </button>
+            <button mat-icon-button i18n-matTooltip matTooltip="restore iptables" (click)="onClickRestoreIPTables(item)"
+                [disabled]="disabled">
+                <mat-icon>restore_page</mat-icon>
+            </button>
+            <button mat-icon-button i18n-matTooltip matTooltip="edit" (click)="onClickEdit(item)" [disabled]="disabled">
+                <mat-icon>create</mat-icon>
+            </button>
+            <button mat-icon-button i18n-matTooltip matTooltip="delete" (click)="onClickDelete(item)"
+                [disabled]="disabled">
+                <mat-icon>delete</mat-icon>
+            </button>
         </mat-list-item>
     </mat-list>
 </mat-expansion-panel>

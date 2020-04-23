@@ -420,21 +420,79 @@
         <source>test speed</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app/view-panel/view-panel.component.html</context>
-          <context context-type="linenumber">13</context>
+          <context context-type="linenumber">15</context>
         </context-group>
       </trans-unit>
       <trans-unit id="5731c861d8ad343c4c1584450f506a85503c6c5f" datatype="html">
         <source>add element</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app/view-panel/view-panel.component.html</context>
-          <context context-type="linenumber">16</context>
+          <context context-type="linenumber">18</context>
         </context-group>
       </trans-unit>
       <trans-unit id="9e13c1a5b08b67fb2af61f9b8a6044b9811a1590" datatype="html">
         <source>update subscription</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app/view-panel/view-panel.component.html</context>
-          <context context-type="linenumber">19</context>
+          <context context-type="linenumber">21</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="8f38ad0f2ac90714bdf91f991b77ffbf08979147" datatype="html">
+        <source>start</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app/view-panel/view-panel.component.html</context>
+          <context context-type="linenumber">31</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="5f3e10c4138ad2ddc19b707afdec396e35dfd8db" datatype="html">
+        <source>stop</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app/view-panel/view-panel.component.html</context>
+          <context context-type="linenumber">35</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="a07ee795a42b64a196bc9b5c9e57a5110c56f82d" datatype="html">
+        <source>set iptables</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app/view-panel/view-panel.component.html</context>
+          <context context-type="linenumber">38</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="c62e6d20d0ae4cebee1b6ec8e4a810cdb972a92c" datatype="html">
+        <source>restore iptables</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app/view-panel/view-panel.component.html</context>
+          <context context-type="linenumber">42</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="a568d6cc7b8a3f14399663426bb1b4fc137b1a8d" datatype="html">
+        <source>edit</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app/view-panel/view-panel.component.html</context>
+          <context context-type="linenumber">46</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/user/list/list.component.html</context>
+          <context context-type="linenumber">30</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/v2ray/subscription/subscription.component.html</context>
+          <context context-type="linenumber">31</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="70ef158c584bafe788e319a0bffa11b02ee9abf1" datatype="html">
+        <source>delete</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app/view-panel/view-panel.component.html</context>
+          <context context-type="linenumber">49</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/user/list/list.component.html</context>
+          <context context-type="linenumber">34</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/v2ray/subscription/subscription.component.html</context>
+          <context context-type="linenumber">35</context>
         </context-group>
       </trans-unit>
       <trans-unit id="94be6ae6ec1f87bedc67020629343b27fdbece0a" datatype="html">
@@ -449,28 +507,6 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/user/password/password.component.html</context>
           <context context-type="linenumber">2</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="a568d6cc7b8a3f14399663426bb1b4fc137b1a8d" datatype="html">
-        <source>edit</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/user/list/list.component.html</context>
-          <context context-type="linenumber">30</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/v2ray/subscription/subscription.component.html</context>
-          <context context-type="linenumber">31</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="70ef158c584bafe788e319a0bffa11b02ee9abf1" datatype="html">
-        <source>delete</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/user/list/list.component.html</context>
-          <context context-type="linenumber">34</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/v2ray/subscription/subscription.component.html</context>
-          <context context-type="linenumber">35</context>
         </context-group>
       </trans-unit>
       <trans-unit id="a11ec4e640f241329943237d2a3cceaa4823658e" datatype="html">

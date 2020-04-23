@@ -36,13 +36,9 @@ export class Source {
 export class Panel {
     id: number
     name: string
-
-    private _source = new Array<Element>()
-    get source(): Array<Element> {
-        return this._source
-    }
+    source = new Array<Element>()
     sort() {
-        this._source.sort(Element.compare)
+        this.source.sort(Element.compare)
     }
     static compare(l: Panel, r: Panel): number {
         if (l.id == 0) {

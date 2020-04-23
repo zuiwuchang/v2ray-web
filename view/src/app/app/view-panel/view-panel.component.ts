@@ -42,13 +42,15 @@ export class ViewPanelComponent implements OnInit, OnDestroy {
       if (this._closed) {
         return
       }
+      const source = new Array<Element>()
       this.panel.source.slice(0, this.panel.source.length)
       if (isArray(data) && data.length > 0) {
         for (let i = 0; i < data.length; i++) {
-          this.panel.source.push(new Element(data[i]))
+          source.push(new Element(data[i]))
         }
-        this.panel.source.sort(Element.compare)
+        source.sort(Element.compare)
       }
+      this.panel.source = source
     }, (e) => {
       if (this._closed) {
         return
@@ -61,5 +63,23 @@ export class ViewPanelComponent implements OnInit, OnDestroy {
     }).finally(() => {
       this._disabled = false
     })
+  }
+  onClickStart(element: Element) {
+    console.log("start", element)
+  }
+  onClickStop(element: Element) {
+    console.log("stop", element)
+  }
+  onClickSetIPTables(element: Element) {
+    console.log("set iptables", element)
+  }
+  onClickRestoreIPTables(element: Element) {
+    console.log("restore iptables", element)
+  }
+  onClickEdit(element: Element) {
+    console.log("edit", element)
+  }
+  onClickDelete(element: Element) {
+    console.log("delete", element)
   }
 }
