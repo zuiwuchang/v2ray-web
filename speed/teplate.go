@@ -1,0 +1,3 @@
+package speed
+
+const templateText = ``

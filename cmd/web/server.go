@@ -2,6 +2,7 @@ package web
 
 import (
 	"bytes"
+	"encoding/json"
 	"errors"
 	"io"
 	"io/ioutil"
@@ -10,11 +11,13 @@ import (
 	"text/template"
 
 	"gitlab.com/king011/v2ray-web/cookie"
-
 	"gitlab.com/king011/v2ray-web/db/data"
 	"gitlab.com/king011/v2ray-web/db/manipulator"
 	"gitlab.com/king011/v2ray-web/logger"
+	"gitlab.com/king011/v2ray-web/speed"
+	"gitlab.com/king011/v2ray-web/utils"
 	"go.uber.org/zap"
+	"golang.org/x/net/websocket"
 	"v2ray.com/core"
 	"v2ray.com/ext/tools/conf/serial"
 )
@@ -25,6 +28,7 @@ type handlerFunc func(Helper) error
 type Server struct {
 	l    net.Listener
 	apis map[string]handlerFunc
+	ws   map[string]websocket.Handler
 }
 
 // NewServer 創建 服務器
@@ -33,7 +37,13 @@ func NewServer(l net.Listener) (server *Server, e error) {
 		l: l,
 	}
 	server.setAPI()
+	server.setWebsocket()
 	return
+}
+func (s *Server) setWebsocket() {
+	s.ws = map[string]websocket.Handler{
+		"/api/ws/proxy/test": websocket.Handler(s.proxyTest),
+	}
 }
 func (s *Server) setAPI() {
 	s.apis = map[string]handlerFunc{
@@ -73,6 +83,12 @@ func (s *Server) ServeTLS(certFile, keyFile string) error {
 	)
 }
 func (s *Server) ServeHTTP(response http.ResponseWriter, request *http.Request) {
+	route := request.URL.Path
+	wsHandler := s.ws[route]
+	if wsHandler != nil {
+		wsHandler.ServeHTTP(response, request)
+		return
+	}
 	var helper Helper
 	if request.Body != nil {
 		body, e := ioutil.ReadAll(io.LimitReader(request.Body, 1024*32))
@@ -87,7 +103,6 @@ func (s *Server) ServeHTTP(response http.ResponseWriter, request *http.Request) 
 			response: response,
 		}
 	}
-	route := request.URL.Path
 	handler := s.apis[route]
 	if handler != nil {
 		e := handler(helper)
@@ -533,4 +548,64 @@ func (s *Server) proxyClear(helper Helper) (e error) {
 		return
 	}
 	return
+}
+func (s *Server) proxyTest(ws *websocket.Conn) {
+	defer ws.Close()
+	ctx := speed.New()
+	go ctx.Run()
+	go func() {
+		var e error
+		var msg string
+		for {
+			if e = websocket.Message.Receive(ws, &msg); e != nil {
+				ctx.Close()
+				break
+			}
+			if msg == "close" {
+				ctx.CloseSend()
+				break
+			}
+			var element speed.Element
+			e = json.Unmarshal(utils.StringToBytes(msg), &element)
+			if e == nil {
+				if !ctx.Send(&element) {
+					break
+				}
+			} else {
+				if ce := logger.Logger.Check(zap.WarnLevel, "unmarshal test element error"); ce != nil {
+					ce.Write(
+						zap.Error(e),
+						zap.String("msg", msg),
+					)
+				}
+			}
+		}
+	}()
+	for {
+		result := ctx.Get()
+		if result == nil {
+			break
+		}
+		b, e := json.Marshal(result)
+		if e != nil {
+			if ce := logger.Logger.Check(zap.WarnLevel, "marshal test result error"); ce != nil {
+				ce.Write(
+					zap.Error(e),
+				)
+			}
+		}
+		e = websocket.Message.Send(ws, utils.BytesToString(b))
+		if e != nil {
+			ctx.Close()
+			if e != io.EOF {
+				if ce := logger.Logger.Check(zap.WarnLevel, "websocket closed"); ce != nil {
+					ce.Write(
+						zap.Error(e),
+					)
+				}
+			}
+			break
+		}
+	}
+	websocket.Message.Send(ws, "close")
 }

@@ -1,15 +1,27 @@
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { Panel, Element } from '../view/source';
 import { HttpClient } from '@angular/common/http';
-import { ServerAPI } from 'src/app/core/core/api';
+import { ServerAPI, getWebSocketAddr } from 'src/app/core/core/api';
 import { ToasterService } from 'angular2-toaster';
 import { I18nService } from 'src/app/core/i18n/i18n.service';
 import { Utils } from 'src/app/core/utils';
-import { isArray } from 'util';
+import { isArray, isString } from 'util';
 import { MatDialog } from '@angular/material/dialog';
 import { AddComponent } from '../add/add.component';
 import { EditComponent } from '../edit/edit.component';
 import { ConfirmComponent } from 'src/app/shared/dialog/confirm/confirm.component';
+// 正在運行
+const StatusRunning = 1
+// 錯誤
+const StatusError = 2
+// 完成
+const StatusOk = 3
+interface Message {
+  status: number
+  id: number
+  error?: string
+  duration?: string
+}
 @Component({
   selector: 'app-view-panel',
   templateUrl: './view-panel.component.html',
@@ -28,13 +40,170 @@ export class ViewPanelComponent implements OnInit, OnDestroy {
     return this._disabled
   }
   private _closed = false
+  private _websocket: WebSocket
   ngOnInit(): void {
   }
   ngOnDestroy() {
     this._closed = true
+    if (this._websocket) {
+      const websocket = this._websocket
+      this._websocket = null
+      websocket.close()
+    }
+    const source = this.panel.source
+    for (let i = 0; i < source.length; i++) {
+      source[i].request = undefined
+    }
   }
   onClickTest() {
-    console.log('test')
+    this._disabled = true
+    if (this._websocket) {
+      this._websocket.close()
+    }
+
+    const addr = getWebSocketAddr(ServerAPI.proxy.test)
+    const websocket = new WebSocket(addr)
+    this._websocket = websocket
+    websocket.onerror = (evt) => {
+      this._onerror(evt, websocket)
+    }
+    websocket.onclose = (evt) => {
+      this._onclose(evt, websocket)
+    }
+    websocket.onopen = () => {
+      this._onopen(websocket)
+    }
+    websocket.onmessage = (evt) => {
+      this._onmessage(evt, websocket)
+    }
+  }
+  private _onerror(evt: Event, websocket: WebSocket) {
+    websocket.close()
+    if (this._websocket != websocket) {
+      return
+    }
+    console.warn(evt)
+    this.toasterService.pop('error',
+      this.i18nService.get('error'),
+      'websocket error',
+    )
+    this._resetWebsocket()
+  }
+  private _onclose(evt: CloseEvent, websocket: WebSocket) {
+    websocket.close()
+    if (this._websocket != websocket) {
+      return
+    }
+    console.warn(evt)
+    this.toasterService.pop('error',
+      this.i18nService.get('error'),
+      'websocket closed',
+    )
+    this._resetWebsocket()
+  }
+  private _onopen(websocket: WebSocket) {
+    if (this._websocket != websocket) {
+      websocket.close()
+      return
+    }
+    const source = this.panel.source
+    const items = new Array<string>()
+    for (let i = 0; i < source.length; i++) {
+      const element = source[i]
+      try {
+        const str = JSON.stringify({
+          id: element.id,
+          outbound: element.outbound,
+        })
+        items.push(str)
+        element.request = undefined
+        element.error = undefined
+        element.duration = undefined
+      } catch (e) {
+        console.warn(e)
+      }
+    }
+    try {
+      for (let i = 0; i < items.length; i++) {
+        websocket.send(items[i])
+      }
+      websocket.send("close")
+    } catch (e) {
+      console.warn(e)
+      if (websocket == this._websocket) {
+        this._resetWebsocket()
+      }
+      websocket.close()
+    }
+  }
+  private _onmessage(evt: MessageEvent, websocket: WebSocket) {
+    if (this._websocket != websocket) {
+      websocket.close()
+      return
+    }
+    if (!isString(evt.data)) {
+      return
+    }
+    if (evt.data == "close") {
+      websocket.close()
+      this._resetWebsocket()
+      return
+    }
+    try {
+      const resopnse = JSON.parse(evt.data) as Message
+      switch (resopnse.status) {
+        case StatusOk:
+          this._setOk(resopnse)
+          break
+        case StatusError:
+          this._setError(resopnse)
+          break
+        case StatusRunning:
+          this._setRunning(resopnse)
+          break
+      }
+    } catch (e) {
+      console.log(e)
+    }
+  }
+  private _setOk(msg: Message) {
+    const source = this.panel.source
+    for (let i = 0; i < source.length; i++) {
+      if (source[i].id = msg.id) {
+        source[i].request = undefined
+        source[i].error = undefined
+        source[i].duration = msg.duration
+        break
+      }
+    }
+  }
+  private _setError(msg: Message) {
+    const source = this.panel.source
+    for (let i = 0; i < source.length; i++) {
+      if (source[i].id = msg.id) {
+        source[i].request = undefined
+        source[i].error = msg.error
+        source[i].duration = undefined
+        break
+      }
+    }
+  }
+  private _setRunning(msg: Message) {
+    const source = this.panel.source
+    for (let i = 0; i < source.length; i++) {
+      if (source[i].id == msg.id) {
+        source[i].request = true
+        break
+      }
+    }
+  }
+  private _resetWebsocket() {
+    const source = this.panel.source
+    for (let i = 0; i < source.length; i++) {
+      source[i].request = undefined
+    }
+    this._disabled = false
+    this._websocket = null
   }
   onClickAdd() {
     this.matDialog.open(AddComponent, {
@@ -60,12 +229,18 @@ export class ViewPanelComponent implements OnInit, OnDestroy {
     this.httpClient.post(ServerAPI.proxy.clear, {
       subscription: this.panel.id,
     }).toPromise().then(() => {
+      if (this._closed) {
+        return
+      }
       this.panel.source = new Array<Element>()
       this.toasterService.pop('success',
         this.i18nService.get('success'),
         this.i18nService.get('proxy element has been cleared'),
       )
     }, (e) => {
+      if (this._closed) {
+        return
+      }
       console.warn(e)
       this.toasterService.pop('error',
         this.i18nService.get('error'),
@@ -149,6 +324,9 @@ export class ViewPanelComponent implements OnInit, OnDestroy {
       subscription: this.panel.id,
       id: element.id,
     }).toPromise().then(() => {
+      if (this._closed) {
+        return
+      }
       const index = this.panel.source.indexOf(element)
       this.panel.source.splice(index, 1)
       this.toasterService.pop('success',
@@ -156,6 +334,9 @@ export class ViewPanelComponent implements OnInit, OnDestroy {
         this.i18nService.get('proxy element has been deleted'),
       )
     }, (e) => {
+      if (this._closed) {
+        return
+      }
       console.warn(e)
       this.toasterService.pop('error',
         this.i18nService.get('error'),

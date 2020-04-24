@@ -58,6 +58,8 @@ export class Element {
     outbound: Outbound
     // 是否 正在發送請求
     request?: boolean
+    duration?: string
+    error?: string
 
     constructor(net?: Element) {
         if (isObject(net)) {

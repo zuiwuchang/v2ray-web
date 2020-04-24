@@ -9,6 +9,7 @@ require (
 	github.com/spf13/cobra v0.0.7
 	gitlab.com/king011/king-go v0.0.10
 	go.uber.org/zap v1.10.0
+	golang.org/x/net v0.0.0-20190522155817-f3200d17e092
 	v2ray.com/core v4.15.0+incompatible
 	v2ray.com/ext v4.15.0+incompatible
 )

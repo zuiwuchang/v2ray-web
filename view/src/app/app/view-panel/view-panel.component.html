@@ -12,7 +12,8 @@
         </mat-panel-title>
 
     </mat-expansion-panel-header>
-    <button mat-icon-button i18n-matTooltip matTooltip="test speed" (click)="onClickTest()" [disabled]="disabled">
+    <button mat-icon-button i18n-matTooltip matTooltip="test speed" (click)="onClickTest()"
+        [disabled]="disabled || !panel.source.length">
         <mat-icon>network_check</mat-icon>
     </button>
     <button mat-icon-button i18n-matTooltip matTooltip="add element" (click)="onClickAdd()" [disabled]="disabled">
@@ -29,7 +30,7 @@
     <mat-list>
         <mat-list-item *ngFor="let item of panel.source">
             <mat-icon matListIcon>grade</mat-icon>
-            <p matLine>{{item.outbound.name}}</p>
+            <p matLine>{{item.id}} {{item.outbound.name}}</p>
             <p matLine> {{item.outbound.net}} {{item.outbound.tls}} {{item.outbound.add}}:{{item.outbound.port}}</p>
 
             <button mat-icon-button i18n-matTooltip matTooltip="start" (click)="onClickStart(item)"

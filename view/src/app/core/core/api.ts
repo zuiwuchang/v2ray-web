@@ -30,5 +30,22 @@ export const ServerAPI = {
         put: `${root}/proxy/put`,
         remove: `${root}/proxy/remove`,
         clear: `${root}/proxy/clear`,
+        test: `${root}/ws/proxy/test`,
     },
+}
+export function getWebSocketAddr(path: string): string {
+    const location = document.location
+    let addr: string
+    if (location.protocol == "https") {
+        addr = `wss://${location.host}:${location.port}`
+        if (location.port == "") {
+            addr += "443"
+        }
+    } else {
+        addr = `ws://${location.host}:${location.port}`
+        if (location.port == "") {
+            addr += "80"
+        }
+    }
+    return `${addr}${path}`
 }
