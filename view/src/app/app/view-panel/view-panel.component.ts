@@ -10,6 +10,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { AddComponent } from '../add/add.component';
 import { EditComponent } from '../edit/edit.component';
 import { ConfirmComponent } from 'src/app/shared/dialog/confirm/confirm.component';
+import { StatusService, Status } from 'src/app/core/status/status.service';
+import { Subscription } from 'rxjs';
 // 正在運行
 const StatusRunning = 1
 // 錯誤
@@ -32,6 +34,7 @@ export class ViewPanelComponent implements OnInit, OnDestroy {
     private toasterService: ToasterService,
     private i18nService: I18nService,
     private matDialog: MatDialog,
+    private statusService: StatusService,
   ) { }
   @Input('panel')
   panel: Panel
@@ -41,10 +44,34 @@ export class ViewPanelComponent implements OnInit, OnDestroy {
   }
   private _closed = false
   private _websocket: WebSocket
+  private _status: Status
+  get status(): Status {
+    return this._status
+  }
+  private _subscription: Subscription
   ngOnInit(): void {
+    this._subscription = this.statusService.observable.subscribe((status) => {
+      if (this._closed) {
+        return
+      }
+      this._status = status
+    })
+  }
+  get isSubscription(): boolean {
+    if (this._status.run) {
+      return this._status.subscription == this.panel.id
+    }
+    return false
+  }
+  isCurrent(element: Element) {
+    if (this.status.run) {
+      return this._status.subscription == this.panel.id && this._status.id == element.id
+    }
+    return false
   }
   ngOnDestroy() {
     this._closed = true
+    this._subscription.unsubscribe()
     if (this._websocket) {
       const websocket = this._websocket
       this._websocket = null
@@ -289,10 +316,50 @@ export class ViewPanelComponent implements OnInit, OnDestroy {
     })
   }
   onClickStart(element: Element) {
-    console.log("start", element)
+    this._disabled = true
+    this.httpClient.post(ServerAPI.proxy.start, element).toPromise().then(() => {
+      if (this._closed) {
+        return
+      }
+      this.toasterService.pop('success',
+        this.i18nService.get('success'),
+        this.i18nService.get('proxy element has been started'),
+      )
+    }, (e) => {
+      if (this._closed) {
+        return
+      }
+      console.warn(e)
+      this.toasterService.pop('error',
+        this.i18nService.get('error'),
+        Utils.resolveError(e),
+      )
+    }).finally(() => {
+      this._disabled = false
+    })
   }
   onClickStop(element: Element) {
-    console.log("stop", element)
+    this._disabled = true
+    this.httpClient.get(ServerAPI.proxy.stop).toPromise().then(() => {
+      if (this._closed) {
+        return
+      }
+      this.toasterService.pop('success',
+        this.i18nService.get('success'),
+        this.i18nService.get('proxy element has been stopped'),
+      )
+    }, (e) => {
+      if (this._closed) {
+        return
+      }
+      console.warn(e)
+      this.toasterService.pop('error',
+        this.i18nService.get('error'),
+        Utils.resolveError(e),
+      )
+    }).finally(() => {
+      this._disabled = false
+    })
   }
   onClickSetIPTables(element: Element) {
     console.log("set iptables", element)

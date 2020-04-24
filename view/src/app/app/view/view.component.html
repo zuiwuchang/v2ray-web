@@ -20,6 +20,7 @@
 
 </ng-template>
 <ng-template #okView>
+    <app-top></app-top>
     <p>
         <mat-accordion>
             <app-view-panel *ngFor="let panel of source.items" [panel]="panel"></app-view-panel>

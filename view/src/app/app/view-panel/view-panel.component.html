@@ -9,10 +9,12 @@
                 {{panel.name}}
             </ng-template>
             - {{panel.source.length}}
+
+            <mat-icon *ngIf="isSubscription" color="accent">done</mat-icon>
         </mat-panel-title>
 
     </mat-expansion-panel-header>
-    <button mat-icon-button i18n-matTooltip matTooltip="sort" (click)="onClickSort()"
+    <button mat-icon-button i18n-matTooltip matTooltip="Sort" (click)="onClickSort()"
         [disabled]="disabled || !panel.source.length || panel.source.length<2">
         <mat-icon>sort</mat-icon>
     </button>
@@ -33,18 +35,27 @@
     </button>
     <mat-list>
         <mat-list-item *ngFor="let item of panel.source">
-            <mat-icon matListIcon>grade</mat-icon>
-            <p matLine>{{item.id}} {{item.outbound.name}}</p>
-            <p matLine> {{item.outbound.net}} {{item.outbound.tls}} {{item.outbound.add}}:{{item.outbound.port}}</p>
+            <mat-icon matListIcon [color]="isCurrent(item)?'accent':''">{{isCurrent(item)?'done':'grade'}}</mat-icon>
+
+            <p matLine>{{item.outbound.name}}</p>
+            <p matLine>{{item.outbound.net}} {{item.outbound.tls}} {{item.outbound.add}}:{{item.outbound.port}}</p>
             <p matLine>{{item.error}} {{item.duration}}</p>
 
-            <button mat-icon-button i18n-matTooltip matTooltip="start" (click)="onClickStart(item)"
-                [disabled]="disabled">
-                <mat-icon>play_arrow</mat-icon>
-            </button>
-            <button mat-icon-button i18n-matTooltip matTooltip="stop" (click)="onClickStop(item)" [disabled]="disabled">
-                <mat-icon>stop</mat-icon>
-            </button>
+
+            <ng-container *ngIf="isCurrent(item);then startedView;else stoppedView"></ng-container>
+            <ng-template #startedView>
+                <button mat-icon-button i18n-matTooltip matTooltip="stop" (click)="onClickStop(item)"
+                    [disabled]="disabled">
+                    <mat-icon>stop</mat-icon>
+                </button>
+            </ng-template>
+            <ng-template #stoppedView>
+                <button mat-icon-button i18n-matTooltip matTooltip="start" (click)="onClickStart(item)"
+                    [disabled]="disabled">
+                    <mat-icon>play_arrow</mat-icon>
+                </button>
+            </ng-template>
+
             <mat-spinner color="accent" diameter='28' *ngIf="item.request"></mat-spinner>
             <button mat-icon-button i18n-matTooltip matTooltip="Menu Tooltip" [matMenuTriggerFor]="menu"
                 [disabled]="disabled">

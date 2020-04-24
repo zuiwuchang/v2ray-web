@@ -4,6 +4,7 @@ import { ServerAPI } from 'src/app/core/core/api';
 import { Utils } from 'src/app/core/utils';
 import { isArray } from 'util';
 import { Source, Panel, Element } from './source';
+import { Subscription } from 'rxjs';
 interface Response {
   subscription: [{
     id: number
@@ -21,6 +22,7 @@ interface Response {
 export class ViewComponent implements OnInit, OnDestroy {
 
   constructor(private httpClient: HttpClient,
+
   ) { }
   private _ready = false
   get ready(): boolean {
@@ -32,7 +34,9 @@ export class ViewComponent implements OnInit, OnDestroy {
   get source(): Source {
     return this._source
   }
+
   ngOnInit(): void {
+
     const panel = new Panel()
     panel.id = 0
     this.source.put(panel)

@@ -30,7 +30,10 @@ export const ServerAPI = {
         put: `${root}/proxy/put`,
         remove: `${root}/proxy/remove`,
         clear: `${root}/proxy/clear`,
+        start: `${root}/proxy/start`,
+        stop: `${root}/proxy/stop`,
         test: `${root}/ws/proxy/test`,
+        status: `${root}/ws/proxy/status`,
     },
 }
 export function getWebSocketAddr(path: string): string {

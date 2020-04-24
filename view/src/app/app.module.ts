@@ -31,6 +31,7 @@ import { ViewComponent } from './app/view/view.component';
 import { ViewPanelComponent } from './app/view-panel/view-panel.component';
 import { AddComponent } from './app/add/add.component';
 import { EditComponent } from './app/edit/edit.component';
+import { TopComponent } from './app/top/top.component';
 
 @NgModule({
   declarations: [
@@ -42,6 +43,7 @@ import { EditComponent } from './app/edit/edit.component';
     ViewPanelComponent,
     AddComponent,
     EditComponent,
+    TopComponent,
   ],
   imports: [
     BrowserModule,

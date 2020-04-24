@@ -1,0 +1,16 @@
+<p>
+    <ng-container *ngIf="status.run;then startedView;else stopedView"></ng-container>
+
+    <ng-template #startedView>
+        <button mat-icon-button i18n-matTooltip matTooltip="stop" (click)="onClickStop()" [disabled]="disabled">
+            <mat-icon>stop</mat-icon>
+        </button>
+        <ng-container i18n>service has started</ng-container>
+    </ng-template>
+    <ng-template #stopedView>
+        <button mat-icon-button [disabled]="disabled">
+            <mat-icon>block</mat-icon>
+        </button>
+        <ng-container i18n>service has stopped</ng-container>
+    </ng-template>
+</p>

@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"net"
 	"net/http"
+	"sync/atomic"
 	"text/template"
 
 	"gitlab.com/king011/v2ray-web/cookie"
@@ -42,7 +43,8 @@ func NewServer(l net.Listener) (server *Server, e error) {
 }
 func (s *Server) setWebsocket() {
 	s.ws = map[string]websocket.Handler{
-		"/api/ws/proxy/test": websocket.Handler(s.proxyTest),
+		"/api/ws/proxy/test":   websocket.Handler(s.proxyTest),
+		"/api/ws/proxy/status": websocket.Handler(s.proxyStatus),
 	}
 }
 func (s *Server) setAPI() {
@@ -67,6 +69,8 @@ func (s *Server) setAPI() {
 		"/api/proxy/put":                 s.proxyPut,
 		"/api/proxy/remove":              s.proxyRemove,
 		"/api/proxy/clear":               s.proxyClear,
+		"/api/proxy/start":               s.proxyStart,
+		"/api/proxy/stop":                s.proxyStop,
 	}
 }
 
@@ -549,6 +553,27 @@ func (s *Server) proxyClear(helper Helper) (e error) {
 	}
 	return
 }
+func (s *Server) proxyStart(helper Helper) (e error) {
+	e = s.checkSession(helper)
+	if e != nil {
+		return
+	}
+	var params data.Element
+	e = helper.BodyJSON(&params)
+	if e != nil {
+		return
+	}
+	e = srv.Start(&params)
+	return
+}
+func (s *Server) proxyStop(helper Helper) (e error) {
+	e = s.checkSession(helper)
+	if e != nil {
+		return
+	}
+	srv.Stop()
+	return
+}
 func (s *Server) proxyTest(ws *websocket.Conn) {
 	defer ws.Close()
 	ctx := speed.New()
@@ -608,4 +633,52 @@ func (s *Server) proxyTest(ws *websocket.Conn) {
 		}
 	}
 	websocket.Message.Send(ws, "close")
+}
+func (s *Server) proxyStatus(ws *websocket.Conn) {
+	defer ws.Close()
+	cancel := make(chan struct{})
+	var closed int32
+	ch := make(chan *ListenerStatus, 5)
+	srv.AddListener(func(status *ListenerStatus) {
+		select {
+		case ch <- status:
+		case <-cancel:
+		}
+	})
+	go func() {
+		var msg string
+		var e error
+		for {
+			if e = websocket.Message.Receive(ws, &msg); e != nil {
+				break
+			}
+		}
+		if atomic.CompareAndSwapInt32(&closed, 0, 1) {
+			close(cancel)
+		}
+	}()
+	running := true
+	for running {
+		select {
+		case <-cancel:
+			running = false
+		case status := <-ch:
+			b, e := json.Marshal(status)
+			if e == nil {
+				e = websocket.Message.Send(ws, utils.BytesToString(b))
+				if e != nil {
+					if atomic.CompareAndSwapInt32(&closed, 0, 1) {
+						close(cancel)
+					}
+					running = false
+				}
+			} else {
+				if ce := logger.Logger.Check(zap.WarnLevel, "status marshal error"); ce != nil {
+					ce.Write(
+						zap.Error(e),
+					)
+				}
+			}
+		}
+	}
 }
