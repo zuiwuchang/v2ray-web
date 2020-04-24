@@ -42,6 +42,39 @@ export class ViewPanelComponent implements OnInit, OnDestroy {
       disableClose: true,
     })
   }
+  onClickClear() {
+    this.matDialog.open(ConfirmComponent, {
+      data: {
+        title: this.i18nService.get("clear proxy element title"),
+        content: this.i18nService.get("clear proxy element"),
+      },
+    }).afterClosed().toPromise().then((data) => {
+      if (this._closed || !data) {
+        return
+      }
+      this._clear()
+    })
+  }
+  private _clear() {
+    this._disabled = true
+    this.httpClient.post(ServerAPI.proxy.clear, {
+      subscription: this.panel.id,
+    }).toPromise().then(() => {
+      this.panel.source = new Array<Element>()
+      this.toasterService.pop('success',
+        this.i18nService.get('success'),
+        this.i18nService.get('proxy element has been cleared'),
+      )
+    }, (e) => {
+      console.warn(e)
+      this.toasterService.pop('error',
+        this.i18nService.get('error'),
+        Utils.resolveError(e),
+      )
+    }).finally(() => {
+      this._disabled = false
+    })
+  }
   onClickUpdate() {
     this._disabled = true
     this.httpClient.post<Array<any>>(ServerAPI.proxy.update, {
@@ -59,6 +92,10 @@ export class ViewPanelComponent implements OnInit, OnDestroy {
         source.sort(Element.compare)
       }
       this.panel.source = source
+      this.toasterService.pop('success',
+        this.i18nService.get('success'),
+        this.i18nService.get('proxy element has been updated'),
+      )
     }, (e) => {
       if (this._closed) {
         return

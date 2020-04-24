@@ -56,6 +56,7 @@ func (s *Server) setAPI() {
 		"/api/proxy/add":                 s.proxyAdd,
 		"/api/proxy/put":                 s.proxyPut,
 		"/api/proxy/remove":              s.proxyRemove,
+		"/api/proxy/clear":               s.proxyClear,
 	}
 }
 
@@ -509,6 +510,25 @@ func (s *Server) proxyRemove(helper Helper) (e error) {
 	}
 	var mElement manipulator.Element
 	e = mElement.Remove(params.Subscription, params.ID)
+	if e != nil {
+		return
+	}
+	return
+}
+func (s *Server) proxyClear(helper Helper) (e error) {
+	e = s.checkSession(helper)
+	if e != nil {
+		return
+	}
+	var params struct {
+		Subscription uint64
+	}
+	e = helper.BodyJSON(&params)
+	if e != nil {
+		return
+	}
+	var mElement manipulator.Element
+	e = mElement.Clear(params.Subscription)
 	if e != nil {
 		return
 	}

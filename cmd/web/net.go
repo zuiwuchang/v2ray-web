@@ -1,6 +1,7 @@
 package web
 
 import (
+	"bytes"
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
@@ -66,12 +67,13 @@ func requestSubscription(url string) (result []*data.Outbound, e error) {
 		e = er
 		return
 	}
-
-	dst, e := base64.RawStdEncoding.DecodeString(utils.BytesToString(src))
+	src = bytes.TrimSpace(src)
+	str := strings.ReplaceAll(string(src), "=", "")
+	dst, e := base64.RawStdEncoding.DecodeString(str)
 	if e != nil {
 		return
 	}
-	str := utils.BytesToString(dst)
+	str = utils.BytesToString(dst)
 	strs := strings.Split(str, "\n")
 	for _, str := range strs {
 		str = strings.TrimSpace(str)
@@ -108,7 +110,8 @@ func analyzeString(str string) (result *Outbound) {
 		return
 	}
 	str = str[len("vmess://"):]
-	b, e := base64.StdEncoding.DecodeString(str)
+	str = strings.ReplaceAll(strings.TrimSpace(str), "=", "")
+	b, e := base64.RawStdEncoding.DecodeString(str)
 	if e != nil {
 		if ce := logger.Logger.Check(zap.WarnLevel, "decode base64 outbound error"); ce != nil {
 			ce.Write(

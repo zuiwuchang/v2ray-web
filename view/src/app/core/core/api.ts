@@ -29,5 +29,6 @@ export const ServerAPI = {
         add: `${root}/proxy/add`,
         put: `${root}/proxy/put`,
         remove: `${root}/proxy/remove`,
+        clear: `${root}/proxy/clear`,
     },
 }

@@ -18,6 +18,10 @@
     <button mat-icon-button i18n-matTooltip matTooltip="add element" (click)="onClickAdd()" [disabled]="disabled">
         <mat-icon>add</mat-icon>
     </button>
+    <button mat-icon-button i18n-matTooltip matTooltip="clear element" (click)="onClickClear()"
+        [disabled]="disabled || !panel.source.length">
+        <mat-icon>clear</mat-icon>
+    </button>
     <button mat-icon-button *ngIf="panel.id!=0" i18n-matTooltip matTooltip="update subscription"
         (click)="onClickUpdate()" [disabled]="disabled">
         <mat-icon>update</mat-icon>
@@ -26,7 +30,7 @@
         <mat-list-item *ngFor="let item of panel.source">
             <mat-icon matListIcon>grade</mat-icon>
             <p matLine>{{item.outbound.name}}</p>
-            <p matLine> {{item.outbound.net}} {{item.outbound.tls}}</p>
+            <p matLine> {{item.outbound.net}} {{item.outbound.tls}} {{item.outbound.add}}:{{item.outbound.port}}</p>
 
             <button mat-icon-button i18n-matTooltip matTooltip="start" (click)="onClickStart(item)"
                 [disabled]="disabled">
@@ -35,7 +39,7 @@
             <button mat-icon-button i18n-matTooltip matTooltip="stop" (click)="onClickStop(item)" [disabled]="disabled">
                 <mat-icon>stop</mat-icon>
             </button>
-
+            <mat-spinner color="accent" diameter='28' *ngIf="item.request"></mat-spinner>
             <button mat-icon-button i18n-matTooltip matTooltip="Menu Tooltip" [matMenuTriggerFor]="menu"
                 [disabled]="disabled">
                 <mat-icon>menu</mat-icon>

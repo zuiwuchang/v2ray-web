@@ -257,3 +257,32 @@ func (Element) Remove(subscription, id uint64) (e error) {
 	})
 	return
 }
+
+// Clear 清空記錄
+func (Element) Clear(subscription uint64) (e error) {
+	e = _db.Update(func(t *bolt.Tx) (e error) {
+		bucket := t.Bucket([]byte(data.ElementBucket))
+		if bucket == nil {
+			e = fmt.Errorf("bucket not exist : %s", data.ElementBucket)
+			return
+		}
+
+		key, e := data.EncodeID(subscription)
+		if e != nil {
+			return
+		}
+		e = bucket.DeleteBucket(key)
+		if e != nil {
+			if e == bolt.ErrBucketNotFound {
+				e = fmt.Errorf("bucket not exist : %s.%v", data.ElementBucket, subscription)
+			}
+			return
+		}
+		_, e = bucket.CreateBucket(key)
+		if e != nil {
+			return
+		}
+		return
+	})
+	return
+}

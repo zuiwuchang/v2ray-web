@@ -56,6 +56,8 @@ export class Element {
     id: number = 0
     subscription: number = 0
     outbound: Outbound
+    // 是否 正在發送請求
+    request?: boolean
 
     constructor(net?: Element) {
         if (isObject(net)) {
