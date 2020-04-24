@@ -1,0 +1,93 @@
+<h1 mat-dialog-title>
+    <ng-container i18n>Add Element</ng-container>
+    <mat-icon *ngIf="disabled">
+        <mat-spinner color="accent" diameter='32'></mat-spinner>
+    </mat-icon>
+</h1>
+
+<form #viewForm="ngForm">
+    <div mat-dialog-content class="dialog-form-view">
+        <div style="width: 100%;min-width: 380px;">
+            <div class="row">
+                <mat-form-field class="full-width">
+                    <mat-label i18n>Outbound Name</mat-label>
+                    <input matInput [disabled]="disabled" cdkFocusInitial [(ngModel)]="outbound.name" name="name">
+                </mat-form-field>
+            </div>
+            <div class="row">
+                <mat-form-field>
+                    <mat-label i18n>Outbound Addr</mat-label>
+                    <input matInput [disabled]="disabled" [(ngModel)]="outbound.add" name="add">
+                </mat-form-field>
+                <mat-form-field>
+                    <mat-label i18n>Outbound Port</mat-label>
+                    <input matInput type="number" [disabled]="disabled" [(ngModel)]="outbound.port" name="port">
+                </mat-form-field>
+            </div>
+            <div class="row">
+                <mat-form-field>
+                    <mat-label i18n>Outbound Net</mat-label>
+                    <input matInput [disabled]="disabled" [(ngModel)]="outbound.net" name="net" [matAutocomplete]="net">
+                    <mat-autocomplete #net="matAutocomplete">
+                        <mat-option [value]="'tcp'">tcp</mat-option>
+                        <mat-option [value]="'ws'">ws</mat-option>
+                        <mat-option [value]="'quic'">quic</mat-option>
+                        <mat-option [value]="'kcp'">kcp</mat-option>
+                        <mat-option [value]="'http'">http</mat-option>
+                        <mat-option [value]="'domainsocket'">domainsocket</mat-option>
+                    </mat-autocomplete>
+                </mat-form-field>
+                <mat-form-field>
+                    <mat-label i18n>Outbound TLS</mat-label>
+                    <input matInput [disabled]="disabled" [(ngModel)]="outbound.tls" name="tls" [matAutocomplete]="tls">
+                    <mat-autocomplete #tls="matAutocomplete">
+                        <mat-option [value]="'none'">none</mat-option>
+                        <mat-option [value]="'tls'">tls</mat-option>
+                    </mat-autocomplete>
+                </mat-form-field>
+            </div>
+            <div class="row">
+                <mat-form-field>
+                    <mat-label i18n>Outbound Host</mat-label>
+                    <input matInput [disabled]="disabled" cdkFocusInitial [(ngModel)]="outbound.host" name="host">
+                </mat-form-field>
+                <mat-form-field>
+                    <mat-label i18n>Outbound Path</mat-label>
+                    <input matInput [disabled]="disabled" [(ngModel)]="outbound.path" name="path">
+                </mat-form-field>
+            </div>
+            <div class="row">
+                <mat-form-field>
+                    <mat-label i18n>Outbound User UUID</mat-label>
+                    <input matInput [disabled]="disabled" [(ngModel)]="outbound.userID" name="userID">
+                </mat-form-field>
+                <mat-form-field>
+                    <mat-label i18n>Outbound Alter ID</mat-label>
+                    <input matInput type="number" [disabled]="disabled" [(ngModel)]="outbound.alterID" name="alterID">
+                </mat-form-field>
+            </div>
+            <div class="row">
+                <mat-form-field>
+                    <mat-label i18n>Outbound Security</mat-label>
+                    <input matInput [disabled]="disabled" [(ngModel)]="outbound.security" [matAutocomplete]="security"
+                        name="security">
+                    <mat-autocomplete #security="matAutocomplete">
+                        <mat-option [value]="'auto'">auto</mat-option>
+                        <mat-option [value]="'none'">none</mat-option>
+                        <mat-option [value]="'aes-128-gcm'">aes-128-gcm</mat-option>
+                        <mat-option [value]="'chacha20-poly1305'">chacha20-poly1305</mat-option>
+                    </mat-autocomplete>
+                </mat-form-field>
+                <mat-form-field>
+                    <mat-label i18n>Outbound Level</mat-label>
+                    <input matInput type="number" [disabled]="disabled" [(ngModel)]="outbound.level" name="level">
+                </mat-form-field>
+            </div>
+        </div>
+    </div>
+    <div mat-dialog-actions>
+        <button type="button" mat-stroked-button i18n [disabled]="disabled || viewForm.invalid"
+            (click)="onSave()">Submit</button>
+        <button type="button" mat-stroked-button i18n [disabled]="disabled" (click)="onClose()">Close</button>
+    </div>
+</form>

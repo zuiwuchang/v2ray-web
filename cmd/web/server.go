@@ -53,6 +53,9 @@ func (s *Server) setAPI() {
 		"/api/v2ray/subscription/remove": s.subscriptionRemove,
 		"/api/proxy/list":                s.proxyList,
 		"/api/proxy/update":              s.proxyUpdate,
+		"/api/proxy/add":                 s.proxyAdd,
+		"/api/proxy/put":                 s.proxyPut,
+		"/api/proxy/remove":              s.proxyRemove,
 	}
 }
 
@@ -447,5 +450,67 @@ func (s *Server) proxyUpdate(helper Helper) (e error) {
 		return
 	}
 	helper.RenderJSON(result)
+	return
+}
+func (s *Server) proxyAdd(helper Helper) (e error) {
+	e = s.checkSession(helper)
+	if e != nil {
+		return
+	}
+	var params struct {
+		Subscription uint64
+		Outbound     data.Outbound
+	}
+	e = helper.BodyJSON(&params)
+	if e != nil {
+		return
+	}
+	var mElement manipulator.Element
+	result, e := mElement.Add(params.Subscription, &params.Outbound)
+	if e != nil {
+		return
+	}
+	helper.RenderJSON(result)
+	return
+}
+func (s *Server) proxyPut(helper Helper) (e error) {
+	e = s.checkSession(helper)
+	if e != nil {
+		return
+	}
+	var params struct {
+		ID           uint64
+		Subscription uint64
+		Outbound     data.Outbound
+	}
+	e = helper.BodyJSON(&params)
+	if e != nil {
+		return
+	}
+	var mElement manipulator.Element
+	e = mElement.Put(params.Subscription, params.ID, &params.Outbound)
+	if e != nil {
+		return
+	}
+	return
+}
+func (s *Server) proxyRemove(helper Helper) (e error) {
+	e = s.checkSession(helper)
+	if e != nil {
+		return
+	}
+	var params struct {
+		ID           uint64
+		Subscription uint64
+	}
+	e = helper.BodyJSON(&params)
+	if e != nil {
+		return
+	}
+	var mElement manipulator.Element
+	e = mElement.Remove(params.Subscription, params.ID)
+	if e != nil {
+		return
+	}
 	return
 }

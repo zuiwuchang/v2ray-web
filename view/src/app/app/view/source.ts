@@ -93,27 +93,27 @@ export class Outbound {
     // 連接地址
     add: string = ''
     // 連接端口
-    port: string = ''
+    port: string = '80'
     // 連接主機名
     host: string = ''
 
     // 加密方案
-    tls: string = ''
+    tls: string = 'none'
 
     // 使用的網路協議
-    net: string = ''
+    net: string = 'ws'
 
     // websocket 請求路徑
-    path: string = ''
+    path: string = '/'
 
     // 用戶身份識別碼
-    userID: string = ''
+    userID: string = 'xxxxxxxx'
     // 另外一個可選的用戶id
-    alterID: string = ''
+    alterID: string = '0'
     // Security 加密方式
-    security: string = ''
+    security: string = 'auto'
     // 用戶等級
-    level: string = ''
+    level: string = '0'
     constructor(net?: Outbound) {
         if (isObject(net)) {
             if (isString(net.name)) {
@@ -151,5 +151,42 @@ export class Outbound {
             }
 
         }
+    }
+    format() {
+        this.port = this._valNumber(this.port)
+        this.alterID = this._valNumber(this.alterID)
+        this.level = this._valNumber(this.level)
+    }
+    private _valNumber(v: any): string {
+        if (isNumber(v)) {
+            return v.toString()
+        }
+        return v
+    }
+    cloneTo(other: Outbound) {
+        other.name = this.name
+        other.add = this.add
+        other.port = this.port
+        other.host = this.host
+        other.tls = this.tls
+        other.net = this.net
+        other.path = this.path
+        other.userID = this.userID
+        other.alterID = this.alterID
+        other.security = this.security
+        other.level = this.level
+    }
+    equal(other: Outbound): boolean {
+        return other.name == this.name &&
+            other.add == this.add &&
+            other.port == this.port &&
+            other.host == this.host &&
+            other.tls == this.tls &&
+            other.net == this.net &&
+            other.path == this.path &&
+            other.userID == this.userID &&
+            other.alterID == this.alterID &&
+            other.security == this.security &&
+            other.level == this.level
     }
 }

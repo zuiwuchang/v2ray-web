@@ -18,8 +18,8 @@
     <ng-container i18n>Welcome {{session?.name}}, you have logged in</ng-container>
 </ng-template>
 <ng-template #loginVIew>
-    <form (submit)="onSubmit()" #loginForm="ngForm">
-        <div mat-dialog-content class="view">
+    <form (submit)="onSubmit()" #viewForm="ngForm">
+        <div mat-dialog-content class="dialog-form-view">
             <div>
                 <mat-form-field class="full-width">
                     <mat-label i18n>Name</mat-label>
@@ -47,7 +47,7 @@
             </div>
         </div>
         <div mat-dialog-actions>
-            <button type="submit" mat-stroked-button i18n [disabled]="disabled || loginForm.invalid">Submit</button>
+            <button type="submit" mat-stroked-button i18n [disabled]="disabled || viewForm.invalid">Submit</button>
             <button type="button" mat-stroked-button (click)="onClose()" i18n>Close</button>
         </div>
     </form>

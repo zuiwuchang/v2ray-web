@@ -5,9 +5,9 @@
     </mat-icon>
 </h1>
 
-<form #loginForm="ngForm">
+<form #viewForm="ngForm">
 
-    <div mat-dialog-content class="view">
+    <div mat-dialog-content class="dialog-form-view">
         <div>
             <mat-form-field class="full-width">
                 <mat-label i18n>Name</mat-label>
@@ -25,7 +25,7 @@
         </div>
     </div>
     <div mat-dialog-actions>
-        <button type="button" mat-stroked-button i18n [disabled]="disabled || loginForm.invalid"
+        <button type="button" mat-stroked-button i18n [disabled]="disabled || viewForm.invalid"
             (click)="onSave()">Submit</button>
         <button type="button" mat-stroked-button i18n [disabled]="disabled" (click)="onClose()">Close</button>
     </div>
