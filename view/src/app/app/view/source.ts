@@ -58,7 +58,7 @@ export class Element {
     outbound: Outbound
     // 是否 正在發送請求
     request?: boolean
-    duration?: string
+    duration?: number
     error?: string
 
     constructor(net?: Element) {
@@ -73,6 +73,20 @@ export class Element {
         } else {
             this.outbound = new Outbound()
         }
+    }
+    static compareDuration(l: Element, r: Element): number {
+        let ld = l.duration
+        let rd = r.duration
+        if (!isNumber(ld) || ld <= 0) {
+            ld = 1000 * 60 * 60
+        }
+        if (!isNumber(rd) || rd <= 0) {
+            rd = 1000 * 60 * 60
+        }
+        if (ld == rd) {
+            return Element.compare(l, r)
+        }
+        return ld > rd ? 1 : -1
     }
     static compare(l: Element, r: Element): number {
         if (l.outbound.net != r.outbound.net) {

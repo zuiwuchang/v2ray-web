@@ -12,6 +12,10 @@
         </mat-panel-title>
 
     </mat-expansion-panel-header>
+    <button mat-icon-button i18n-matTooltip matTooltip="sort" (click)="onClickSort()"
+        [disabled]="disabled || !panel.source.length || panel.source.length<2">
+        <mat-icon>sort</mat-icon>
+    </button>
     <button mat-icon-button i18n-matTooltip matTooltip="test speed" (click)="onClickTest()"
         [disabled]="disabled || !panel.source.length">
         <mat-icon>network_check</mat-icon>
@@ -32,6 +36,7 @@
             <mat-icon matListIcon>grade</mat-icon>
             <p matLine>{{item.id}} {{item.outbound.name}}</p>
             <p matLine> {{item.outbound.net}} {{item.outbound.tls}} {{item.outbound.add}}:{{item.outbound.port}}</p>
+            <p matLine>{{item.error}} {{item.duration}}</p>
 
             <button mat-icon-button i18n-matTooltip matTooltip="start" (click)="onClickStart(item)"
                 [disabled]="disabled">

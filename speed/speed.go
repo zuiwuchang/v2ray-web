@@ -3,10 +3,15 @@ package speed
 import (
 	"bytes"
 	"fmt"
-	"html/template"
+	"io/ioutil"
 	"net"
+	"net/http"
+	"sync"
 	"sync/atomic"
+	"text/template"
+	"time"
 
+	"golang.org/x/net/proxy"
 	"v2ray.com/core"
 	"v2ray.com/ext/tools/conf/serial"
 )
@@ -61,11 +66,15 @@ func (s *Context) Get() (result *Result) {
 
 // Run 運行 測試
 func (s *Context) Run() {
+	var wait sync.WaitGroup
+	wait.Add(10)
 	for i := 0; i < 10; i++ {
-		go s.run(10000 + 1989 + 64 + i*2000)
+		go s.run(&wait, 10000+1989+64+i*2000)
 	}
+	wait.Wait()
+	s.Close()
 }
-func (s *Context) run(port int) {
+func (s *Context) run(wait *sync.WaitGroup, port int) {
 	for element := range s.ch {
 		result := &Result{
 			ID:     element.ID,
@@ -78,6 +87,7 @@ func (s *Context) run(port int) {
 		result, e := s.do(element, port)
 		if e != nil {
 			result = &Result{
+				ID:     element.ID,
 				Status: StatusError,
 				Error:  e.Error(),
 			}
@@ -88,7 +98,8 @@ func (s *Context) run(port int) {
 			}
 		}
 	}
-	//s.Close()
+	wait.Done()
+
 }
 func (s *Context) response(result *Result) (ok bool) {
 	select {
@@ -100,7 +111,7 @@ func (s *Context) response(result *Result) (ok bool) {
 }
 func (s *Context) do(element *Element, port int) (result *Result, e error) {
 	// 查詢可用 tcp 端口
-	var addr string
+	var target int
 	for i := 0; i < 2000; i++ {
 		str := fmt.Sprintf("127.0.0.1:%v", port+i)
 		l, e := net.Listen("tcp", str)
@@ -108,10 +119,10 @@ func (s *Context) do(element *Element, port int) (result *Result, e error) {
 			continue
 		}
 		l.Close()
-		addr = str
+		target = port + i
 		break
 	}
-	if addr == "" {
+	if target == 0 {
 		e = fmt.Errorf("not found idle port")
 		return
 	}
@@ -120,7 +131,7 @@ func (s *Context) do(element *Element, port int) (result *Result, e error) {
 		return
 	}
 	t := template.New("v2ray")
-	t, e = t.Parse(templateText)
+	t, e = t.Parse(fmt.Sprintf(templateText, target))
 	if e != nil {
 		return
 	}
@@ -138,6 +149,40 @@ func (s *Context) do(element *Element, port int) (result *Result, e error) {
 	if e != nil {
 		return
 	}
-	server.Close()
+	defer server.Close()
+	e = server.Start()
+	if e != nil {
+		return
+	}
+	last := time.Now()
+	e = s.http(element, target)
+	if e != nil {
+		return
+	}
+	result = &Result{
+		ID:       element.ID,
+		Status:   StatusOk,
+		Duration: time.Now().Sub(last).Milliseconds(),
+	}
+	return
+}
+func (s *Context) http(element *Element, port int) (e error) {
+	client := &http.Client{}
+	var dialer proxy.Dialer
+	dialer, e = proxy.SOCKS5("tcp", fmt.Sprintf("127.0.0.1:%v", port), nil, proxy.Direct)
+	if e != nil {
+		return
+	}
+	client.Timeout = time.Second * 5
+	client.Transport = &http.Transport{
+		Dial: dialer.Dial,
+	}
+	response, e := client.Get("https://www.youtube.com/")
+	if e != nil {
+		return
+	}
+	if response.Body != nil {
+		ioutil.ReadAll(response.Body)
+	}
 	return
 }

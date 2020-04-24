@@ -1,3 +1,0 @@
-package speed
-
-const templateText = ``

@@ -24,5 +24,5 @@ type Result struct {
 	Status   int    `json:"status,omitempty"`
 	ID       uint64 `json:"id,omitempty"`
 	Error    string `json:"error,omitempty"`
-	Duration string `json:"duration,omitempty"`
+	Duration int64  `json:"duration,omitempty"`
 }

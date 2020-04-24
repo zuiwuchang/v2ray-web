@@ -20,7 +20,7 @@ interface Message {
   status: number
   id: number
   error?: string
-  duration?: string
+  duration?: number
 }
 @Component({
   selector: 'app-view-panel',
@@ -54,6 +54,9 @@ export class ViewPanelComponent implements OnInit, OnDestroy {
     for (let i = 0; i < source.length; i++) {
       source[i].request = undefined
     }
+  }
+  onClickSort() {
+    this.panel.source.sort(Element.compareDuration)
   }
   onClickTest() {
     this._disabled = true
@@ -149,6 +152,7 @@ export class ViewPanelComponent implements OnInit, OnDestroy {
       this._resetWebsocket()
       return
     }
+
     try {
       const resopnse = JSON.parse(evt.data) as Message
       switch (resopnse.status) {
@@ -169,7 +173,7 @@ export class ViewPanelComponent implements OnInit, OnDestroy {
   private _setOk(msg: Message) {
     const source = this.panel.source
     for (let i = 0; i < source.length; i++) {
-      if (source[i].id = msg.id) {
+      if (source[i].id == msg.id) {
         source[i].request = undefined
         source[i].error = undefined
         source[i].duration = msg.duration
@@ -180,7 +184,7 @@ export class ViewPanelComponent implements OnInit, OnDestroy {
   private _setError(msg: Message) {
     const source = this.panel.source
     for (let i = 0; i < source.length; i++) {
-      if (source[i].id = msg.id) {
+      if (source[i].id == msg.id) {
         source[i].request = undefined
         source[i].error = msg.error
         source[i].duration = undefined
