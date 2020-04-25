@@ -21,7 +21,7 @@ func Run(cnf *configure.Configure) {
 		}
 	}
 	defer l.Close()
-	server, e := NewServer(l)
+	server, e := NewServer(l, cnf.HTTP.View)
 	if e != nil {
 		os.Exit(1)
 	}

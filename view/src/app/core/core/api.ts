@@ -53,12 +53,12 @@ export function getWebSocketAddr(path: string): string {
     const location = document.location
     let addr: string
     if (location.protocol == "https") {
-        addr = `wss://${location.host}:${location.port}`
+        addr = `wss://${location.host}`
         if (location.port == "") {
             addr += "443"
         }
     } else {
-        addr = `ws://${location.host}:${location.port}`
+        addr = `ws://${location.host}`
         if (location.port == "") {
             addr += "80"
         }

@@ -17,6 +17,9 @@ type HTTP struct {
 	Maxage time.Duration
 	// cookie 密鑰
 	Secret string
+
+	// ui界面目錄
+	View string
 }
 
 // Safe if tls return true
@@ -30,7 +33,11 @@ func (c *HTTP) Format(basePath string) (e error) {
 	c.CertFile = strings.TrimSpace(c.CertFile)
 	c.KeyFile = strings.TrimSpace(c.KeyFile)
 	c.Secret = strings.TrimSpace(c.Secret)
+	c.View = strings.TrimSpace(c.View)
 
+	if c.View == "" {
+		c.View = "view"
+	}
 	if c.Safe() {
 		if filepath.IsAbs(c.CertFile) {
 			c.CertFile = filepath.Clean(c.CertFile)
@@ -48,6 +55,12 @@ func (c *HTTP) Format(basePath string) (e error) {
 		c.Maxage *= time.Millisecond
 	} else {
 		c.Maxage = time.Hour * 24 * 30
+	}
+
+	if filepath.IsAbs(c.View) {
+		c.View = filepath.Clean(c.View)
+	} else {
+		c.View = filepath.Clean(basePath + "/" + c.View)
 	}
 	return
 }

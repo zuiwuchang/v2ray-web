@@ -26,6 +26,7 @@ export class StatusService {
   private _do() {
     const addr = getWebSocketAddr(ServerAPI.proxy.status)
     console.info('ws connect', addr)
+
     const websocket = new WebSocket(addr)
     this._websocket = websocket
     websocket.onopen = (evt) => {

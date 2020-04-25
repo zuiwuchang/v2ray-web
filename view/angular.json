@@ -7,8 +7,9 @@
       "i18n": {
         "sourceLocale": "en-US",
         "locales": {
-          "zh-Hant": "src/locale/zh-Hant.xlf"
-        },
+          "zh-Hant": "src/locale/zh-Hant.xlf",
+          "zh-Hans": "src/locale/zh-Hans.xlf"
+        }
       },
       "projectType": "application",
       "schematics": {

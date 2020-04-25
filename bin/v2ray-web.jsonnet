@@ -5,14 +5,16 @@ local Hour = 60 * Minute;
 local Day = 24 * Hour;
 {
     HTTP: {
-        Addr: "localhost:1989",
+        Addr: ":1989",
         // x509 if empty use http else use https
 		// CertFile: "test.pem",
 		// KeyFile: "test.key",
         // cookie 過期時間
         Maxage: Day * 30,
         // cookie 密鑰
-        Secret: "cerberus is an idae"
+        Secret: "cerberus is an idae",
+		// ui界面目錄
+		View:"view",
     },
 	Database:{
 		// 數據源 位置

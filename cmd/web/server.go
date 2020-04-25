@@ -9,7 +9,9 @@ import (
 	"io/ioutil"
 	"net"
 	"net/http"
+	"os"
 	"os/exec"
+	"path/filepath"
 	"runtime"
 	"strings"
 	"sync/atomic"
@@ -35,13 +37,27 @@ type Server struct {
 	l    net.Listener
 	apis map[string]handlerFunc
 	ws   map[string]websocket.Handler
+	m    map[string]string
+	root string
 }
 
 // NewServer 創建 服務器
-func NewServer(l net.Listener) (server *Server, e error) {
+func NewServer(l net.Listener, root string) (server *Server, e error) {
 	server = &Server{
-		l: l,
+		l:    l,
+		root: root,
 	}
+	m := make(map[string]string)
+	count := len(root)
+	filepath.Walk(root, func(path string, info os.FileInfo, err error) (e error) {
+		if info.IsDir() {
+			return
+		}
+		route := "/angular" + path[count:]
+		m[route] = path
+		return
+	})
+	server.m = m
 	server.setAPI()
 	server.setWebsocket()
 	return
@@ -194,6 +210,16 @@ func (s *Server) ServeTLS(certFile, keyFile string) error {
 }
 func (s *Server) ServeHTTP(response http.ResponseWriter, request *http.Request) {
 	route := request.URL.Path
+	if route == "/" ||
+		route == "/index.html" ||
+		route == "/angular/" {
+		s.redirect(response, request)
+		return
+	}
+	if strings.HasPrefix(route, "/angular/") {
+		s.view(response, request)
+		return
+	}
 	wsHandler := s.ws[route]
 	if wsHandler != nil {
 		wsHandler.ServeHTTP(response, request)
