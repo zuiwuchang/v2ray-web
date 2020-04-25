@@ -262,12 +262,24 @@
           <context context-type="linenumber">60</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="121cc5391cd2a5115bc2b3160379ee5b36cd7716" datatype="html">
+        <source>Settings</source>
+        <target>設定</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/navigation-bar/navigation-bar.component.html</context>
+          <context context-type="linenumber">40</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app/settings/settings.component.html</context>
+          <context context-type="linenumber">3</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="505528c086187f9585a49c282f5db5fee9a3204e" datatype="html">
         <source>V2ray Setting</source>
         <target>V2ray 設定模板</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/shared/navigation-bar/navigation-bar.component.html</context>
-          <context context-type="linenumber">40</context>
+          <context context-type="linenumber">47</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/v2ray/settings/settings.component.html</context>
@@ -279,7 +291,7 @@
         <target>訂閱設定</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/shared/navigation-bar/navigation-bar.component.html</context>
-          <context context-type="linenumber">46</context>
+          <context context-type="linenumber">53</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/v2ray/subscription/subscription.component.html</context>
@@ -291,7 +303,7 @@
         <target>防火牆模板</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/shared/navigation-bar/navigation-bar.component.html</context>
-          <context context-type="linenumber">53</context>
+          <context context-type="linenumber">60</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/iptables/templates/templates.component.html</context>
@@ -303,7 +315,7 @@
         <target>防火牆設定</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/shared/navigation-bar/navigation-bar.component.html</context>
-          <context context-type="linenumber">59</context>
+          <context context-type="linenumber">66</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/iptables/view/view.component.html</context>
@@ -315,7 +327,7 @@
         <target>用戶管理</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/shared/navigation-bar/navigation-bar.component.html</context>
-          <context context-type="linenumber">66</context>
+          <context context-type="linenumber">73</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/user/list/list.component.html</context>
@@ -327,7 +339,7 @@
         <target>登出</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/shared/navigation-bar/navigation-bar.component.html</context>
-          <context context-type="linenumber">72</context>
+          <context context-type="linenumber">79</context>
         </context-group>
       </trans-unit>
       <trans-unit id="cd5d318e16c3fdc48a3b4a4a2ca40982439f3ed0" datatype="html">
@@ -335,7 +347,7 @@
         <target>登入</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/shared/navigation-bar/navigation-bar.component.html</context>
-          <context context-type="linenumber">77</context>
+          <context context-type="linenumber">84</context>
         </context-group>
       </trans-unit>
       <trans-unit id="f0dc0497ad16adbd386a3b2f2c55d81c51a1f029" datatype="html">
@@ -890,6 +902,54 @@
           <context context-type="linenumber">14</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="c425b032137c2b7b83d9039011079cd817c57cec" datatype="html">
+        <source>run v2ray-core on start</source>
+        <target>啓動時自動運行v2ray-core</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app/settings/settings.component.html</context>
+          <context context-type="linenumber">5</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="8ae98af879b3723fbc5ab7316750a508f4f4bd07" datatype="html">
+        <source>set iptables on start</source>
+        <target>啓動時自動設置防火牆規則</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app/settings/settings.component.html</context>
+          <context context-type="linenumber">8</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="1e7d37da17e9cd0a0e5f590ca247f2a50645ee02" datatype="html">
+        <source>Test URL</source>
+        <target>速度測試網址</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app/settings/settings.component.html</context>
+          <context context-type="linenumber">12</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="06402956eab4a62919e9d1df4dc5718ce6dbfc75" datatype="html">
+        <source>Test URL Invalid</source>
+        <target>無效的網址</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app/settings/settings.component.html</context>
+          <context context-type="linenumber">15</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="52c9a103b812f258bcddc3d90a6e3f46871d25fe" datatype="html">
+        <source>Save</source>
+        <target>保存</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app/settings/settings.component.html</context>
+          <context context-type="linenumber">20</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/iptables/templates/templates.component.html</context>
+          <context context-type="linenumber">57</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/v2ray/settings/settings.component.html</context>
+          <context context-type="linenumber">34</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="94be6ae6ec1f87bedc67020629343b27fdbece0a" datatype="html">
         <source>Add User</source>
         <target>添加用戶</target>
@@ -948,18 +1008,6 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/iptables/templates/templates.component.html</context>
           <context context-type="linenumber">49</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="52c9a103b812f258bcddc3d90a6e3f46871d25fe" datatype="html">
-        <source>Save</source>
-        <target>保存</target>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/iptables/templates/templates.component.html</context>
-          <context context-type="linenumber">57</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/v2ray/settings/settings.component.html</context>
-          <context context-type="linenumber">34</context>
         </context-group>
       </trans-unit>
       <trans-unit id="0523c2c3150b72f6c9d4dca97ce533f61f3d7be3" datatype="html">

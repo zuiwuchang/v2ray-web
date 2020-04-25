@@ -42,6 +42,21 @@ func (m Settings) Init(tx *bolt.Tx) (e error) {
 			return
 		}
 	}
+
+	key = []byte(data.SettingsSettings)
+	val = bucket.Get(key)
+	if val == nil {
+		var tmp data.Settings
+		tmp.ResetDefault()
+		val, e = tmp.Encoder()
+		if e != nil {
+			return
+		}
+		e = bucket.Put(key, val)
+		if e != nil {
+			return
+		}
+	}
 	return
 }
 
@@ -119,6 +134,91 @@ func (m Settings) PutIPtables(iptables *data.IPTables) (e error) {
 			return
 		}
 		e = bucket.Put([]byte(data.SettingsIPTables), b)
+		return
+	})
+	return
+}
+
+// Get 返回 設定
+func (m Settings) Get() (result *data.Settings, e error) {
+	e = _db.View(func(t *bolt.Tx) (e error) {
+		bucket := t.Bucket([]byte(data.SettingsBucket))
+		if bucket == nil {
+			e = fmt.Errorf("bucket not exist : %s", data.SettingsBucket)
+			return
+		}
+		val := bucket.Get([]byte(data.SettingsSettings))
+		var tmp data.Settings
+		if val == nil {
+			tmp.ResetDefault()
+			result = &tmp
+		} else {
+			e = tmp.Decode(val)
+			if e != nil {
+				return
+			}
+			result = &tmp
+		}
+		return
+	})
+	return
+}
+
+// Put 保存 設定
+func (m Settings) Put(val *data.Settings) (e error) {
+	b, e := val.Encoder()
+	if e != nil {
+		return
+	}
+	e = _db.Update(func(t *bolt.Tx) (e error) {
+		bucket := t.Bucket([]byte(data.SettingsBucket))
+		if bucket == nil {
+			e = fmt.Errorf("bucket not exist : %s", data.SettingsBucket)
+			return
+		}
+		e = bucket.Put([]byte(data.SettingsSettings), b)
+		return
+	})
+	return
+}
+
+// GetLast 返回 最後啓動 v2ray-core
+func (m Settings) GetLast() (result *data.Element, e error) {
+	e = _db.View(func(t *bolt.Tx) (e error) {
+		bucket := t.Bucket([]byte(data.SettingsBucket))
+		if bucket == nil {
+			e = fmt.Errorf("bucket not exist : %s", data.SettingsBucket)
+			return
+		}
+		val := bucket.Get([]byte(data.SettingsLast))
+		if val == nil {
+			e = fmt.Errorf("key not exist : %s.%s", data.SettingsBucket, data.SettingsLast)
+			return
+		}
+		var tmp data.Element
+		e = tmp.Decode(val)
+		if e != nil {
+			return
+		}
+		result = &tmp
+		return
+	})
+	return
+}
+
+// PutLast 保存 最後啓動 v2ray-core
+func (m Settings) PutLast(val *data.Element) (e error) {
+	b, e := val.Encoder()
+	if e != nil {
+		return
+	}
+	e = _db.Update(func(t *bolt.Tx) (e error) {
+		bucket := t.Bucket([]byte(data.SettingsBucket))
+		if bucket == nil {
+			e = fmt.Errorf("bucket not exist : %s", data.SettingsBucket)
+			return
+		}
+		e = bucket.Put([]byte(data.SettingsLast), b)
 		return
 	})
 	return

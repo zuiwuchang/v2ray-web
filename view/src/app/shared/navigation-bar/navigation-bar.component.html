@@ -34,6 +34,13 @@
             <mat-icon>apps</mat-icon>
         </button>
         <mat-menu #menu="matMenu">
+            <a routerLink="/settings">
+                <button mat-menu-item>
+                    <mat-icon>build</mat-icon>
+                    <ng-container i18n>Settings</ng-container>
+                </button>
+            </a>
+            <mat-divider></mat-divider>
             <a routerLink="/v2ray/settings">
                 <button mat-menu-item>
                     <mat-icon>settings</mat-icon>

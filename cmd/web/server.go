@@ -4,11 +4,13 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"net"
 	"net/http"
 	"os/exec"
+	"runtime"
 	"strings"
 	"sync/atomic"
 	"text/template"
@@ -19,6 +21,7 @@ import (
 	"gitlab.com/king011/v2ray-web/logger"
 	"gitlab.com/king011/v2ray-web/speed"
 	"gitlab.com/king011/v2ray-web/utils"
+	"gitlab.com/king011/v2ray-web/version"
 	"go.uber.org/zap"
 	"golang.org/x/net/websocket"
 	"v2ray.com/core"
@@ -51,6 +54,7 @@ func (s *Server) setWebsocket() {
 }
 func (s *Server) setAPI() {
 	s.apis = map[string]handlerFunc{
+		"/api/app/version":               s.version,
 		"/api/app/restore":               s.restore,
 		"/api/app/login":                 s.login,
 		"/api/app/logout":                s.logout,
@@ -80,7 +84,100 @@ func (s *Server) setAPI() {
 		"/api/iptables/put":              s.iptablesPut,
 		"/api/iptables/restore":          s.iptablesRestore,
 		"/api/iptables/init":             s.iptablesInit,
+		"/api/settings/get":              s.settingsGet,
+		"/api/settings/put":              s.settingsPut,
 	}
+}
+
+func (s *Server) onStart() {
+	var mSettings manipulator.Settings
+	result, e := mSettings.Get()
+	if e != nil {
+		if ce := logger.Logger.Check(zap.WarnLevel, "get settings error"); ce != nil {
+			ce.Write(
+				zap.Error(e),
+			)
+		}
+		return
+	} else if result == nil || !result.V2ray {
+		return
+	}
+
+	element, e := mSettings.GetLast()
+	if e != nil {
+		if ce := logger.Logger.Check(zap.WarnLevel, "get last v2ray-core error"); ce != nil {
+			ce.Write(
+				zap.Error(e),
+			)
+		}
+		return
+	}
+	var iptables *data.IPTables
+	if result.IPTables {
+		var mSettings manipulator.Settings
+		iptables, e = mSettings.GetIPtables()
+		if e != nil {
+			if ce := logger.Logger.Check(zap.WarnLevel, "get iptables error"); ce != nil {
+				ce.Write(
+					zap.Error(e),
+				)
+			}
+		}
+	}
+	if iptables != nil {
+		s.clearIPTables(iptables)
+	}
+	e = srv.Start(element)
+	if e != nil {
+		if ce := logger.Logger.Check(zap.WarnLevel, "auto start v2ray-core error"); ce != nil {
+			ce.Write(
+				zap.Error(e),
+			)
+		}
+		return
+	}
+	if iptables != nil {
+		s.setIPTables(iptables, element)
+	}
+}
+func (s *Server) clearIPTables(iptables *data.IPTables) {
+	if strings.TrimSpace(iptables.Init) == "" || strings.TrimSpace(iptables.Clear) == "" {
+		return
+	}
+	buffer := bytes.NewBufferString(iptables.Clear)
+	cmd := exec.Command(iptables.Shell)
+	cmd.Stdin = buffer
+	e := cmd.Run()
+	if e != nil {
+		if ce := logger.Logger.Check(zap.WarnLevel, "iptables clear error"); ce != nil {
+			ce.Write(
+				zap.Error(e),
+			)
+		}
+		return
+	}
+}
+func (s *Server) setIPTables(iptables *data.IPTables, element *data.Element) {
+	if strings.TrimSpace(iptables.Init) == "" {
+		return
+	}
+	text, e := s.getTemplate("init", element.Outbound, iptables.Init)
+	if e != nil {
+		return
+	}
+	buffer := bytes.NewBufferString(text)
+	cmd := exec.Command(iptables.Shell)
+	cmd.Stdin = buffer
+	e = cmd.Run()
+	if e != nil {
+		if ce := logger.Logger.Check(zap.WarnLevel, "iptables set error"); ce != nil {
+			ce.Write(
+				zap.Error(e),
+			)
+		}
+		return
+	}
+	return
 }
 
 // Serve .
@@ -171,6 +268,15 @@ func (s *Server) checkSession(helper Helper) (e error) {
 		e = errors.New("Permission denied")
 		return
 	}
+	return
+}
+func (s *Server) version(helper Helper) (e error) {
+	helper.RenderJSON(map[string]string{
+		"platform": fmt.Sprintf("%v %v %v", runtime.GOOS, runtime.GOARCH, runtime.Version()),
+		"tag":      version.Tag,
+		"commit":   version.Commit,
+		"date":     version.Date,
+	})
 	return
 }
 func (s *Server) restore(helper Helper) (e error) {
@@ -588,6 +694,18 @@ func (s *Server) proxyStart(helper Helper) (e error) {
 		return
 	}
 	e = srv.Start(&params)
+	if e != nil {
+		return
+	}
+	var mSettings manipulator.Settings
+	e0 := mSettings.PutLast(&params)
+	if e0 != nil {
+		if ce := logger.Logger.Check(zap.WarnLevel, "save last status error"); ce != nil {
+			ce.Write(
+				zap.Error(e0),
+			)
+		}
+	}
 	return
 }
 func (s *Server) proxyStop(helper Helper) (e error) {
@@ -883,5 +1001,32 @@ func (s *Server) renderCommand(helper Helper, shell, text string) (e error) {
 		return
 	}
 	helper.RenderJSON(bufferOut.String())
+	return
+}
+func (s *Server) settingsGet(helper Helper) (e error) {
+	e = s.checkSession(helper)
+	if e != nil {
+		return
+	}
+	var mSettings manipulator.Settings
+	result, e := mSettings.Get()
+	if e != nil {
+		return
+	}
+	helper.RenderJSON(result)
+	return
+}
+func (s *Server) settingsPut(helper Helper) (e error) {
+	e = s.checkSession(helper)
+	if e != nil {
+		return
+	}
+	var params data.Settings
+	e = helper.BodyJSON(&params)
+	if e != nil {
+		return
+	}
+	var mSettings manipulator.Settings
+	e = mSettings.Put(&params)
 	return
 }

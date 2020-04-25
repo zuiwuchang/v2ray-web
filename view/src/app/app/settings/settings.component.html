@@ -1,0 +1,52 @@
+<ng-container *ngIf="ready;then readyView;else notReadyView"></ng-container>
+
+<ng-template #notReadyView>
+    <div>
+        <p>
+            <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+        </p>
+        <p>
+            <ng-container i18n>connecting to server, please wait...</ng-container>
+        </p>
+    </div>
+</ng-template>
+<ng-template #readyView>
+    <ng-container *ngIf="err;then errView;else okView"></ng-container>
+</ng-template>
+<ng-template #errView>
+    <p>
+        {{err}}
+    </p>
+    <button mat-stroked-button color="primary" i18n (click)="load()">Refresh</button>
+
+</ng-template>
+<ng-template #okView>
+    <form #viewForm="ngForm">
+        <mat-card>
+            <mat-card-title i18n>Settings</mat-card-title>
+            <mat-card-content>
+                <div>
+                    <mat-form-field class="full-width">
+                        <mat-label i18n>Test URL</mat-label>
+                        <input type="url" sharedUrlValidator matInput [disabled]="disabled" required minlength="1"
+                            [(ngModel)]="url" name="url">
+                        <mat-error i18n>Test URL Invalid</mat-error>
+                    </mat-form-field>
+                </div>
+                <mat-checkbox class="margin" [(ngModel)]="v2ray" name="v2ray">
+                    <ng-container i18n>run v2ray-core on start</ng-container>
+                </mat-checkbox>
+
+                <mat-checkbox class="margin" [(ngModel)]="iptables" name="iptables">
+                    <ng-container i18n>set iptables on start</ng-container>
+                </mat-checkbox>
+
+
+            </mat-card-content>
+            <mat-card-actions>
+                <button type="button" mat-stroked-button i18n [disabled]="disabled || viewForm.invalid"
+                    (click)="onClickSave()">Save</button>
+            </mat-card-actions>
+        </mat-card>
+    </form>
+</ng-template>

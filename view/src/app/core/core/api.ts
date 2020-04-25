@@ -1,9 +1,13 @@
 const root = '/api'
 export const ServerAPI = {
+    version: `${root}/app/version`,
     login: `${root}/app/login`,
     restore: `${root}/app/restore`,
     logout: `${root}/app/logout`,
-
+    settings: {
+        get: `${root}/settings/get`,
+        put: `${root}/settings/put`,
+    },
     user: {
         list: `${root}/user/list`,
         add: `${root}/user/add`,

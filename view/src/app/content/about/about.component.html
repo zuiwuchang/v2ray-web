@@ -22,21 +22,38 @@
                 <li>有時可能需要控制遠程系統上的v2ray，或者一個沒有ui界面系統上的v2ray，比如我之前有一個openwrt虛擬機上有運行一套v2ray-core，或者聽說一些網友在路由器上使用v2ray。使用web接口可以很好的控制這些系統上的v2ray。同時使golang來實現也很容易對這些系統進行部署。
                 </li>
             </ul>
-        </mat-card-content>
 
-        <p>這個系統在 linux64 和windows64 經過測試,理論上可以運行在 mac 上 然本人太窮不配使用 mac 也不願爲mac任何投入，mac遇到問題請向天祈禱，其它問題請發佈到源碼的 <a
-                mat-stroked-button href="https://gitlab.com/king011/v2ray-web/-/issues/new">issues</a> 。</p>
-        <mat-list>
-            <mat-list-item>
-                <mat-icon matListIcon color="accent">done</mat-icon>
-                <p matLine>Linux Mint 19.1 Tessa</p>
-                <p matLine>amd64</p>
-            </mat-list-item>
-            <mat-list-item>
-                <mat-icon matListIcon color="accent">done</mat-icon>
-                <p matLine>Windows 10</p>
-                <p matLine>amd64</p>
-            </mat-list-item>
-        </mat-list>
+
+            <p>這個系統在 linux64 和windows64 經過測試,理論上可以運行在 mac 上 然本人太窮不配使用 mac 也不願爲mac任何投入，mac遇到問題請向天祈禱，其它問題請發佈到源碼的 <a
+                    mat-stroked-button href="https://gitlab.com/king011/v2ray-web/-/issues/new">issues</a> 。</p>
+            <mat-list>
+                <mat-list-item>
+                    <mat-icon matListIcon color="accent">done</mat-icon>
+                    <p matLine>Linux Mint 19.1 Tessa</p>
+                    <p matLine>amd64</p>
+                </mat-list-item>
+                <mat-list-item>
+                    <mat-icon matListIcon color="accent">done</mat-icon>
+                    <p matLine>Windows 10</p>
+                    <p matLine>amd64</p>
+                </mat-list-item>
+            </mat-list>
+        </mat-card-content>
     </mat-card>
+
+    <mat-card>
+        <mat-card-title>
+            Version
+        </mat-card-title>
+        <mat-card-content>
+            <p>angular {{VERSION.full}}</p>
+            <div *ngIf="version">
+                <p>{{version.platform}}</p>
+                <p>{{version.tag}} {{version.date}}</p>
+                <p>{{version.commit}}</p>
+            </div>
+
+        </mat-card-content>
+    </mat-card>
+
 </p>

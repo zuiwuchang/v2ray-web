@@ -25,6 +25,7 @@ func Run(cnf *configure.Configure) {
 	if e != nil {
 		os.Exit(1)
 	}
+	server.onStart()
 
 	if cnf.HTTP.Safe() {
 		if ce := logger.Logger.Check(zap.InfoLevel, "https serve"); ce != nil {

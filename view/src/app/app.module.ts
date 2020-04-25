@@ -19,6 +19,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatCardModule } from '@angular/material/card';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -30,6 +32,7 @@ import { ViewPanelComponent } from './app/view-panel/view-panel.component';
 import { AddComponent } from './app/add/add.component';
 import { EditComponent } from './app/edit/edit.component';
 import { TopComponent } from './app/top/top.component';
+import { SettingsComponent } from './app/settings/settings.component';
 
 @NgModule({
   declarations: [
@@ -40,6 +43,7 @@ import { TopComponent } from './app/top/top.component';
     AddComponent,
     EditComponent,
     TopComponent,
+    SettingsComponent,
   ],
   imports: [
     BrowserModule,
@@ -49,7 +53,7 @@ import { TopComponent } from './app/top/top.component';
     MatListModule, MatExpansionModule, MatTooltipModule,
     MatDialogModule, MatProgressSpinnerModule, MatFormFieldModule,
     MatInputModule, MatAutocompleteModule, MatMenuModule,
-    MatDividerModule,
+    MatDividerModule, MatCardModule, MatCheckboxModule,
 
     SharedModule,
     AppRoutingModule,
