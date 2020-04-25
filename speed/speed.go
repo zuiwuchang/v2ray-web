@@ -11,14 +11,16 @@ type Context struct {
 	closed int32
 	ch     chan *Element
 	result chan *Result
+	url    string
 }
 
 // New .
-func New() *Context {
+func New(url string) *Context {
 	return &Context{
 		cancel: make(chan struct{}),
 		ch:     make(chan *Element),
 		result: make(chan *Result),
+		url:    url,
 	}
 }
 
@@ -99,7 +101,7 @@ func (s *Context) response(result *Result) (ok bool) {
 	return
 }
 func (s *Context) do(element *Element, port int) (result *Result, e error) {
-	duration, e := testOne(&element.Outbound, port, "https://www.youtube.com/")
+	duration, e := testOne(&element.Outbound, port, s.url)
 	if e != nil {
 		return
 	}

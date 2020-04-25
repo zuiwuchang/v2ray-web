@@ -16,12 +16,15 @@ import (
 	"v2ray.com/ext/tools/conf/serial"
 )
 
+// DefaultURL .
+const DefaultURL = `https://www.youtube.com/`
+
 var mutex sync.Mutex
 
 // TestOne .
-func TestOne(outbound *data.Outbound) (duration time.Duration, e error) {
+func TestOne(outbound *data.Outbound, url string) (duration time.Duration, e error) {
 	mutex.Lock()
-	duration, e = testOne(outbound, 10000-1989, "https://www.youtube.com/")
+	duration, e = testOne(outbound, 10000-1989, url)
 	mutex.Unlock()
 	return
 }

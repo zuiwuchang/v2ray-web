@@ -85,7 +85,10 @@ case $1 in
 			if [[ $GOARCH == 386 ]];then
 				dst=linux.386.tar.gz
 			fi
-			cd "$DirRoot/bin" && tar -zcvf $dst "$Target"
+			cd "$DirRoot/bin" && tar -zcvf $dst "$Target" "$Target.jsonnet" \
+				geoip.dat geosite.dat \
+				v2ray-web.service \
+				run.sh view
 		fi
 	;;
 
@@ -109,7 +112,7 @@ case $1 in
 			if [[ $GOARCH == 386 ]];then
 				dst=darwin.386.tar.gz
 			fi
-			cd "$DirRoot/bin" && tar -zcvf $dst "$Target"
+			cd "$DirRoot/bin" && tar -zcvf $dst "$Target" "$Target.jsonnet"
 		fi
 	;;
 
@@ -133,7 +136,10 @@ case $1 in
 			if [[ $GOARCH == 386 ]];then
 				dst=windows.386.tar.gz
 			fi
-			cd "$DirRoot/bin" && tar -zcvf $dst "$Target.exe"
+			cd "$DirRoot/bin" && tar -zcvf $dst "$Target.exe" "$Target.jsonnet" \
+				geoip.dat geosite.dat \
+				v2ray-web-service.xml v2ray-web-service.exe \
+				run.bat view
 		fi
 	;;
 

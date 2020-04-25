@@ -53,7 +53,8 @@ func NewServer(l net.Listener, root string) (server *Server, e error) {
 		if info.IsDir() {
 			return
 		}
-		route := "/angular" + path[count:]
+
+		route := "/angular" + strings.ReplaceAll(path[count:], `\`, `/`)
 		m[route] = path
 		return
 	})
@@ -749,7 +750,7 @@ func (s *Server) proxyTest(ws *websocket.Conn) {
 		return
 	}
 	defer ws.Close()
-	ctx := speed.New()
+	ctx := speed.New(s.getURL())
 	go ctx.Run()
 	go func() {
 		var e error
@@ -855,6 +856,24 @@ func (s *Server) proxyStatus(ws *websocket.Conn) {
 		}
 	}
 }
+func (s *Server) getURL() (url string) {
+	var mSettings manipulator.Settings
+	result, e := mSettings.Get()
+	if e == nil {
+		url = strings.TrimSpace(result.URL)
+		if !strings.HasPrefix(url, "http://") && !strings.HasPrefix(url, "https://") {
+			url = speed.DefaultURL
+		}
+	} else {
+		if ce := logger.Logger.Check(zap.WarnLevel, "get settings error"); ce != nil {
+			ce.Write(
+				zap.Error(e),
+			)
+		}
+		url = speed.DefaultURL
+	}
+	return
+}
 func (s *Server) proxyTestOne(helper Helper) (e error) {
 	e = s.checkSession(helper)
 	if e != nil {
@@ -865,7 +884,8 @@ func (s *Server) proxyTestOne(helper Helper) (e error) {
 	if e != nil {
 		return
 	}
-	duration, e := speed.TestOne(&params)
+
+	duration, e := speed.TestOne(&params, s.getURL())
 	if e != nil {
 		return
 	}

@@ -1,0 +1,10 @@
+<configuration>
+   <id>v2ray-web-service</id>
+   <name>V2ray Web Service</name>
+   <description>V2ray Web UI for windows</description>
+   <workingdirectory>%BASE%</workingdirectory>
+   <executable>%BASE%\v2ray-web.exe</executable>
+   <startargument>web</startargument>
+   <log mode="none"/>
+   <onfailure action="restart" delay="10 sec"/>
+</configuration>
