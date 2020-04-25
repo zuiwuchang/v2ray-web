@@ -1,0 +1,68 @@
+<ng-container *ngIf="ready;then readyView;else notReadyView"></ng-container>
+
+<ng-template #notReadyView>
+    <div>
+        <p>
+            <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+        </p>
+        <p>
+            <ng-container i18n>connecting to server, please wait...</ng-container>
+        </p>
+    </div>
+</ng-template>
+<ng-template #readyView>
+    <ng-container *ngIf="err;then errView;else okView"></ng-container>
+</ng-template>
+<ng-template #errView>
+    <p>
+        {{err}}
+    </p>
+    <button mat-stroked-button color="primary" i18n (click)="load()">Refresh</button>
+
+</ng-template>
+<ng-template #okView>
+    <mat-card>
+        <mat-card-title i18n>iptables Template</mat-card-title>
+        <mat-card-content>
+            <div>
+                <mat-form-field class="full-width">
+                    <mat-label i18n>shell</mat-label>
+                    <input matInput [disabled]="disabled" [(ngModel)]="context.shell">
+                </mat-form-field>
+            </div>
+            <div>
+                <mat-form-field class="full-width">
+                    <mat-label i18n>iptables view</mat-label>
+                    <textarea matInput [disabled]="disabled" rows="1" spellcheck="false" autocapitalize="off"
+                        autocomplete="off" autocorrect="off" [(ngModel)]="context.view"></textarea>
+                </mat-form-field>
+            </div>
+            <div>
+                <mat-form-field class="full-width">
+                    <mat-label i18n>iptables clear</mat-label>
+                    <textarea matInput [disabled]="disabled" rows="3" spellcheck="false" autocapitalize="off"
+                        autocomplete="off" autocorrect="off" [(ngModel)]="context.clear"></textarea>
+                </mat-form-field>
+            </div>
+            <div>
+                <mat-form-field class="full-width">
+                    <mat-label i18n>iptables init</mat-label>
+                    <textarea matInput [disabled]="disabled" rows="10" spellcheck="false" autocapitalize="off"
+                        autocomplete="off" autocorrect="off" [(ngModel)]="context.init"></textarea>
+                </mat-form-field>
+            </div>
+
+        </mat-card-content>
+        <mat-card-actions>
+            <button mat-stroked-button [disabled]="disabled" (click)="onClickSave()" i18n>Save</button>
+            <button mat-stroked-button [disabled]="disabled" (click)="onClickResetDefault()" i18n>Reset Default</button>
+        </mat-card-actions>
+    </mat-card>
+    <br>
+    <mat-card>
+        <mat-card-title>Context</mat-card-title>
+        <mat-card-content>
+            <pre>{{contextText}}</pre>
+        </mat-card-content>
+    </mat-card>
+</ng-template>

@@ -5,7 +5,7 @@ import { ServerAPI, getWebSocketAddr } from 'src/app/core/core/api';
 import { ToasterService } from 'angular2-toaster';
 import { I18nService } from 'src/app/core/i18n/i18n.service';
 import { Utils } from 'src/app/core/utils';
-import { isArray, isString } from 'util';
+import { isArray, isString, isNumber } from 'util';
 import { MatDialog } from '@angular/material/dialog';
 import { AddComponent } from '../add/add.component';
 import { EditComponent } from '../edit/edit.component';
@@ -361,11 +361,85 @@ export class ViewPanelComponent implements OnInit, OnDestroy {
       this._disabled = false
     })
   }
+  onClickTestOne(element: Element) {
+    this._disabled = true
+    element.request = true
+    element.error = undefined
+    element.duration = undefined
+    this.httpClient.post<number>(ServerAPI.proxy.testOne, element.outbound).toPromise().then((data) => {
+      if (this._closed) {
+        return
+      }
+      if (isNumber(data)) {
+        element.duration = data
+      }
+      this.toasterService.pop('success',
+        this.i18nService.get('test speed success'),
+        `delay ${element.duration} ms`,
+      )
+    }, (e) => {
+      if (this._closed) {
+        return
+      }
+      console.warn(e)
+      this.toasterService.pop('error',
+        this.i18nService.get('error'),
+        Utils.resolveError(e),
+      )
+      element.error = Utils.resolveError(e)
+    }).finally(() => {
+      element.request = undefined
+      if (this._closed) {
+        return
+      }
+      this._disabled = false
+    })
+  }
   onClickSetIPTables(element: Element) {
-    console.log("set iptables", element)
+    this._disabled = true
+    this.httpClient.post(ServerAPI.iptables.init, element.outbound).toPromise().then(() => {
+      if (this._closed) {
+        return
+      }
+      this.toasterService.pop('success',
+        this.i18nService.get('success'),
+        this.i18nService.get('iptables has been init'),
+      )
+    }, (e) => {
+      if (this._closed) {
+        return
+      }
+      console.warn(e)
+      this.toasterService.pop('error',
+        this.i18nService.get('error'),
+        Utils.resolveError(e),
+      )
+    }).finally(() => {
+      this._disabled = false
+    })
   }
   onClickRestoreIPTables(element: Element) {
-    console.log("restore iptables", element)
+    this._disabled = true
+    this.httpClient.post(ServerAPI.iptables.restore, element.outbound).toPromise().then(() => {
+      if (this._closed) {
+        return
+      }
+      this.toasterService.pop('success',
+        this.i18nService.get('success'),
+        this.i18nService.get('iptables has been restore'),
+      )
+    }, (e) => {
+      if (this._closed) {
+        return
+      }
+      console.warn(e)
+      this.toasterService.pop('error',
+        this.i18nService.get('error'),
+        Utils.resolveError(e),
+      )
+    }).finally(() => {
+      this._disabled = false
+    })
   }
   onClickEdit(element: Element) {
     this.matDialog.open(EditComponent, {

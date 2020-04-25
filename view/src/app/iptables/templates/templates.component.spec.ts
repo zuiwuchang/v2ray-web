@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { IptablesTemplateComponent } from './iptables-template.component';
+import { TemplatesComponent } from './templates.component';
 
-describe('IptablesTemplateComponent', () => {
-  let component: IptablesTemplateComponent;
-  let fixture: ComponentFixture<IptablesTemplateComponent>;
+describe('TemplatesComponent', () => {
+  let component: TemplatesComponent;
+  let fixture: ComponentFixture<TemplatesComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ IptablesTemplateComponent ]
+      declarations: [ TemplatesComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(IptablesTemplateComponent);
+    fixture = TestBed.createComponent(TemplatesComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

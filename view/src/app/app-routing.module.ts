@@ -1,8 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { HomeComponent } from './app/home/home.component';
-import { IptablesSaveComponent } from './app/iptables/iptables-save/iptables-save.component';
-import { IptablesTemplateComponent } from './app/iptables/iptables-template/iptables-template.component';
 const routes: Routes = [
   {
     path: '',
@@ -17,12 +15,8 @@ const routes: Routes = [
     loadChildren: () => import('./user/user.module').then(m => m.UserModule),
   },
   {
-    path: 'iptables/template',
-    component: IptablesTemplateComponent,
-  },
-  {
-    path: 'iptables/save',
-    component: IptablesSaveComponent,
+    path: 'iptables',
+    loadChildren: () => import('./iptables/iptables.module').then(m => m.IptablesModule),
   },
   {
     path: 'v2ray',

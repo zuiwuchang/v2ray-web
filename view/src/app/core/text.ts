@@ -1,6 +1,7 @@
 export const ContextText = `{
     Vnext string
     StreamSettings string
+    BasePath string
     AddIP string
     Outbound {
       Name string 
@@ -158,3 +159,4 @@ export const V2rayTemplate = `{
       ]
   }
 }`
+

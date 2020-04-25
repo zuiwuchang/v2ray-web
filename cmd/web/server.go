@@ -8,6 +8,8 @@ import (
 	"io/ioutil"
 	"net"
 	"net/http"
+	"os/exec"
+	"strings"
 	"sync/atomic"
 	"text/template"
 
@@ -71,6 +73,13 @@ func (s *Server) setAPI() {
 		"/api/proxy/clear":               s.proxyClear,
 		"/api/proxy/start":               s.proxyStart,
 		"/api/proxy/stop":                s.proxyStop,
+		"/api/proxy/test":                s.proxyTestOne,
+		"/api/iptables/view":             s.iptablesView,
+		"/api/iptables/get":              s.iptablesGet,
+		"/api/iptables/get/default":      s.iptablesGetDefault,
+		"/api/iptables/put":              s.iptablesPut,
+		"/api/iptables/restore":          s.iptablesRestore,
+		"/api/iptables/init":             s.iptablesInit,
 	}
 }
 
@@ -132,6 +141,21 @@ func (s *Server) getSession(helper Helper) (session *cookie.Session, e error) {
 		return
 	}
 	session, e = cookie.FromCookie(c.Value)
+	return
+}
+func (s *Server) checkRequest(request *http.Request) (e error) {
+	c, e := request.Cookie(cookie.CookieName)
+	if e != nil {
+		return
+	}
+	session, e := cookie.FromCookie(c.Value)
+	if e != nil {
+		return
+	}
+	if !session.Root {
+		e = errors.New("Permission denied")
+		return
+	}
 	return
 }
 func (s *Server) checkSession(helper Helper) (e error) {
@@ -575,6 +599,11 @@ func (s *Server) proxyStop(helper Helper) (e error) {
 	return
 }
 func (s *Server) proxyTest(ws *websocket.Conn) {
+	e := s.checkRequest(ws.Request())
+	if e != nil {
+		ws.Close()
+		return
+	}
 	defer ws.Close()
 	ctx := speed.New()
 	go ctx.Run()
@@ -681,4 +710,178 @@ func (s *Server) proxyStatus(ws *websocket.Conn) {
 			}
 		}
 	}
+}
+func (s *Server) proxyTestOne(helper Helper) (e error) {
+	e = s.checkSession(helper)
+	if e != nil {
+		return
+	}
+	var params data.Outbound
+	e = helper.BodyJSON(&params)
+	if e != nil {
+		return
+	}
+	duration, e := speed.TestOne(&params)
+	if e != nil {
+		return
+	}
+	helper.RenderJSON(duration.Milliseconds())
+	return
+}
+func (s *Server) iptablesView(helper Helper) (e error) {
+	e = s.checkSession(helper)
+	if e != nil {
+		return
+	}
+	var mSettings manipulator.Settings
+	iptables, e := mSettings.GetIPtables()
+	if e != nil {
+		return
+	}
+	if strings.TrimSpace(iptables.View) == "" {
+		return
+	}
+	e = s.renderCommand(helper, iptables.Shell, iptables.View)
+	return
+}
+
+func (s *Server) iptablesGet(helper Helper) (e error) {
+	e = s.checkSession(helper)
+	if e != nil {
+		return
+	}
+	var mSettings manipulator.Settings
+	iptables, e := mSettings.GetIPtables()
+	if e != nil {
+		return
+	}
+	helper.RenderJSON(iptables)
+	return
+}
+func (s *Server) iptablesGetDefault(helper Helper) (e error) {
+	e = s.checkSession(helper)
+	if e != nil {
+		return
+	}
+	var iptables data.IPTables
+	iptables.ResetDefault()
+	helper.RenderJSON(&iptables)
+	return
+}
+func (s *Server) iptablesPut(helper Helper) (e error) {
+	e = s.checkSession(helper)
+	if e != nil {
+		return
+	}
+	var params data.IPTables
+	e = helper.BodyJSON(&params)
+	if e != nil {
+		return
+	}
+	var mSettings manipulator.Settings
+	e = mSettings.PutIPtables(&params)
+	if e != nil {
+		return
+	}
+	return
+}
+func (s *Server) getTemplate(name string, outbound *data.Outbound, text string) (result string, e error) {
+	t := template.New(name)
+	t, e = t.Parse(text)
+	if e != nil {
+		return
+	}
+	ctx, e := outbound.ToContext()
+	if e != nil {
+		return
+	}
+	var buffer bytes.Buffer
+	e = t.Execute(&buffer, ctx)
+	if e != nil {
+		return
+	}
+	result = buffer.String()
+	return
+}
+func (s *Server) iptablesRestore(helper Helper) (e error) {
+	e = s.checkSession(helper)
+	if e != nil {
+		return
+	}
+	var params data.Outbound
+	e = helper.BodyJSON(&params)
+	if e != nil {
+		return
+	}
+	var mSettings manipulator.Settings
+	iptables, e := mSettings.GetIPtables()
+	if e != nil {
+		return
+	}
+	if strings.TrimSpace(iptables.Clear) == "" {
+		e = errors.New("clear command nil")
+		return
+	}
+	e = s.renderCommand(helper, iptables.Shell, iptables.Clear)
+	return
+}
+func (s *Server) iptablesInit(helper Helper) (e error) {
+	e = s.checkSession(helper)
+	if e != nil {
+		return
+	}
+	var params data.Outbound
+	e = helper.BodyJSON(&params)
+	if e != nil {
+		return
+	}
+	var mSettings manipulator.Settings
+	iptables, e := mSettings.GetIPtables()
+	if e != nil {
+		return
+	}
+	if strings.TrimSpace(iptables.Init) == "" {
+		e = errors.New("init command nil")
+		return
+	}
+	if strings.TrimSpace(iptables.Clear) != "" {
+		var bufferError bytes.Buffer
+		var bufferOut bytes.Buffer
+		buffer := bytes.NewBufferString(iptables.Clear)
+		cmd := exec.Command(iptables.Shell)
+		cmd.Stdin = buffer
+		cmd.Stdout = &bufferOut
+		cmd.Stderr = &bufferError
+		e = cmd.Run()
+		if e != nil {
+			if bufferError.Len() != 0 {
+				e = errors.New(bufferError.String())
+			}
+			return
+		}
+	}
+	text, e := s.getTemplate("init", &params, iptables.Init)
+	if e != nil {
+		return
+	}
+	e = s.renderCommand(helper, iptables.Shell, text)
+	return
+}
+func (s *Server) renderCommand(helper Helper, shell, text string) (e error) {
+	var bufferError bytes.Buffer
+	var bufferOut bytes.Buffer
+	buffer := bytes.NewBufferString(text)
+	cmd := exec.Command(shell)
+	cmd.Stdin = buffer
+	cmd.Stdout = &bufferOut
+	cmd.Stderr = &bufferError
+	e = cmd.Run()
+	if e != nil {
+		if bufferError.Len() != 0 {
+			e = errors.New(bufferError.String())
+		}
+		return
+	}
+	helper.RenderJSON(bufferOut.String())
+	return
 }

@@ -28,6 +28,14 @@
           <context context-type="linenumber">8</context>
         </context-group>
         <context-group purpose="location">
+          <context context-type="sourcefile">src/app/iptables/templates/templates.component.html</context>
+          <context context-type="linenumber">9</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/iptables/view/view.component.html</context>
+          <context context-type="linenumber">8</context>
+        </context-group>
+        <context-group purpose="location">
           <context context-type="sourcefile">src/app/v2ray/settings/settings.component.html</context>
           <context context-type="linenumber">9</context>
         </context-group>
@@ -265,12 +273,20 @@
           <context context-type="sourcefile">src/app/shared/navigation-bar/navigation-bar.component.html</context>
           <context context-type="linenumber">53</context>
         </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/iptables/templates/templates.component.html</context>
+          <context context-type="linenumber">25</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="f70f0ffae438310c9493c6be85796b96402e1df1" datatype="html">
         <source>iptables-save</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/shared/navigation-bar/navigation-bar.component.html</context>
           <context context-type="linenumber">59</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/iptables/view/view.component.html</context>
+          <context context-type="linenumber">25</context>
         </context-group>
       </trans-unit>
       <trans-unit id="6ad31729632818476420bb0f698d617436263675" datatype="html">
@@ -480,6 +496,27 @@
           <context context-type="linenumber">31</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="70b2c08b093212e1d30d89420394536db10917c9" datatype="html">
+        <source>test speed success</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.component.html</context>
+          <context context-type="linenumber">32</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="6c437a7cb79e58f6a2892cd348d61a1ebbfdaac1" datatype="html">
+        <source>iptables has been init</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.component.html</context>
+          <context context-type="linenumber">33</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="35f6f1b96ec3515ca474ce1c31482f5399d6bd5a" datatype="html">
+        <source>iptables has been restore</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.component.html</context>
+          <context context-type="linenumber">34</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="bd8031684042b2017b2fa8365970e7c8ae5d99b5" datatype="html">
         <source>Welcome, you are using the v2ray-web, please log in online.</source>
         <context-group purpose="location">
@@ -495,6 +532,14 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/user/list/list.component.html</context>
+          <context context-type="linenumber">19</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/iptables/templates/templates.component.html</context>
+          <context context-type="linenumber">20</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/iptables/view/view.component.html</context>
           <context context-type="linenumber">19</context>
         </context-group>
         <context-group purpose="location">
@@ -661,6 +706,10 @@
           <context context-type="sourcefile">src/app/app/view-panel/view-panel.component.html</context>
           <context context-type="linenumber">21</context>
         </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app/view-panel/view-panel.component.html</context>
+          <context context-type="linenumber">67</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="5731c861d8ad343c4c1584450f506a85503c6c5f" datatype="html">
         <source>add element</source>
@@ -705,21 +754,21 @@
         <source>set iptables</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app/view-panel/view-panel.component.html</context>
-          <context context-type="linenumber">67</context>
+          <context context-type="linenumber">72</context>
         </context-group>
       </trans-unit>
       <trans-unit id="c62e6d20d0ae4cebee1b6ec8e4a810cdb972a92c" datatype="html">
         <source>restore iptables</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app/view-panel/view-panel.component.html</context>
-          <context context-type="linenumber">71</context>
+          <context context-type="linenumber">76</context>
         </context-group>
       </trans-unit>
       <trans-unit id="a568d6cc7b8a3f14399663426bb1b4fc137b1a8d" datatype="html">
         <source>edit</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app/view-panel/view-panel.component.html</context>
-          <context context-type="linenumber">76</context>
+          <context context-type="linenumber">81</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/user/list/list.component.html</context>
@@ -734,7 +783,7 @@
         <source>delete</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app/view-panel/view-panel.component.html</context>
-          <context context-type="linenumber">80</context>
+          <context context-type="linenumber">85</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/user/list/list.component.html</context>
@@ -784,25 +833,61 @@
           <context context-type="linenumber">43</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="370507ed6a83758f53e05b2a330d6faea39626b9" datatype="html">
+        <source>shell</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/iptables/templates/templates.component.html</context>
+          <context context-type="linenumber">29</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="8fbe7286ea381424505d38f33b17e3d64344fefc" datatype="html">
+        <source>iptables view</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/iptables/templates/templates.component.html</context>
+          <context context-type="linenumber">35</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="74d6cba38bacb9b14daf822a3d45cbd30bef362b" datatype="html">
+        <source>iptables clear</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/iptables/templates/templates.component.html</context>
+          <context context-type="linenumber">42</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="aa5fe3cda3c1cbae4a8ed383043471a2f318616f" datatype="html">
+        <source>iptables init</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/iptables/templates/templates.component.html</context>
+          <context context-type="linenumber">49</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="52c9a103b812f258bcddc3d90a6e3f46871d25fe" datatype="html">
         <source>Save</source>
         <context-group purpose="location">
+          <context context-type="sourcefile">src/app/iptables/templates/templates.component.html</context>
+          <context context-type="linenumber">57</context>
+        </context-group>
+        <context-group purpose="location">
           <context context-type="sourcefile">src/app/v2ray/settings/settings.component.html</context>
-          <context context-type="linenumber">32</context>
+          <context context-type="linenumber">34</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="0523c2c3150b72f6c9d4dca97ce533f61f3d7be3" datatype="html">
+        <source>Reset Default</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/iptables/templates/templates.component.html</context>
+          <context context-type="linenumber">58</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/v2ray/settings/settings.component.html</context>
+          <context context-type="linenumber">36</context>
         </context-group>
       </trans-unit>
       <trans-unit id="a79d938b5ed20249b4ab6bef86c12633d2f346a0" datatype="html">
         <source>Test</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/v2ray/settings/settings.component.html</context>
-          <context context-type="linenumber">33</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="0523c2c3150b72f6c9d4dca97ce533f61f3d7be3" datatype="html">
-        <source>Reset Default</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/v2ray/settings/settings.component.html</context>
-          <context context-type="linenumber">34</context>
+          <context context-type="linenumber">35</context>
         </context-group>
       </trans-unit>
       <trans-unit id="0b16d4490e0d8606145b898eed2b7049f9e9c6fa" datatype="html">

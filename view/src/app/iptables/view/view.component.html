@@ -1,0 +1,31 @@
+<ng-container *ngIf="ready;then readyView;else notReadyView"></ng-container>
+<ng-template #notReadyView>
+    <div>
+        <p>
+            <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+        </p>
+        <p>
+            <ng-container i18n>connecting to server, please wait...</ng-container>
+        </p>
+    </div>
+</ng-template>
+<ng-template #readyView>
+    <ng-container *ngIf="err;then errView;else okView"></ng-container>
+</ng-template>
+<ng-template #errView>
+    <p>
+        {{err}}
+    </p>
+    <button mat-stroked-button color="primary" i18n (click)="load()">Refresh</button>
+
+</ng-template>
+<ng-template #okView>
+    <mat-card>
+        <mat-card-title>
+            <ng-container i18n>iptables-save</ng-container>
+        </mat-card-title>
+        <mat-card-content>
+            <pre>{{text}}</pre>
+        </mat-card-content>
+    </mat-card>
+</ng-template>

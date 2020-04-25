@@ -109,6 +109,7 @@ func (o *Outbound) ToContext() (context *OutboundContext, e error) {
 		AddIP:          str,
 		Vnext:          utils.BytesToString(vnextBytes),
 		StreamSettings: utils.BytesToString(streamSettingsBytes),
+		BasePath:       utils.BasePath(),
 	}
 	return
 }
@@ -119,4 +120,5 @@ type OutboundContext struct {
 	Vnext          string
 	StreamSettings string
 	AddIP          string
+	BasePath       string
 }

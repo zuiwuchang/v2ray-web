@@ -32,8 +32,17 @@ export const ServerAPI = {
         clear: `${root}/proxy/clear`,
         start: `${root}/proxy/start`,
         stop: `${root}/proxy/stop`,
+        testOne: `${root}/proxy/test`,
         test: `${root}/ws/proxy/test`,
         status: `${root}/ws/proxy/status`,
+    },
+    iptables: {
+        view: `${root}/iptables/view`,
+        get: `${root}/iptables/get`,
+        getDefault: `${root}/iptables/get/default`,
+        put: `${root}/iptables/put`,
+        init: `${root}/iptables/init`,
+        restore: `${root}/iptables/restore`,
     },
 }
 export function getWebSocketAddr(path: string): string {

@@ -62,6 +62,11 @@
                 <mat-icon>menu</mat-icon>
             </button>
             <mat-menu #menu="matMenu">
+                <button mat-menu-item (click)="onClickTestOne(item)" [disabled]="disabled">
+                    <mat-icon>network_check</mat-icon>
+                    <ng-container i18n>test speed</ng-container>
+                </button>
+                <mat-divider></mat-divider>
                 <button mat-menu-item (click)="onClickSetIPTables(item)" [disabled]="disabled">
                     <mat-icon>whatshot</mat-icon>
                     <ng-container i18n>set iptables</ng-container>

@@ -25,8 +25,6 @@ import { AppComponent } from './app.component';
 import { HomeComponent } from './app/home/home.component';
 
 import { SharedModule } from './shared/shared.module';
-import { IptablesSaveComponent } from './app/iptables/iptables-save/iptables-save.component';
-import { IptablesTemplateComponent } from './app/iptables/iptables-template/iptables-template.component';
 import { ViewComponent } from './app/view/view.component';
 import { ViewPanelComponent } from './app/view-panel/view-panel.component';
 import { AddComponent } from './app/add/add.component';
@@ -37,8 +35,6 @@ import { TopComponent } from './app/top/top.component';
   declarations: [
     AppComponent,
     HomeComponent,
-    IptablesSaveComponent,
-    IptablesTemplateComponent,
     ViewComponent,
     ViewPanelComponent,
     AddComponent,

@@ -1,10 +1,20 @@
 package data
 
-// SettingsBucket .
-const SettingsBucket = "settings"
+import (
+	"bytes"
+	"encoding/gob"
+)
 
-// SettingsV2ray .
-const SettingsV2ray = "v2ray"
+const (
+	// SettingsBucket .
+	SettingsBucket = "settings"
+
+	// SettingsV2ray v2ray 配置模板
+	SettingsV2ray = "v2ray"
+
+	// SettingsIPTables iptables 防火牆 命令模板
+	SettingsIPTables = "iptables"
+)
 
 // V2rayTemplate v2ray 默認設定模板
 const V2rayTemplate = `{
@@ -149,3 +159,101 @@ const V2rayTemplate = `{
         ]
     }
 }`
+
+func init() {
+	gob.Register(IPTables{})
+}
+
+// IPTables 防火牆設置
+type IPTables struct {
+	Shell string `json:"shell,omitempty"`
+	View  string `json:"view,omitempty"`
+	Clear string `json:"clear,omitempty"`
+	Init  string `json:"init,omitempty"`
+}
+
+// ResetDefault 重新 置爲默認值
+func (iptables *IPTables) ResetDefault() {
+	iptables.resetDefaultLinux()
+}
+
+// Decode 由 []byte 解碼
+func (iptables *IPTables) Decode(b []byte) (e error) {
+	decoder := gob.NewDecoder(bytes.NewBuffer(b))
+	e = decoder.Decode(iptables)
+	return
+}
+
+// Encoder 編碼到 []byte
+func (iptables *IPTables) Encoder() (b []byte, e error) {
+	var buffer bytes.Buffer
+	encoder := gob.NewEncoder(&buffer)
+	e = encoder.Encode(iptables)
+	if e == nil {
+		b = buffer.Bytes()
+	}
+	return
+}
+func (iptables *IPTables) resetDefaultLinux() {
+	iptables.Shell = "bash"
+	iptables.View = "iptables-save"
+	iptables.Clear = `iptables -t nat -F
+iptables -t filter -F
+iptables -t mangle -F`
+	iptables.Init = `# 本地 dns 端口
+DNS_Port=10053
+
+# Redir 程式 端口
+Redir_Port=10090
+
+# 要放行的 ip 數組 
+# 通常是 服務器地址 和 不需要代理的地址
+IP_Servers=(
+    {{.AddIP}}
+    114.114.114.114
+)
+
+# 定義 內網 地址
+# 一般不用修改
+IP_Private=(
+	0/8
+	127/8
+	10/8
+	169.254/16
+	172.16/12
+	192.168/16
+	224/4
+	240/4
+)
+
+# 創建 nat/tcp 轉發鏈 用於 轉發 tcp流
+iptables-save | egrep "^\:NAT_TCP" >> /dev/null
+if [[ $? != 0 ]];then
+    iptables -t nat -N NAT_TCP
+fi
+
+# 放行所有 內網地址
+for i in ${!IP_Private[@]}
+do
+    iptables -t nat -A NAT_TCP -d ${IP_Private[i]} -j RETURN
+done
+
+# 放行 發往 服務器的 數據
+for i in ${!IP_Servers[@]}
+do
+    iptables -t nat -A NAT_TCP -d ${IP_Servers[i]} -j RETURN
+done
+
+# 重定向 tcp 數據包到 redir 監聽端口
+iptables -t nat -A NAT_TCP -p tcp -j REDIRECT --to-ports $Redir_Port
+
+# 重定向 dns 查詢
+iptables -t nat -A OUTPUT -p udp -m udp --dport 53 -j DNAT --to-destination 127.0.0.1:$DNS_Port
+iptables -t nat -A OUTPUT -p tcp -m tcp --dport 53 -j DNAT --to-destination 127.0.0.1:$DNS_Port
+
+# 重定向 數據流向 NAT_TCP
+iptables -t nat -A OUTPUT -p tcp -j NAT_TCP
+iptables -t nat -A PREROUTING -p tcp -s 192.168/16 -j NAT_TCP
+iptables -t nat -A POSTROUTING -s 192.168/16 -j MASQUERADE
+`
+}

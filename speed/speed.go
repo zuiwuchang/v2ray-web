@@ -1,19 +1,8 @@
 package speed
 
 import (
-	"bytes"
-	"fmt"
-	"io/ioutil"
-	"net"
-	"net/http"
 	"sync"
 	"sync/atomic"
-	"text/template"
-	"time"
-
-	"golang.org/x/net/proxy"
-	"v2ray.com/core"
-	"v2ray.com/ext/tools/conf/serial"
 )
 
 // Context 速度測試 環境
@@ -110,79 +99,14 @@ func (s *Context) response(result *Result) (ok bool) {
 	return
 }
 func (s *Context) do(element *Element, port int) (result *Result, e error) {
-	// 查詢可用 tcp 端口
-	var target int
-	for i := 0; i < 2000; i++ {
-		str := fmt.Sprintf("127.0.0.1:%v", port+i)
-		l, e := net.Listen("tcp", str)
-		if e != nil {
-			continue
-		}
-		l.Close()
-		target = port + i
-		break
-	}
-	if target == 0 {
-		e = fmt.Errorf("not found idle port")
-		return
-	}
-	ctx, e := element.Outbound.ToContext()
-	if e != nil {
-		return
-	}
-	t := template.New("v2ray")
-	t, e = t.Parse(fmt.Sprintf(templateText, target))
-	if e != nil {
-		return
-	}
-	var buffer bytes.Buffer
-	e = t.Execute(&buffer, ctx)
-	if e != nil {
-		return
-	}
-	// v2ray
-	cnf, e := serial.LoadJSONConfig(&buffer)
-	if e != nil {
-		return
-	}
-	server, e := core.New(cnf)
-	if e != nil {
-		return
-	}
-	defer server.Close()
-	e = server.Start()
-	if e != nil {
-		return
-	}
-	last := time.Now()
-	e = s.http(element, target)
+	duration, e := testOne(&element.Outbound, port, "https://www.youtube.com/")
 	if e != nil {
 		return
 	}
 	result = &Result{
 		ID:       element.ID,
 		Status:   StatusOk,
-		Duration: time.Now().Sub(last).Milliseconds(),
-	}
-	return
-}
-func (s *Context) http(element *Element, port int) (e error) {
-	client := &http.Client{}
-	var dialer proxy.Dialer
-	dialer, e = proxy.SOCKS5("tcp", fmt.Sprintf("127.0.0.1:%v", port), nil, proxy.Direct)
-	if e != nil {
-		return
-	}
-	client.Timeout = time.Second * 5
-	client.Transport = &http.Transport{
-		Dial: dialer.Dial,
-	}
-	response, e := client.Get("https://www.youtube.com/")
-	if e != nil {
-		return
-	}
-	if response.Body != nil {
-		ioutil.ReadAll(response.Body)
+		Duration: duration.Milliseconds(),
 	}
 	return
 }
