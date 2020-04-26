@@ -9,6 +9,15 @@
     <div mat-dialog-content class="dialog-form-view">
         <div style="width: 100%;min-width: 380px;">
             <div class="row">
+                <mat-form-field style="flex: 1 1 auto;">
+                    <mat-label i18n>URL Import</mat-label>
+                    <input matInput [disabled]="disabled" cdkFocusInitial [(ngModel)]="url" name="url">
+                </mat-form-field>
+                <button type="button" mat-stroked-button (click)="onClickImport()">
+                    <ng-container i18n>Import</ng-container>
+                </button>
+            </div>
+            <div class="row">
                 <mat-form-field class="full-width">
                     <mat-label i18n>Outbound Name</mat-label>
                     <input matInput [disabled]="disabled" cdkFocusInitial [(ngModel)]="outbound.name" name="name">

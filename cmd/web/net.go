@@ -42,7 +42,7 @@ type Outbound struct {
 	// 用戶身份識別碼
 	UserID string `json:"id,omitempty"`
 	// 另外一個可選的用戶id
-	AlterID string `json:"AID,omitempty"`
+	AlterID string `json:"aid,omitempty"`
 	// Security 加密方式
 	Security string `json:"type,omitempty"`
 	// 用戶等級

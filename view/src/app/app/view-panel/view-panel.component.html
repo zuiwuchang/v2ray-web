@@ -1,3 +1,5 @@
+<button #btnClipboard class="hide" data-clipboard-text="">copy</button>
+
 <mat-expansion-panel>
     <mat-expansion-panel-header>
         <mat-panel-title>
@@ -65,6 +67,14 @@
                 <button mat-menu-item (click)="onClickTestOne(item)" [disabled]="disabled">
                     <mat-icon>network_check</mat-icon>
                     <ng-container i18n>test speed</ng-container>
+                </button>
+                <button mat-menu-item (click)="onClickShare(item)" [disabled]="disabled">
+                    <mat-icon>share</mat-icon>
+                    <ng-container i18n>Share QR Code</ng-container>
+                </button>
+                <button mat-menu-item (click)="onClickCopy(item)" [disabled]="disabled">
+                    <mat-icon>file_copy</mat-icon>
+                    <ng-container i18n>Copy Link</ng-container>
                 </button>
                 <mat-divider></mat-divider>
                 <button mat-menu-item (click)="onClickSetIPTables(item)" [disabled]="disabled">

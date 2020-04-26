@@ -26,6 +26,10 @@
           <context context-type="linenumber">8</context>
         </context-group>
         <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app/settings/settings.component.html</context>
+          <context context-type="linenumber">9</context>
+        </context-group>
+        <context-group purpose="location">
           <context context-type="sourcefile">src/app/user/list/list.component.html</context>
           <context context-type="linenumber">8</context>
         </context-group>
@@ -159,11 +163,11 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app/add/add.component.html</context>
-          <context context-type="linenumber">90</context>
+          <context context-type="linenumber">99</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app/edit/edit.component.html</context>
-          <context context-type="linenumber">90</context>
+          <context context-type="linenumber">99</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/user/add/add.component.html</context>
@@ -195,11 +199,11 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app/add/add.component.html</context>
-          <context context-type="linenumber">91</context>
+          <context context-type="linenumber">100</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app/edit/edit.component.html</context>
-          <context context-type="linenumber">91</context>
+          <context context-type="linenumber">100</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/user/add/add.component.html</context>
@@ -259,7 +263,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app/view-panel/view-panel.component.html</context>
-          <context context-type="linenumber">60</context>
+          <context context-type="linenumber">62</context>
         </context-group>
       </trans-unit>
       <trans-unit id="121cc5391cd2a5115bc2b3160379ee5b36cd7716" datatype="html">
@@ -271,7 +275,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app/settings/settings.component.html</context>
-          <context context-type="linenumber">3</context>
+          <context context-type="linenumber">26</context>
         </context-group>
       </trans-unit>
       <trans-unit id="505528c086187f9585a49c282f5db5fee9a3204e" datatype="html">
@@ -582,6 +586,14 @@
           <context context-type="linenumber">34</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="4db52c0cfb1ae9b7cacb238b8dfd39e55bda2b93" datatype="html">
+        <source>data copied</source>
+        <target>數據已拷貝到剪貼板</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.component.html</context>
+          <context context-type="linenumber">35</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="bd8031684042b2017b2fa8365970e7c8ae5d99b5" datatype="html">
         <source>Welcome, you are using the v2ray-web, please log in online.</source>
         <target>歡迎，你正在使用 v2ray-web,請登入系統。</target>
@@ -596,6 +608,10 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app/view/view.component.html</context>
           <context context-type="linenumber">19</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app/settings/settings.component.html</context>
+          <context context-type="linenumber">20</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/user/list/list.component.html</context>
@@ -626,9 +642,9 @@
           <context context-type="linenumber">2</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="0a6a80c09283f367eb1966ee1c200cba0ac7bbc9" datatype="html">
-        <source>Outbound Name</source>
-        <target>節點名稱</target>
+      <trans-unit id="188c92bb902961d9c98a2ac4d61c9db8d27bf5a7" datatype="html">
+        <source>URL Import</source>
+        <target>URL導入配置</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app/add/add.component.html</context>
           <context context-type="linenumber">13</context>
@@ -636,6 +652,30 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app/edit/edit.component.html</context>
           <context context-type="linenumber">13</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="a059709f71aa4c0ac219e160e78a738682ca6a36" datatype="html">
+        <source>Import</source>
+        <target>導入</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app/add/add.component.html</context>
+          <context context-type="linenumber">17</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app/edit/edit.component.html</context>
+          <context context-type="linenumber">17</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="0a6a80c09283f367eb1966ee1c200cba0ac7bbc9" datatype="html">
+        <source>Outbound Name</source>
+        <target>節點名稱</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app/add/add.component.html</context>
+          <context context-type="linenumber">22</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app/edit/edit.component.html</context>
+          <context context-type="linenumber">22</context>
         </context-group>
       </trans-unit>
       <trans-unit id="799da2b03e3fa2ddc3f207d19dbd2b15b6d79451" datatype="html">
@@ -643,11 +683,11 @@
         <target>連接地址</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app/add/add.component.html</context>
-          <context context-type="linenumber">19</context>
+          <context context-type="linenumber">28</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app/edit/edit.component.html</context>
-          <context context-type="linenumber">19</context>
+          <context context-type="linenumber">28</context>
         </context-group>
       </trans-unit>
       <trans-unit id="b6d314c3fd1d9ff0fc7a27f6845fbc06e8f8bcaf" datatype="html">
@@ -655,11 +695,11 @@
         <target>連接端口</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app/add/add.component.html</context>
-          <context context-type="linenumber">23</context>
+          <context context-type="linenumber">32</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app/edit/edit.component.html</context>
-          <context context-type="linenumber">23</context>
+          <context context-type="linenumber">32</context>
         </context-group>
       </trans-unit>
       <trans-unit id="c7de68565a5bde42ab1c9fc09df9a98472d6dff6" datatype="html">
@@ -667,11 +707,11 @@
         <target>連接協議</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app/add/add.component.html</context>
-          <context context-type="linenumber">29</context>
+          <context context-type="linenumber">38</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app/edit/edit.component.html</context>
-          <context context-type="linenumber">29</context>
+          <context context-type="linenumber">38</context>
         </context-group>
       </trans-unit>
       <trans-unit id="856b7df5e90c0728b2e8bc422b5d5145ed1b749b" datatype="html">
@@ -679,11 +719,11 @@
         <target>連接加密</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app/add/add.component.html</context>
-          <context context-type="linenumber">41</context>
+          <context context-type="linenumber">50</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app/edit/edit.component.html</context>
-          <context context-type="linenumber">41</context>
+          <context context-type="linenumber">50</context>
         </context-group>
       </trans-unit>
       <trans-unit id="d3a6be4eb574c1877b8a70712b216f96c750b87e" datatype="html">
@@ -691,11 +731,11 @@
         <target>連接主機名</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app/add/add.component.html</context>
-          <context context-type="linenumber">51</context>
+          <context context-type="linenumber">60</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app/edit/edit.component.html</context>
-          <context context-type="linenumber">51</context>
+          <context context-type="linenumber">60</context>
         </context-group>
       </trans-unit>
       <trans-unit id="9a6cd406062ee8d391db099f30d0595a642f3003" datatype="html">
@@ -703,11 +743,11 @@
         <target>連接路徑</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app/add/add.component.html</context>
-          <context context-type="linenumber">55</context>
+          <context context-type="linenumber">64</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app/edit/edit.component.html</context>
-          <context context-type="linenumber">55</context>
+          <context context-type="linenumber">64</context>
         </context-group>
       </trans-unit>
       <trans-unit id="a8b14e056adc98d3fd745de763f55e9f59dfa9ba" datatype="html">
@@ -715,11 +755,11 @@
         <target>用戶 uuid</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app/add/add.component.html</context>
-          <context context-type="linenumber">61</context>
+          <context context-type="linenumber">70</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app/edit/edit.component.html</context>
-          <context context-type="linenumber">61</context>
+          <context context-type="linenumber">70</context>
         </context-group>
       </trans-unit>
       <trans-unit id="71c675201f889fb142e83feda3c7c5d2cfb4b0b5" datatype="html">
@@ -727,11 +767,11 @@
         <target>用戶標識</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app/add/add.component.html</context>
-          <context context-type="linenumber">65</context>
+          <context context-type="linenumber">74</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app/edit/edit.component.html</context>
-          <context context-type="linenumber">65</context>
+          <context context-type="linenumber">74</context>
         </context-group>
       </trans-unit>
       <trans-unit id="761e752b7d1deb9eae84752d6fbd4379f3577042" datatype="html">
@@ -739,11 +779,11 @@
         <target>加密方案</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app/add/add.component.html</context>
-          <context context-type="linenumber">71</context>
+          <context context-type="linenumber">80</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app/edit/edit.component.html</context>
-          <context context-type="linenumber">71</context>
+          <context context-type="linenumber">80</context>
         </context-group>
       </trans-unit>
       <trans-unit id="35398f71bb556187e23b586c3cac8b845371322d" datatype="html">
@@ -751,11 +791,11 @@
         <target>用戶等級</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app/add/add.component.html</context>
-          <context context-type="linenumber">82</context>
+          <context context-type="linenumber">91</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app/edit/edit.component.html</context>
-          <context context-type="linenumber">82</context>
+          <context context-type="linenumber">91</context>
         </context-group>
       </trans-unit>
       <trans-unit id="8f84b0f53c6005d49a303ed08af14d1554770696" datatype="html">
@@ -771,7 +811,7 @@
         <target>手動節點</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app/view-panel/view-panel.component.html</context>
-          <context context-type="linenumber">6</context>
+          <context context-type="linenumber">8</context>
         </context-group>
       </trans-unit>
       <trans-unit id="5d43539fc358c3a548b9d487be821db73e2702ff" datatype="html">
@@ -779,7 +819,7 @@
         <target>排序</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app/view-panel/view-panel.component.html</context>
-          <context context-type="linenumber">17</context>
+          <context context-type="linenumber">19</context>
         </context-group>
       </trans-unit>
       <trans-unit id="8eab328b660ddb298fed494af1d0a4eb726d2450" datatype="html">
@@ -787,11 +827,11 @@
         <target>測試速度</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app/view-panel/view-panel.component.html</context>
-          <context context-type="linenumber">21</context>
+          <context context-type="linenumber">23</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app/view-panel/view-panel.component.html</context>
-          <context context-type="linenumber">67</context>
+          <context context-type="linenumber">69</context>
         </context-group>
       </trans-unit>
       <trans-unit id="5731c861d8ad343c4c1584450f506a85503c6c5f" datatype="html">
@@ -799,7 +839,7 @@
         <target>添加節點</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app/view-panel/view-panel.component.html</context>
-          <context context-type="linenumber">25</context>
+          <context context-type="linenumber">27</context>
         </context-group>
       </trans-unit>
       <trans-unit id="08b1bd3768097df7bcbbbb696dc5437cad578352" datatype="html">
@@ -807,7 +847,7 @@
         <target>清空節點</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app/view-panel/view-panel.component.html</context>
-          <context context-type="linenumber">28</context>
+          <context context-type="linenumber">30</context>
         </context-group>
       </trans-unit>
       <trans-unit id="9e13c1a5b08b67fb2af61f9b8a6044b9811a1590" datatype="html">
@@ -815,7 +855,7 @@
         <target>更新訂閱</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app/view-panel/view-panel.component.html</context>
-          <context context-type="linenumber">32</context>
+          <context context-type="linenumber">34</context>
         </context-group>
       </trans-unit>
       <trans-unit id="5f3e10c4138ad2ddc19b707afdec396e35dfd8db" datatype="html">
@@ -823,7 +863,7 @@
         <target>停止</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app/view-panel/view-panel.component.html</context>
-          <context context-type="linenumber">47</context>
+          <context context-type="linenumber">49</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app/top/top.component.html</context>
@@ -835,7 +875,23 @@
         <target>開始</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app/view-panel/view-panel.component.html</context>
-          <context context-type="linenumber">53</context>
+          <context context-type="linenumber">55</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="95fafd8457bb5590e647cb77db44bafa11a84078" datatype="html">
+        <source>Share QR Code</source>
+        <target>分享二維碼</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app/view-panel/view-panel.component.html</context>
+          <context context-type="linenumber">73</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="bb5a229a0c2259ed1cf6fe1c7a75eaffc43fa51f" datatype="html">
+        <source>Copy Link</source>
+        <target>複製鏈接</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app/view-panel/view-panel.component.html</context>
+          <context context-type="linenumber">77</context>
         </context-group>
       </trans-unit>
       <trans-unit id="a07ee795a42b64a196bc9b5c9e57a5110c56f82d" datatype="html">
@@ -843,7 +899,7 @@
         <target>設置防火牆</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app/view-panel/view-panel.component.html</context>
-          <context context-type="linenumber">72</context>
+          <context context-type="linenumber">82</context>
         </context-group>
       </trans-unit>
       <trans-unit id="c62e6d20d0ae4cebee1b6ec8e4a810cdb972a92c" datatype="html">
@@ -851,7 +907,7 @@
         <target>重置防火牆</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app/view-panel/view-panel.component.html</context>
-          <context context-type="linenumber">76</context>
+          <context context-type="linenumber">86</context>
         </context-group>
       </trans-unit>
       <trans-unit id="a568d6cc7b8a3f14399663426bb1b4fc137b1a8d" datatype="html">
@@ -859,7 +915,7 @@
         <target>編輯</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app/view-panel/view-panel.component.html</context>
-          <context context-type="linenumber">81</context>
+          <context context-type="linenumber">91</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/user/list/list.component.html</context>
@@ -875,7 +931,7 @@
         <target>刪除</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app/view-panel/view-panel.component.html</context>
-          <context context-type="linenumber">85</context>
+          <context context-type="linenumber">95</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/user/list/list.component.html</context>
@@ -899,23 +955,7 @@
         <target>服務已經停止</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app/top/top.component.html</context>
-          <context context-type="linenumber">14</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="c425b032137c2b7b83d9039011079cd817c57cec" datatype="html">
-        <source>run v2ray-core on start</source>
-        <target>啓動時自動運行v2ray-core</target>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/app/settings/settings.component.html</context>
-          <context context-type="linenumber">5</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="8ae98af879b3723fbc5ab7316750a508f4f4bd07" datatype="html">
-        <source>set iptables on start</source>
-        <target>啓動時自動設置防火牆規則</target>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/app/settings/settings.component.html</context>
-          <context context-type="linenumber">8</context>
+          <context context-type="linenumber">15</context>
         </context-group>
       </trans-unit>
       <trans-unit id="1e7d37da17e9cd0a0e5f590ca247f2a50645ee02" datatype="html">
@@ -923,7 +963,7 @@
         <target>速度測試網址</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app/settings/settings.component.html</context>
-          <context context-type="linenumber">12</context>
+          <context context-type="linenumber">30</context>
         </context-group>
       </trans-unit>
       <trans-unit id="06402956eab4a62919e9d1df4dc5718ce6dbfc75" datatype="html">
@@ -931,7 +971,23 @@
         <target>無效的網址</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app/settings/settings.component.html</context>
-          <context context-type="linenumber">15</context>
+          <context context-type="linenumber">33</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="c425b032137c2b7b83d9039011079cd817c57cec" datatype="html">
+        <source>run v2ray-core on start</source>
+        <target>啓動時自動運行v2ray-core</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app/settings/settings.component.html</context>
+          <context context-type="linenumber">37</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="8ae98af879b3723fbc5ab7316750a508f4f4bd07" datatype="html">
+        <source>set iptables on start</source>
+        <target>啓動時自動設置防火牆規則</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app/settings/settings.component.html</context>
+          <context context-type="linenumber">41</context>
         </context-group>
       </trans-unit>
       <trans-unit id="52c9a103b812f258bcddc3d90a6e3f46871d25fe" datatype="html">
@@ -939,7 +995,7 @@
         <target>保存</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app/settings/settings.component.html</context>
-          <context context-type="linenumber">20</context>
+          <context context-type="linenumber">48</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/iptables/templates/templates.component.html</context>

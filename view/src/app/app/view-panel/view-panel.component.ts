@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { Panel, Element } from '../view/source';
 import { HttpClient } from '@angular/common/http';
 import { ServerAPI, getWebSocketAddr } from 'src/app/core/core/api';
@@ -12,6 +12,8 @@ import { EditComponent } from '../edit/edit.component';
 import { ConfirmComponent } from 'src/app/shared/dialog/confirm/confirm.component';
 import { StatusService, Status } from 'src/app/core/status/status.service';
 import { Subscription } from 'rxjs';
+import * as ClipboardJS from 'clipboard'
+import { QrcodeComponent } from '../dialog/qrcode/qrcode.component';
 // 正在運行
 const StatusRunning = 1
 // 錯誤
@@ -29,7 +31,7 @@ interface Message {
   templateUrl: './view-panel.component.html',
   styleUrls: ['./view-panel.component.scss']
 })
-export class ViewPanelComponent implements OnInit, OnDestroy {
+export class ViewPanelComponent implements OnInit, OnDestroy, AfterViewInit {
   constructor(private httpClient: HttpClient,
     private toasterService: ToasterService,
     private i18nService: I18nService,
@@ -81,6 +83,23 @@ export class ViewPanelComponent implements OnInit, OnDestroy {
     for (let i = 0; i < source.length; i++) {
       source[i].request = undefined
     }
+    if (this._clipboard) {
+      this._clipboard.destroy();
+    }
+  }
+  private _clipboard: any = null
+  @ViewChild("btnClipboard")
+  private _btnClipboard: ElementRef
+  ngAfterViewInit() {
+    this._clipboard = new ClipboardJS(this._btnClipboard.nativeElement).on('success', () => {
+      this.toasterService.pop('success',
+        this.i18nService.get('success'),
+        this.i18nService.get("data copied"),
+      )
+    }).on('error', (evt) => {
+      console.error('Action:', evt.action);
+      console.error('Trigger:', evt.trigger);
+    });
   }
   onClickSort() {
     this.panel.source.sort(Element.compareDuration)
@@ -490,5 +509,32 @@ export class ViewPanelComponent implements OnInit, OnDestroy {
     }).finally(() => {
       this._disabled = false
     })
+  }
+  onClickCopy(element: Element) {
+    try {
+      const str = 'vmess://' + element.outbound.toBase64()
+      this._btnClipboard.nativeElement.setAttribute("data-clipboard-text", str)
+      this._btnClipboard.nativeElement.click()
+    } catch (e) {
+      console.warn(e)
+      this.toasterService.pop('error',
+        this.i18nService.get('error'),
+        Utils.resolveError(e),
+      )
+    }
+  }
+  onClickShare(element: Element) {
+    try {
+      const str = 'vmess://' + element.outbound.toBase64()
+      this.matDialog.open(QrcodeComponent, {
+        data: str,
+      })
+    } catch (e) {
+      console.warn(e)
+      this.toasterService.pop('error',
+        this.i18nService.get('error'),
+        Utils.resolveError(e),
+      )
+    }
   }
 }

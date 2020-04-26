@@ -33,6 +33,7 @@ import { AddComponent } from './app/add/add.component';
 import { EditComponent } from './app/edit/edit.component';
 import { TopComponent } from './app/top/top.component';
 import { SettingsComponent } from './app/settings/settings.component';
+import { QrcodeComponent } from './app/dialog/qrcode/qrcode.component';
 
 @NgModule({
   declarations: [
@@ -44,6 +45,7 @@ import { SettingsComponent } from './app/settings/settings.component';
     EditComponent,
     TopComponent,
     SettingsComponent,
+    QrcodeComponent,
   ],
   imports: [
     BrowserModule,
@@ -60,7 +62,7 @@ import { SettingsComponent } from './app/settings/settings.component';
     ToasterModule.forRoot(),
   ],
   providers: [ToasterService],
-  entryComponents: [AddComponent, EditComponent],
+  entryComponents: [AddComponent, EditComponent, QrcodeComponent],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

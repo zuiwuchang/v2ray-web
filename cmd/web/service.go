@@ -21,6 +21,7 @@ type ListenerStatus struct {
 	Run          bool   `json:"run,omitempty"`
 	ID           uint64 `json:"id,omitempty"`
 	Subscription uint64 `json:"subscription,omitempty"`
+	Name         string `json:"name,omitempty"`
 }
 
 // ListenerFunc .
@@ -92,6 +93,7 @@ func (s *_Service) Start(element *data.Element) (e error) {
 		s.notify(&ListenerStatus{
 			Run:          true,
 			ID:           element.ID,
+			Name:         element.Outbound.Name,
 			Subscription: element.Subscription,
 		})
 	} else {
@@ -112,7 +114,10 @@ func (s *_Service) Stop() {
 }
 func (s *_Service) notify(status *ListenerStatus) {
 	if s.status.Run {
-		if status.Run && s.status.ID == status.ID && s.status.Subscription == status.Subscription {
+		if status.Run &&
+			s.status.ID == status.ID &&
+			s.status.Subscription == status.Subscription &&
+			s.status.Name == status.Name {
 			return
 		}
 	} else if !status.Run {

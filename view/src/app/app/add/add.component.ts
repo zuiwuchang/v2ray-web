@@ -6,6 +6,7 @@ import { I18nService } from 'src/app/core/i18n/i18n.service';
 import { Utils } from 'src/app/core/utils';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Panel, Outbound, Element } from '../view/source';
+
 @Component({
   selector: 'app-add',
   templateUrl: './add.component.html',
@@ -67,5 +68,27 @@ export class AddComponent implements OnInit, OnDestroy {
     }).finally(() => {
       this._disabled = false
     })
+  }
+  url: string = ''
+  onClickImport() {
+    try {
+      let str = this.url.trim()
+      if (!str.startsWith('vmess://')) {
+        this.toasterService.pop('error',
+          this.i18nService.get('error'),
+          'url only support vmess',
+        )
+        return
+      }
+      str = str.substring('vmess://'.length)
+      const outbound = Outbound.fromBase64(str)
+      outbound.cloneTo(this.outbound)
+    } catch (e) {
+      console.warn(e)
+      this.toasterService.pop('error',
+        this.i18nService.get('error'),
+        e,
+      )
+    }
   }
 }

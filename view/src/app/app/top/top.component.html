@@ -6,6 +6,7 @@
             <mat-icon>stop</mat-icon>
         </button>
         <ng-container i18n>service has started</ng-container>
+        -> {{status.name}}
     </ng-template>
     <ng-template #stopedView>
         <button mat-icon-button [disabled]="disabled">

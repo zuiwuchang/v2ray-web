@@ -71,4 +71,26 @@ export class EditComponent implements OnInit, OnDestroy {
       this._disabled = false
     })
   }
+  url: string = ''
+  onClickImport() {
+    try {
+      let str = this.url.trim()
+      if (!str.startsWith('vmess://')) {
+        this.toasterService.pop('error',
+          this.i18nService.get('error'),
+          'url only support vmess',
+        )
+        return
+      }
+      str = str.substring('vmess://'.length)
+      const outbound = Outbound.fromBase64(str)
+      outbound.cloneTo(this.outbound)
+    } catch (e) {
+      console.warn(e)
+      this.toasterService.pop('error',
+        this.i18nService.get('error'),
+        e,
+      )
+    }
+  }
 }

@@ -2,10 +2,12 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { ServerAPI, getWebSocketAddr } from '../core/api';
 import { isString, isNumber } from 'util';
+
 export interface Status {
   run: boolean
   id?: number
   subscription?: number
+  name?: string
 }
 @Injectable({
   providedIn: 'root'
@@ -98,7 +100,10 @@ export class StatusService {
   private _notify(status: Status) {
     const last = this._subject.value
     if (status.run) {
-      if (last.run && status.id == last.id && status.subscription == last.subscription) {
+      if (last.run &&
+        status.id == last.id &&
+        status.subscription == last.subscription &&
+        status.name == last.name) {
         return
       }
     } else if (!last.run) {
@@ -116,6 +121,7 @@ export class StatusService {
       run: status.run,
       id: status.id,
       subscription: status.subscription,
+      name: status.name,
     })
   }
 }

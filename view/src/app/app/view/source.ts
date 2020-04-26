@@ -1,5 +1,5 @@
 import { isNumber, isObject, isString } from 'util'
-
+import { Base64 } from 'js-base64';
 export class Source {
     private _items = new Array<Panel>()
     private _keys = new Map<number, Panel>()
@@ -206,5 +206,41 @@ export class Outbound {
             other.alterID == this.alterID &&
             other.security == this.security &&
             other.level == this.level
+    }
+
+    static fromBase64(str: string): Outbound {
+        str = str.replace(/=+/, '')
+        str = Base64.decode(str)
+        const obj = JSON.parse(str)
+        const outbound = new Outbound()
+
+        outbound.name = obj.ps
+        outbound.add = obj.add
+        outbound.port = obj.port
+        outbound.host = obj.host
+        outbound.tls = obj.tls
+        outbound.net = obj.net
+        outbound.path = obj.path
+        outbound.userID = obj.id
+        outbound.alterID = obj.aid
+        outbound.security = obj.type
+        outbound.level = obj.v
+        return outbound
+    }
+    toBase64(): string {
+        const str = JSON.stringify({
+            ps: this.name,
+            add: this.add,
+            port: this.port,
+            host: this.host,
+            tls: this.tls,
+            net: this.net,
+            path: this.path,
+            id: this.userID,
+            aid: this.alterID,
+            type: this.security,
+            v: this.level,
+        })
+        return Base64.encode(str)
     }
 }
