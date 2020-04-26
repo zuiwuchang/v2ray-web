@@ -38,6 +38,9 @@ type Server struct {
 	apis map[string]handlerFunc
 	ws   map[string]websocket.Handler
 	m    map[string]string
+
+	// 開方的 公共 接口
+	pub  map[string]bool
 	root string
 }
 
@@ -46,6 +49,12 @@ func NewServer(l net.Listener, root string) (server *Server, e error) {
 	server = &Server{
 		l:    l,
 		root: root,
+		pub: map[string]bool{
+			"/api/ws/proxy/status": true,
+			"/api/app/version":     true,
+			"/api/app/restore":     true,
+			"/api/app/login":       true,
+		},
 	}
 	m := make(map[string]string)
 	count := len(root)
@@ -210,6 +219,17 @@ func (s *Server) ServeTLS(certFile, keyFile string) error {
 		certFile, keyFile,
 	)
 }
+func (s *Server) renderError(response http.ResponseWriter, statusCode int, e error) {
+	text := e.Error()
+	if text != "" {
+		header := response.Header()
+		header.Set("Content-Type", "text/plain; charset=UTF-8")
+	}
+	response.WriteHeader(statusCode)
+	if text != "" {
+		response.Write(utils.StringToBytes(text))
+	}
+}
 func (s *Server) ServeHTTP(response http.ResponseWriter, request *http.Request) {
 	route := request.URL.Path
 	if route == "/" ||
@@ -224,6 +244,13 @@ func (s *Server) ServeHTTP(response http.ResponseWriter, request *http.Request) 
 	}
 	wsHandler := s.ws[route]
 	if wsHandler != nil {
+		if !s.pub[route] {
+			e := s.checkRequest(request)
+			if e != nil {
+				s.renderError(response, http.StatusUnauthorized, e)
+				return
+			}
+		}
 		wsHandler.ServeHTTP(response, request)
 		return
 	}
@@ -243,6 +270,13 @@ func (s *Server) ServeHTTP(response http.ResponseWriter, request *http.Request) 
 	}
 	handler := s.apis[route]
 	if handler != nil {
+		if !s.pub[route] {
+			e := s.checkRequest(request)
+			if e != nil {
+				s.renderError(response, http.StatusUnauthorized, e)
+				return
+			}
+		}
 		e := handler(helper)
 		if e != nil {
 			helper.RenderError(e)
@@ -283,21 +317,7 @@ func (s *Server) checkRequest(request *http.Request) (e error) {
 	}
 	return
 }
-func (s *Server) checkSession(helper Helper) (e error) {
-	c, e := helper.request.Cookie(cookie.CookieName)
-	if e != nil {
-		return
-	}
-	session, e := cookie.FromCookie(c.Value)
-	if e != nil {
-		return
-	}
-	if !session.Root {
-		e = errors.New("Permission denied")
-		return
-	}
-	return
-}
+
 func (s *Server) version(helper Helper) (e error) {
 	helper.RenderJSON(map[string]string{
 		"platform": fmt.Sprintf("%v %v %v", runtime.GOOS, runtime.GOARCH, runtime.Version()),
@@ -362,11 +382,6 @@ func (s *Server) logout(helper Helper) (e error) {
 	return
 }
 func (s *Server) userList(helper Helper) (e error) {
-	e = s.checkSession(helper)
-	if e != nil {
-		return
-	}
-
 	var mUser manipulator.User
 	result, e := mUser.List()
 	if e != nil {
@@ -376,11 +391,6 @@ func (s *Server) userList(helper Helper) (e error) {
 	return
 }
 func (s *Server) userAdd(helper Helper) (e error) {
-	e = s.checkSession(helper)
-	if e != nil {
-		return
-	}
-
 	var params struct {
 		Name     string
 		Password string
@@ -394,11 +404,6 @@ func (s *Server) userAdd(helper Helper) (e error) {
 	return
 }
 func (s *Server) userRemove(helper Helper) (e error) {
-	e = s.checkSession(helper)
-	if e != nil {
-		return
-	}
-
 	var params struct {
 		Name string
 	}
@@ -411,11 +416,6 @@ func (s *Server) userRemove(helper Helper) (e error) {
 	return
 }
 func (s *Server) userPassword(helper Helper) (e error) {
-	e = s.checkSession(helper)
-	if e != nil {
-		return
-	}
-
 	var params struct {
 		Name     string
 		Password string
@@ -429,10 +429,6 @@ func (s *Server) userPassword(helper Helper) (e error) {
 	return
 }
 func (s *Server) v2rayGet(helper Helper) (e error) {
-	e = s.checkSession(helper)
-	if e != nil {
-		return
-	}
 	var mSettings manipulator.Settings
 	text, e := mSettings.GetV2ray()
 	if e != nil {
@@ -442,10 +438,6 @@ func (s *Server) v2rayGet(helper Helper) (e error) {
 	return
 }
 func (s *Server) v2rayPut(helper Helper) (e error) {
-	e = s.checkSession(helper)
-	if e != nil {
-		return
-	}
 	var params struct {
 		Text string
 	}
@@ -461,10 +453,6 @@ func (s *Server) v2rayPut(helper Helper) (e error) {
 	return
 }
 func (s *Server) v2rayTest(helper Helper) (e error) {
-	e = s.checkSession(helper)
-	if e != nil {
-		return
-	}
 	var params struct {
 		Text string
 	}
@@ -507,10 +495,6 @@ func (s *Server) v2rayTest(helper Helper) (e error) {
 	return
 }
 func (s *Server) subscriptionList(helper Helper) (e error) {
-	e = s.checkSession(helper)
-	if e != nil {
-		return
-	}
 	var mSubscription manipulator.Subscription
 	result, e := mSubscription.List()
 	if e != nil {
@@ -521,10 +505,6 @@ func (s *Server) subscriptionList(helper Helper) (e error) {
 }
 
 func (s *Server) subscriptionPut(helper Helper) (e error) {
-	e = s.checkSession(helper)
-	if e != nil {
-		return
-	}
 	var params data.Subscription
 	e = helper.BodyJSON(&params)
 	if e != nil {
@@ -539,10 +519,6 @@ func (s *Server) subscriptionPut(helper Helper) (e error) {
 	return
 }
 func (s *Server) subscriptionAdd(helper Helper) (e error) {
-	e = s.checkSession(helper)
-	if e != nil {
-		return
-	}
 	var params data.Subscription
 	e = helper.BodyJSON(&params)
 	if e != nil {
@@ -557,10 +533,6 @@ func (s *Server) subscriptionAdd(helper Helper) (e error) {
 	return
 }
 func (s *Server) subscriptionRemove(helper Helper) (e error) {
-	e = s.checkSession(helper)
-	if e != nil {
-		return
-	}
 	var params struct {
 		ID uint64
 	}
@@ -577,10 +549,6 @@ func (s *Server) subscriptionRemove(helper Helper) (e error) {
 	return
 }
 func (s *Server) proxyList(helper Helper) (e error) {
-	e = s.checkSession(helper)
-	if e != nil {
-		return
-	}
 	var mElement manipulator.Element
 	element, subscription, e := mElement.List()
 	if e != nil {
@@ -597,10 +565,6 @@ func (s *Server) proxyList(helper Helper) (e error) {
 	return
 }
 func (s *Server) proxyUpdate(helper Helper) (e error) {
-	e = s.checkSession(helper)
-	if e != nil {
-		return
-	}
 	var params struct {
 		ID uint64
 	}
@@ -631,10 +595,6 @@ func (s *Server) proxyUpdate(helper Helper) (e error) {
 	return
 }
 func (s *Server) proxyAdd(helper Helper) (e error) {
-	e = s.checkSession(helper)
-	if e != nil {
-		return
-	}
 	var params struct {
 		Subscription uint64
 		Outbound     data.Outbound
@@ -652,10 +612,6 @@ func (s *Server) proxyAdd(helper Helper) (e error) {
 	return
 }
 func (s *Server) proxyPut(helper Helper) (e error) {
-	e = s.checkSession(helper)
-	if e != nil {
-		return
-	}
 	var params struct {
 		ID           uint64
 		Subscription uint64
@@ -673,10 +629,6 @@ func (s *Server) proxyPut(helper Helper) (e error) {
 	return
 }
 func (s *Server) proxyRemove(helper Helper) (e error) {
-	e = s.checkSession(helper)
-	if e != nil {
-		return
-	}
 	var params struct {
 		ID           uint64
 		Subscription uint64
@@ -693,10 +645,6 @@ func (s *Server) proxyRemove(helper Helper) (e error) {
 	return
 }
 func (s *Server) proxyClear(helper Helper) (e error) {
-	e = s.checkSession(helper)
-	if e != nil {
-		return
-	}
 	var params struct {
 		Subscription uint64
 	}
@@ -712,10 +660,6 @@ func (s *Server) proxyClear(helper Helper) (e error) {
 	return
 }
 func (s *Server) proxyStart(helper Helper) (e error) {
-	e = s.checkSession(helper)
-	if e != nil {
-		return
-	}
 	var params data.Element
 	e = helper.BodyJSON(&params)
 	if e != nil {
@@ -737,19 +681,10 @@ func (s *Server) proxyStart(helper Helper) (e error) {
 	return
 }
 func (s *Server) proxyStop(helper Helper) (e error) {
-	e = s.checkSession(helper)
-	if e != nil {
-		return
-	}
 	srv.Stop()
 	return
 }
 func (s *Server) wsProxyTest(ws *websocket.Conn) {
-	e := s.checkRequest(ws.Request())
-	if e != nil {
-		ws.Close()
-		return
-	}
 	defer ws.Close()
 	ctx := speed.New(s.getURL())
 	go ctx.Run()
@@ -877,10 +812,6 @@ func (s *Server) getURL() (url string) {
 	return
 }
 func (s *Server) proxyTestOne(helper Helper) (e error) {
-	e = s.checkSession(helper)
-	if e != nil {
-		return
-	}
 	var params data.Outbound
 	e = helper.BodyJSON(&params)
 	if e != nil {
@@ -895,10 +826,6 @@ func (s *Server) proxyTestOne(helper Helper) (e error) {
 	return
 }
 func (s *Server) iptablesView(helper Helper) (e error) {
-	e = s.checkSession(helper)
-	if e != nil {
-		return
-	}
 	var mSettings manipulator.Settings
 	iptables, e := mSettings.GetIPtables()
 	if e != nil {
@@ -912,10 +839,6 @@ func (s *Server) iptablesView(helper Helper) (e error) {
 }
 
 func (s *Server) iptablesGet(helper Helper) (e error) {
-	e = s.checkSession(helper)
-	if e != nil {
-		return
-	}
 	var mSettings manipulator.Settings
 	iptables, e := mSettings.GetIPtables()
 	if e != nil {
@@ -925,20 +848,12 @@ func (s *Server) iptablesGet(helper Helper) (e error) {
 	return
 }
 func (s *Server) iptablesGetDefault(helper Helper) (e error) {
-	e = s.checkSession(helper)
-	if e != nil {
-		return
-	}
 	var iptables data.IPTables
 	iptables.ResetDefault()
 	helper.RenderJSON(&iptables)
 	return
 }
 func (s *Server) iptablesPut(helper Helper) (e error) {
-	e = s.checkSession(helper)
-	if e != nil {
-		return
-	}
 	var params data.IPTables
 	e = helper.BodyJSON(&params)
 	if e != nil {
@@ -970,10 +885,6 @@ func (s *Server) getTemplate(name string, outbound *data.Outbound, text string) 
 	return
 }
 func (s *Server) iptablesRestore(helper Helper) (e error) {
-	e = s.checkSession(helper)
-	if e != nil {
-		return
-	}
 	var params data.Outbound
 	e = helper.BodyJSON(&params)
 	if e != nil {
@@ -992,10 +903,6 @@ func (s *Server) iptablesRestore(helper Helper) (e error) {
 	return
 }
 func (s *Server) iptablesInit(helper Helper) (e error) {
-	e = s.checkSession(helper)
-	if e != nil {
-		return
-	}
 	var params data.Outbound
 	e = helper.BodyJSON(&params)
 	if e != nil {
@@ -1052,10 +959,6 @@ func (s *Server) renderCommand(helper Helper, shell, text string) (e error) {
 	return
 }
 func (s *Server) settingsGet(helper Helper) (e error) {
-	e = s.checkSession(helper)
-	if e != nil {
-		return
-	}
 	var mSettings manipulator.Settings
 	result, e := mSettings.Get()
 	if e != nil {
@@ -1065,10 +968,6 @@ func (s *Server) settingsGet(helper Helper) (e error) {
 	return
 }
 func (s *Server) settingsPut(helper Helper) (e error) {
-	e = s.checkSession(helper)
-	if e != nil {
-		return
-	}
 	var params data.Settings
 	e = helper.BodyJSON(&params)
 	if e != nil {
