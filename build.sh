@@ -139,7 +139,7 @@ case $1 in
 			cd "$DirRoot/bin" && tar -zcvf $dst "$Target.exe" "$Target.jsonnet" \
 				geoip.dat geosite.dat \
 				v2ray-web-service.xml v2ray-web-service.exe \
-				run.bat view
+				run.bat install.bat view
 		fi
 	;;
 
