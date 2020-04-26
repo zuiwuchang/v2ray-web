@@ -4,6 +4,7 @@ export const ServerAPI = {
     login: `${root}/app/login`,
     restore: `${root}/app/restore`,
     logout: `${root}/app/logout`,
+    logs: `${root}/ws/app/logs`,
     settings: {
         get: `${root}/settings/get`,
         put: `${root}/settings/put`,

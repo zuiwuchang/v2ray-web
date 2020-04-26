@@ -788,7 +788,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app/top/top.component.html</context>
-          <context context-type="linenumber">5</context>
+          <context context-type="linenumber">9</context>
         </context-group>
       </trans-unit>
       <trans-unit id="8f38ad0f2ac90714bdf91f991b77ffbf08979147" datatype="html">
@@ -868,6 +868,20 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app/top/top.component.html</context>
           <context context-type="linenumber">15</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="94268d1fbffa0c28cab03e57931f016c99307d10" datatype="html">
+        <source>Pause Display Logs</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app/top/top.component.html</context>
+          <context context-type="linenumber">21</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="eb3d5aefff38a814b76da74371cbf02c0789a1ef" datatype="html">
+        <source>Logs</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app/top/top.component.html</context>
+          <context context-type="linenumber">22</context>
         </context-group>
       </trans-unit>
       <trans-unit id="1e7d37da17e9cd0a0e5f590ca247f2a50645ee02" datatype="html">

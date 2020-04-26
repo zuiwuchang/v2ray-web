@@ -65,8 +65,9 @@ func NewServer(l net.Listener, root string) (server *Server, e error) {
 }
 func (s *Server) setWebsocket() {
 	s.ws = map[string]websocket.Handler{
-		"/api/ws/proxy/test":   websocket.Handler(s.proxyTest),
-		"/api/ws/proxy/status": websocket.Handler(s.proxyStatus),
+		"/api/ws/proxy/test":   websocket.Handler(s.wsProxyTest),
+		"/api/ws/proxy/status": websocket.Handler(s.wsProxyStatus),
+		"/api/ws/app/logs":     websocket.Handler(s.wsAppLogs),
 	}
 }
 func (s *Server) setAPI() {
@@ -743,7 +744,7 @@ func (s *Server) proxyStop(helper Helper) (e error) {
 	srv.Stop()
 	return
 }
-func (s *Server) proxyTest(ws *websocket.Conn) {
+func (s *Server) wsProxyTest(ws *websocket.Conn) {
 	e := s.checkRequest(ws.Request())
 	if e != nil {
 		ws.Close()
@@ -808,12 +809,12 @@ func (s *Server) proxyTest(ws *websocket.Conn) {
 	}
 	websocket.Message.Send(ws, "close")
 }
-func (s *Server) proxyStatus(ws *websocket.Conn) {
+func (s *Server) wsProxyStatus(ws *websocket.Conn) {
 	defer ws.Close()
 	cancel := make(chan struct{})
 	var closed int32
 	ch := make(chan *ListenerStatus, 5)
-	srv.AddListener(func(status *ListenerStatus) {
+	id := srv.AddListener(func(status *ListenerStatus) {
 		select {
 		case ch <- status:
 		case <-cancel:
@@ -855,6 +856,7 @@ func (s *Server) proxyStatus(ws *websocket.Conn) {
 			}
 		}
 	}
+	srv.RemoveListener(id)
 }
 func (s *Server) getURL() (url string) {
 	var mSettings manipulator.Settings
@@ -1075,4 +1077,44 @@ func (s *Server) settingsPut(helper Helper) (e error) {
 	var mSettings manipulator.Settings
 	e = mSettings.Put(&params)
 	return
+}
+func (s *Server) wsAppLogs(ws *websocket.Conn) {
+	defer ws.Close()
+	cancel := make(chan struct{})
+	var closed int32
+	ch := make(chan string, 5)
+	id := logs.AddListener(func(str string) {
+		select {
+		case ch <- str:
+		default:
+		}
+	})
+	go func() {
+		var msg string
+		var e error
+		for {
+			if e = websocket.Message.Receive(ws, &msg); e != nil {
+				break
+			}
+		}
+		if atomic.CompareAndSwapInt32(&closed, 0, 1) {
+			close(cancel)
+		}
+	}()
+	running := true
+	for running {
+		select {
+		case <-cancel:
+			running = false
+		case str := <-ch:
+			e := websocket.Message.Send(ws, str)
+			if e != nil {
+				if atomic.CompareAndSwapInt32(&closed, 0, 1) {
+					close(cancel)
+				}
+				running = false
+			}
+		}
+	}
+	logs.RemoveListener(id)
 }

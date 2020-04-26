@@ -62,6 +62,10 @@ export class StatusService {
       return
     }
     this._websocket = null
+    if (this._timer) {
+      clearInterval(this._timer)
+      this._timer = null
+    }
     this._rety()
   }
   private _onclose(evt: CloseEvent, websocket: WebSocket) {
@@ -70,6 +74,10 @@ export class StatusService {
       return
     }
     this._websocket = null
+    if (this._timer) {
+      clearInterval(this._timer)
+      this._timer = null
+    }
     this._rety()
   }
   private _rety() {
@@ -85,6 +93,7 @@ export class StatusService {
   }
   private _onmessage(evt: MessageEvent, websocket: WebSocket) {
     if (this._websocket != websocket) {
+      websocket.close()
       return
     }
     if (!isString(evt.data)) {

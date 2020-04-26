@@ -1,17 +1,26 @@
-<p>
-    <ng-container *ngIf="status.run;then startedView;else stopedView"></ng-container>
+<mat-expansion-panel>
 
-    <ng-template #startedView>
-        <button mat-icon-button i18n-matTooltip matTooltip="stop" (click)="onClickStop()" [disabled]="disabled">
-            <mat-icon>stop</mat-icon>
-        </button>
-        <ng-container i18n>service has started</ng-container>
-        -> {{status.name}}
-    </ng-template>
-    <ng-template #stopedView>
-        <button mat-icon-button [disabled]="disabled">
-            <mat-icon>block</mat-icon>
-        </button>
-        <ng-container i18n>service has stopped</ng-container>
-    </ng-template>
-</p>
+    <mat-expansion-panel-header>
+        <mat-panel-title>
+            <ng-container *ngIf="status.run;then startedView;else stopedView"></ng-container>
+            <ng-template #startedView>
+                <mat-icon>bug_report</mat-icon>
+                <ng-container i18n>service has started</ng-container>
+                <mat-icon mat-icon-button i18n-matTooltip matTooltip="stop" (click)="onClickStop($event)">stop
+                </mat-icon>
+                {{status.name}}
+            </ng-template>
+            <ng-template #stopedView>
+                <mat-icon>bug_report</mat-icon>
+                <ng-container i18n>service has stopped</ng-container>
+            </ng-template>
+        </mat-panel-title>
+    </mat-expansion-panel-header>
+
+    <mat-checkbox [(ngModel)]="pause" i18n>Pause Display Logs</mat-checkbox>
+    <mat-form-field class="full-width">
+        <mat-label i18n>Logs</mat-label>
+        <textarea readonly matInput [disabled]="disabled" rows="15" spellcheck="false" autocapitalize="off"
+            autocomplete="off" autocorrect="off" [value]="text"></textarea>
+    </mat-form-field>
+</mat-expansion-panel>
