@@ -156,6 +156,11 @@ const V2rayTemplate = `{
                     "domain:cn",
                     "geoip:private"
                 ],
+                "network": "tcp,udp",
+                "outboundTag": "freedom"
+            },
+            {
+                "type": "field",
                 "ip": [
                     "geoip:cn"
                 ],
@@ -286,9 +291,12 @@ done
 # 重定向 tcp 數據包到 redir 監聽端口
 iptables -t nat -A NAT_TCP -p tcp -j REDIRECT --to-ports $Redir_Port
 
-# 重定向 dns 查詢
-iptables -t nat -A OUTPUT -p udp -m udp --dport 53 -j DNAT --to-destination 127.0.0.1:$DNS_Port
-iptables -t nat -A OUTPUT -p tcp -m tcp --dport 53 -j DNAT --to-destination 127.0.0.1:$DNS_Port
+# 重定向 向網關發送的 dns 查詢
+for i in ${!IP_Private[@]}
+do
+        iptables -t nat -A OUTPUT -d ${IP_Private[i]} -p udp -m udp --dport 53 -j DNAT --to-destination 127.0.0.1:$DNS_Port
+        iptables -t nat -A OUTPUT -d ${IP_Private[i]} -p tcp -m tcp --dport 53 -j DNAT --to-destination 127.0.0.1:$DNS_Port
+done
 
 # 重定向 數據流向 NAT_TCP
 iptables -t nat -A OUTPUT -p tcp -j NAT_TCP

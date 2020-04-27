@@ -150,12 +150,17 @@ export const V2rayTemplate = `{
                   "domain:cn",
                   "geoip:private"
               ],
-              "ip": [
-                  "geoip:cn"
-              ],
               "network": "tcp,udp",
               "outboundTag": "freedom"
-          }
+          },
+          {
+            "type": "field",
+            "ip": [
+                "geoip:cn"
+            ],
+            "network": "tcp,udp",
+            "outboundTag": "freedom"
+        }
       ]
   }
 }`
