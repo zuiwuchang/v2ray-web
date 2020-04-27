@@ -34,6 +34,8 @@ import { EditComponent } from './app/edit/edit.component';
 import { TopComponent } from './app/top/top.component';
 import { SettingsComponent } from './app/settings/settings.component';
 import { QrcodeComponent } from './app/dialog/qrcode/qrcode.component';
+import { ServiceWorkerModule } from '@angular/service-worker';
+import { environment } from '../environments/environment';
 
 @NgModule({
   declarations: [
@@ -60,6 +62,7 @@ import { QrcodeComponent } from './app/dialog/qrcode/qrcode.component';
     SharedModule,
     AppRoutingModule,
     ToasterModule.forRoot(),
+    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
   ],
   providers: [ToasterService],
   entryComponents: [AddComponent, EditComponent, QrcodeComponent],
