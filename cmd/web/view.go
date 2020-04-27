@@ -72,11 +72,11 @@ func (s *Server) serveGZIP(response http.ResponseWriter, request *http.Request, 
 	}
 
 	size := d.Size()
-	if size <= 1024 && size >= 1024*1024*5 {
-		// 小於 1k 或者 大於 5m的 不壓縮
+	if size <= 1024 && size >= 1024*1024*2 {
+		// 小於 1k 或者 大於 2m的 不壓縮
 		http.ServeContent(response, request, d.Name(), d.ModTime(), f)
 		return
 	}
-
+	serveContent(response, request, filename, d.ModTime(), size, f)
 	return
 }
