@@ -20,6 +20,13 @@ func Run(cnf *configure.Configure) {
 				zap.String("addr", cnf.HTTP.Addr),
 			)
 		}
+	} else {
+		if ce := logger.Logger.Check(zap.InfoLevel, "listen error"); ce != nil {
+			ce.Write(
+				zap.String("addr", cnf.HTTP.Addr),
+			)
+		}
+		os.Exit(1)
 	}
 	defer l.Close()
 	server, e := NewServer(l, cnf.HTTP.View)

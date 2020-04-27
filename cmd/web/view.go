@@ -2,6 +2,7 @@ package web
 
 import (
 	"net/http"
+	"os"
 	"strings"
 )
 
@@ -32,5 +33,50 @@ func (s *Server) redirect(response http.ResponseWriter, request *http.Request) {
 	http.Redirect(response, request, "/angular/zh-Hant/", http.StatusFound)
 }
 func (s *Server) viewFile(response http.ResponseWriter, request *http.Request, filename string) {
-	http.ServeFile(response, request, filename)
+	if strings.Index(request.Header.Get("Accept-Encoding"), "gzip") != -1 {
+		s.serveGZIP(response, request, filename)
+	} else {
+		http.ServeFile(response, request, filename)
+	}
+}
+
+func (s *Server) toHTTPError(err error) (msg string, httpStatus int) {
+	if os.IsNotExist(err) {
+		return "404 page not found", http.StatusNotFound
+	}
+	if os.IsPermission(err) {
+		return "403 Forbidden", http.StatusForbidden
+	}
+	// Default:
+	return "500 Internal Server Error", http.StatusInternalServerError
+}
+func (s *Server) Error(response http.ResponseWriter, e error) {
+	msg, code := s.toHTTPError(e)
+	http.Error(response, msg, code)
+}
+func (s *Server) serveGZIP(response http.ResponseWriter, request *http.Request, filename string) {
+	f, e := os.Open(filename)
+	if e != nil {
+		s.Error(response, e)
+		return
+	}
+	defer f.Close()
+	d, e := f.Stat()
+	if e != nil {
+		s.Error(response, e)
+		return
+	}
+	if d.IsDir() {
+		http.Error(response, "403 Forbidden", http.StatusForbidden)
+		return
+	}
+
+	size := d.Size()
+	if size <= 1024 && size >= 1024*1024*5 {
+		// 小於 1k 或者 大於 5m的 不壓縮
+		http.ServeContent(response, request, d.Name(), d.ModTime(), f)
+		return
+	}
+
+	return
 }

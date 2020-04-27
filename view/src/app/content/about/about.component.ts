@@ -6,6 +6,7 @@ interface Version {
   tag: string
   commit: string
   date: string
+  v2ray: string
 }
 @Component({
   selector: 'app-about',

@@ -324,6 +324,7 @@ func (s *Server) version(helper Helper) (e error) {
 		"tag":      version.Tag,
 		"commit":   version.Commit,
 		"date":     version.Date,
+		"v2ray":    core.Version(),
 	})
 	return
 }
