@@ -17,13 +17,20 @@ type User struct {
 
 // StreamSettings .
 type StreamSettings struct {
-	Network           string             `json:"network"`
-	Security          string             `json:"security"`
-	WebsocketSettings *WebsocketSettings `json:"wsSettings"`
+	Network           string             `json:"network,omitempty"`
+	Security          string             `json:"security,omitempty"`
+	WebsocketSettings *WebsocketSettings `json:"wsSettings,omitempty"`
+	HTTPSettings      *HTTPSettings      `json:"httpSettings,omitempty"`
 }
 
 // WebsocketSettings .
 type WebsocketSettings struct {
-	Path    string            `json:"path"`
-	Headers map[string]string `json:"headers"`
+	Path    string            `json:"path,omitempty"`
+	Headers map[string]string `json:"headers,omitempty"`
+}
+
+// HTTPSettings .
+type HTTPSettings struct {
+	Path string   `json:"path,omitempty"`
+	Host []string `json:"host,omitempty"`
 }

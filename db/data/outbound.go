@@ -83,6 +83,14 @@ func (o *Outbound) ToContext() (context *OutboundContext, e error) {
 			streamSettings.WebsocketSettings.Headers["Host"] = o.Host
 		}
 	}
+	if o.Net == "http" || o.Net == "h2" {
+		streamSettings.HTTPSettings = &subscription.HTTPSettings{
+			Path: o.Path,
+		}
+		if o.Host != "" {
+			streamSettings.HTTPSettings.Host = append(streamSettings.HTTPSettings.Host, o.Host)
+		}
+	}
 	vnextBytes, e := json.Marshal(vnext)
 	if e != nil {
 		return
