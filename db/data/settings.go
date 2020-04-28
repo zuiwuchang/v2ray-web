@@ -294,8 +294,10 @@ iptables -t nat -A NAT_TCP -p tcp -j REDIRECT --to-ports $Redir_Port
 # 重定向 向網關發送的 dns 查詢
 for i in ${!IP_Private[@]}
 do
+    if [[ "${IP_Private[i]}" != "127/8" ]];then
         iptables -t nat -A OUTPUT -d ${IP_Private[i]} -p udp -m udp --dport 53 -j DNAT --to-destination 127.0.0.1:$DNS_Port
         iptables -t nat -A OUTPUT -d ${IP_Private[i]} -p tcp -m tcp --dport 53 -j DNAT --to-destination 127.0.0.1:$DNS_Port
+    fi
 done
 
 # 重定向 數據流向 NAT_TCP
