@@ -9,14 +9,14 @@ import (
 	"io/ioutil"
 	"net"
 	"net/http"
-	"os"
 	"os/exec"
-	"path/filepath"
 	"runtime"
 	"strings"
 	"sync/atomic"
 	"text/template"
 
+	"github.com/gin-contrib/gzip"
+	"github.com/gin-gonic/gin"
 	"gitlab.com/king011/v2ray-web/cookie"
 	"gitlab.com/king011/v2ray-web/db/data"
 	"gitlab.com/king011/v2ray-web/db/manipulator"
@@ -39,6 +39,8 @@ type Server struct {
 	ws   map[string]websocket.Handler
 	m    map[string]string
 
+	router *gin.Engine
+
 	// 開方的 公共 接口
 	pub  map[string]bool
 	root string
@@ -46,30 +48,25 @@ type Server struct {
 
 // NewServer 創建 服務器
 func NewServer(l net.Listener, root string) (server *Server, e error) {
+	router := gin.Default()
 	server = &Server{
 		l:    l,
 		root: root,
-		pub: map[string]bool{
-			"/api/ws/proxy/status": true,
-			"/api/app/version":     true,
-			"/api/app/restore":     true,
-			"/api/app/login":       true,
-		},
+		// pub: map[string]bool{
+		// 	"/api/ws/proxy/status": true,
+		// 	"/api/app/version":     true,
+		// 	"/api/app/restore":     true,
+		// 	"/api/app/login":       true,
+		// },
+		router: router,
 	}
-	m := make(map[string]string)
-	count := len(root)
-	filepath.Walk(root, func(path string, info os.FileInfo, err error) (e error) {
-		if info.IsDir() {
-			return
-		}
-
-		route := "/angular" + strings.ReplaceAll(path[count:], `\`, `/`)
-		m[route] = path
-		return
-	})
-	server.m = m
-	server.setAPI()
-	server.setWebsocket()
+	router.Use(
+		gzip.Gzip(gzip.DefaultCompression),
+	)
+	view := _View{}
+	view.RegisterTo(&router.RouterGroup, root)
+	api := _API{}
+	api.RegisterTo(&router.RouterGroup)
 	return
 }
 func (s *Server) setWebsocket() {
@@ -209,13 +206,13 @@ func (s *Server) setIPTables(iptables *data.IPTables, element *data.Element) {
 
 // Serve .
 func (s *Server) Serve() error {
-	return http.Serve(s.l, s)
+	return http.Serve(s.l, s.router)
 }
 
 // ServeTLS .
 func (s *Server) ServeTLS(certFile, keyFile string) error {
 	return http.ServeTLS(s.l,
-		s,
+		s.router,
 		certFile, keyFile,
 	)
 }
@@ -232,16 +229,7 @@ func (s *Server) renderError(response http.ResponseWriter, statusCode int, e err
 }
 func (s *Server) ServeHTTP(response http.ResponseWriter, request *http.Request) {
 	route := request.URL.Path
-	if route == "/" ||
-		route == "/index.html" ||
-		route == "/angular/" {
-		s.redirect(response, request)
-		return
-	}
-	if strings.HasPrefix(route, "/angular/") {
-		s.view(response, request)
-		return
-	}
+
 	wsHandler := s.ws[route]
 	if wsHandler != nil {
 		if !s.pub[route] {
