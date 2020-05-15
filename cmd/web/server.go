@@ -65,8 +65,8 @@ func NewServer(l net.Listener, root string) (server *Server, e error) {
 	)
 	view := _View{}
 	view.RegisterTo(&router.RouterGroup, root)
-	api := _API{}
-	api.RegisterTo(&router.RouterGroup)
+	app := _apiAPP{}
+	app.RegisterTo(&router.RouterGroup)
 	return
 }
 func (s *Server) setWebsocket() {
