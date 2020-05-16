@@ -114,7 +114,10 @@ case $1 in
 			if [[ $GOARCH == 386 ]];then
 				dst=darwin.386.tar.gz
 			fi
-			cd "$DirRoot/bin" && tar -zcvf $dst "$Target" "$Target.jsonnet"
+			cd "$DirRoot/bin" && tar -zcvf $dst "$Target" "$Target.jsonnet" \
+				geoip.dat geosite.dat \
+				v2ray-web.service \
+				run.sh view
 		fi
 	;;
 
