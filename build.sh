@@ -68,7 +68,6 @@ case $1 in
 	l|linux)
 		export GOOS=linux
 		export CGO_ENABLED=0
-		export GIN_MODE=release
 
 		createGoVersion
 		if [[ $2 == d ]]; then
@@ -82,11 +81,11 @@ case $1 in
 		check $?
 
 		if [[ $3 == tar || $3 == t ]]; then
-			dst=linux.amd64.tar.gz
+			dst=linux.amd64.tar.xz
 			if [[ $GOARCH == 386 ]];then
-				dst=linux.386.tar.gz
+				dst=linux.386.tar.xz
 			fi
-			cd "$DirRoot/bin" && tar -zcvf $dst "$Target" "$Target.jsonnet" \
+			cd "$DirRoot/bin" && tar -Jcvf $dst "$Target" "$Target.jsonnet" \
 				geoip.dat geosite.dat \
 				v2ray-web.service \
 				run.sh view
@@ -96,7 +95,6 @@ case $1 in
 	d|darwin)
 		export GOOS=darwin
 		export CGO_ENABLED=0
-		export GIN_MODE=release
 
 		createGoVersion
 		if [[ $2 == d ]]; then
@@ -110,11 +108,11 @@ case $1 in
 		check $?
 
 		if [[ $3 == tar || $3 == t ]]; then
-			dst=darwin.amd64.tar.gz
+			dst=darwin.amd64.tar.xz
 			if [[ $GOARCH == 386 ]];then
-				dst=darwin.386.tar.gz
+				dst=darwin.386.tar.xz
 			fi
-			cd "$DirRoot/bin" && tar -zcvf $dst "$Target" "$Target.jsonnet" \
+			cd "$DirRoot/bin" && tar -Jcvf $dst "$Target" "$Target.jsonnet" \
 				geoip.dat geosite.dat \
 				v2ray-web.service \
 				run.sh view
@@ -124,7 +122,6 @@ case $1 in
 	w|windows)
 		export GOOS=windows
 		export CGO_ENABLED=0
-		export GIN_MODE=release
 
 		createGoVersion
 		if [[ $2 == d ]]; then
@@ -138,11 +135,11 @@ case $1 in
 		check $?
 
 		if [[ $3 == tar || $3 == t ]]; then
-			dst=windows.amd64.tar.gz
+			dst=windows.amd64.tar.xz
 			if [[ $GOARCH == 386 ]];then
-				dst=windows.386.tar.gz
+				dst=windows.386.tar.xz
 			fi
-			cd "$DirRoot/bin" && tar -zcvf $dst "$Target.exe" "$Target.jsonnet" \
+			cd "$DirRoot/bin" && tar -Jcvf $dst "$Target.exe" "$Target.jsonnet" \
 				geoip.dat geosite.dat \
 				v2ray-web-service.xml v2ray-web-service.exe \
 				run.bat install.bat view

@@ -15,7 +15,7 @@ var GzipDefaultExcludedExtentions = []string{
 	`.png`, `.gif`, `.jpeg`, `.jpg`,
 	`.mp4`,
 	`.mp3`,
-	`.gz`, `.gzip`, `.zip`, `.bz`, `.bz2`, `.bzip2`, `.zx`,
+	`.gz`, `.gzip`, `.zip`, `.bz`, `.bz2`, `.bzip2`, `.xz`,
 	`.rar`, `.7z`,
 	`.woff`, `.woff2`,
 }
