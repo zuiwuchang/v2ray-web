@@ -23,7 +23,7 @@ type Server struct {
 // NewServer 創建 服務器
 func NewServer(l net.Listener, root string) (server *Server, e error) {
 	gin.SetMode(gin.ReleaseMode)
-	router := gin.Default()
+	router := gin.New()
 	server = &Server{
 		l:      l,
 		router: router,
