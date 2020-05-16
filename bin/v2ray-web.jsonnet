@@ -5,7 +5,7 @@ local Hour = 60 * Minute;
 local Day = 24 * Hour;
 {
     HTTP: {
-        Addr: "localhost:8080",
+        Addr: ":8080",
         // x509 if empty use http else use https
 		// CertFile: "test.pem",
 		// KeyFile: "test.key",

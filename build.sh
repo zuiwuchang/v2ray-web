@@ -68,15 +68,16 @@ case $1 in
 	l|linux)
 		export GOOS=linux
 		export CGO_ENABLED=0
+		export GIN_MODE=release
 
 		createGoVersion
 		if [[ $2 == d ]]; then
 			Target="$Target"d
-			echo go build -o "$DirRoot/bin/$Target"
-			cd "$DirRoot" && go build -o "$DirRoot/bin/$Target"
+			echo go build -tags=jsoniter -o "$DirRoot/bin/$Target"
+			cd "$DirRoot" && go build -tags=jsoniter -o "$DirRoot/bin/$Target"
 		else
-			echo go build -ldflags "-s -w" -o "$DirRoot/bin/$Target"
-			cd "$DirRoot" && go build -ldflags "-s -w" -o "$DirRoot/bin/$Target"
+			echo go build -tags=jsoniter -ldflags "-s -w" -o "$DirRoot/bin/$Target"
+			cd "$DirRoot" && go build -tags=jsoniter -ldflags "-s -w" -o "$DirRoot/bin/$Target"
 		fi
 		check $?
 
@@ -95,15 +96,16 @@ case $1 in
 	d|darwin)
 		export GOOS=darwin
 		export CGO_ENABLED=0
+		export GIN_MODE=release
 
 		createGoVersion
 		if [[ $2 == d ]]; then
 			Target="$Target"d
-			echo go build -o "$DirRoot/bin/$Target"
-			cd "$DirRoot" && go build -o "$DirRoot/bin/$Target"
+			echo go build -tags=jsoniter -o "$DirRoot/bin/$Target"
+			cd "$DirRoot" && go build -tags=jsoniter -o "$DirRoot/bin/$Target"
 		else
-			echo go build -ldflags "-s -w" -o "$DirRoot/bin/$Target"
-			cd "$DirRoot" && go build -ldflags "-s -w" -o "$DirRoot/bin/$Target"
+			echo go build -tags=jsoniter -ldflags "-s -w" -o "$DirRoot/bin/$Target"
+			cd "$DirRoot" && go build -tags=jsoniter -ldflags "-s -w" -o "$DirRoot/bin/$Target"
 		fi
 		check $?
 
@@ -119,15 +121,16 @@ case $1 in
 	w|windows)
 		export GOOS=windows
 		export CGO_ENABLED=0
+		export GIN_MODE=release
 
 		createGoVersion
 		if [[ $2 == d ]]; then
 			Target="$Target"d
-			echo go build -o "$DirRoot/bin/$Target.exe"
-			cd "$DirRoot" && go build -o "$DirRoot/bin/$Target.exe"
+			echo go build -tags=jsoniter -o "$DirRoot/bin/$Target.exe"
+			cd "$DirRoot" && go build -tags=jsoniter -o "$DirRoot/bin/$Target.exe"
 		else
-			echo go build -ldflags "-s -w" -o "$DirRoot/bin/$Target.exe"
-			cd "$DirRoot" && go build -ldflags "-s -w" -o "$DirRoot/bin/$Target.exe"
+			echo go build -tags=jsoniter -ldflags "-s -w" -o "$DirRoot/bin/$Target.exe"
+			cd "$DirRoot" && go build -tags=jsoniter -ldflags "-s -w" -o "$DirRoot/bin/$Target.exe"
 		fi
 		check $?
 

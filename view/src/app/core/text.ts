@@ -59,6 +59,13 @@ export const V2rayTemplate = `{
               "auth": "noauth"
           }
       },
+      // 本地 http 代理
+      {
+        "tag": "http",
+        "listen": "127.0.0.1",
+        "protocol": "http",
+        "port": 8118
+      },  
       // 透明代理
       {
           "tag": "redir",

@@ -1,7 +1,6 @@
 package web
 
 import (
-	"encoding/json"
 	"net/http"
 
 	"gitlab.com/king011/v2ray-web/utils"

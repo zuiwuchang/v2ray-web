@@ -9,6 +9,8 @@ require (
 	github.com/golang/protobuf v1.4.2 // indirect
 	github.com/google/go-jsonnet v0.15.0
 	github.com/gorilla/securecookie v1.1.1
+	github.com/gorilla/websocket v1.4.2 // indirect
+	github.com/json-iterator/go v1.1.9
 	github.com/spf13/cobra v0.0.7
 	gitlab.com/king011/king-go v0.0.10
 	go.uber.org/zap v1.10.0
