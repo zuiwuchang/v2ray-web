@@ -11,7 +11,7 @@ import (
 	"go.uber.org/zap"
 
 	"github.com/gin-gonic/gin"
-	"v2ray.com/core/external/github.com/gorilla/websocket"
+	"github.com/gorilla/websocket"
 )
 
 type _apiWebsocket struct {
@@ -24,7 +24,7 @@ func (a *_apiWebsocket) Init(router *gin.RouterGroup) {
 		WriteBufferSize: 1024,
 	}
 
-	r := router.Group(`/api/ws`)
+	r := router.Group(`/ws`)
 	GetPost(r, `/app/logs`, a.appLogs)
 	GetPost(r, `/proxy/test`, a.proxyTest)
 	GetPost(r, `/proxy/status`, a.proxyStatus)

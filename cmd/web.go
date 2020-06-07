@@ -14,6 +14,7 @@ import (
 
 func init() {
 	var filename string
+	var debug bool
 	basePath := utils.BasePath()
 	cmd := &cobra.Command{
 		Use:   `web`,
@@ -48,7 +49,7 @@ func init() {
 				log.Fatalln(e)
 			}
 
-			web.Run(cnf)
+			web.Run(cnf, debug)
 		},
 	}
 	flasg := cmd.Flags()
@@ -57,5 +58,11 @@ func init() {
 		utils.Abs(basePath, "v2ray-web.jsonnet"),
 		"Config file for Web",
 	)
+	flasg.BoolVarP(&debug,
+		"debug", "d",
+		false,
+		"Run as debug",
+	)
+
 	rootCmd.AddCommand(cmd)
 }

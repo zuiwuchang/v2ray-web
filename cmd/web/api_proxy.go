@@ -18,7 +18,7 @@ type _apiProxy struct {
 }
 
 func (a *_apiProxy) Init(router *gin.RouterGroup) {
-	r := router.Group(`/api/proxy`)
+	r := router.Group(`/proxy`)
 	GetPost(r, `/list`, a.list)
 	GetPost(r, `/update`, a.update)
 	GetPost(r, `/add`, a.add)

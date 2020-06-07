@@ -18,7 +18,7 @@ type _apiIPTables struct {
 }
 
 func (a *_apiIPTables) Init(router *gin.RouterGroup) {
-	r := router.Group(`/api/iptables`)
+	r := router.Group(`/iptables`)
 	GetPost(r, `/view`, a.view)
 	GetPost(r, `/get`, a.get)
 	GetPost(r, `/get/default`, a.getDefault)

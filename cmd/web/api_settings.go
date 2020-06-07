@@ -14,7 +14,7 @@ type _apiSettings struct {
 }
 
 func (a *_apiSettings) Init(router *gin.RouterGroup) {
-	r := router.Group(`/api/settings`)
+	r := router.Group(`/settings`)
 	GetPost(r, `/get`, a.get)
 	GetPost(r, `/put`, a.put)
 }

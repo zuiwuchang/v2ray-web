@@ -13,8 +13,6 @@ local Day = 24 * Hour;
         Maxage: Day * 30,
         // cookie 密鑰
         Secret: "cerberus is an idae",
-		// ui界面目錄
-		View:"view",
     },
 	Database:{
 		// 數據源 位置

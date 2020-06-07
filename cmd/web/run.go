@@ -5,6 +5,7 @@ import (
 	"net"
 	"os"
 
+	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 
 	"gitlab.com/king011/v2ray-web/configure"
@@ -12,7 +13,10 @@ import (
 )
 
 // Run .
-func Run(cnf *configure.Configure) {
+func Run(cnf *configure.Configure, debug bool) {
+	if !debug {
+		gin.SetMode(gin.ReleaseMode)
+	}
 	l, e := net.Listen("tcp", cnf.HTTP.Addr)
 	if e == nil {
 		if ce := logger.Logger.Check(zap.InfoLevel, "listen success"); ce != nil {
@@ -29,7 +33,7 @@ func Run(cnf *configure.Configure) {
 		os.Exit(1)
 	}
 	defer l.Close()
-	server, e := NewServer(l, cnf.HTTP.View)
+	server, e := NewServer(l)
 	if e != nil {
 		os.Exit(1)
 	}

@@ -18,7 +18,7 @@ type _apiV2ray struct {
 }
 
 func (a *_apiV2ray) Init(router *gin.RouterGroup) {
-	r := router.Group(`/api/v2ray`)
+	r := router.Group(`/v2ray`)
 	GetPost(r, `/settings/get`, a.settingsGet)
 	GetPost(r, `/settings/put`, a.settingsPut)
 	GetPost(r, `/settings/test`, a.settingsTest)

@@ -13,7 +13,7 @@ type _apiUser struct {
 }
 
 func (a *_apiUser) Init(router *gin.RouterGroup) {
-	r := router.Group(`/api/user`)
+	r := router.Group(`/user`)
 	GetPost(r, `/list`, a.list)
 	GetPost(r, `/add`, a.add)
 	GetPost(r, `/remove`, a.remove)

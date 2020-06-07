@@ -16,7 +16,9 @@
 *.tar.gz
 *.tar.bz2
 *.tar.xz
-
+*.7z
+*.db.lock
+*.tmp
 
 /v2ray-web
 /v2ray-webd
@@ -24,3 +26,6 @@
 /bin/v2ray-web.db
 /bin/view/
 /bin/v2ray-web-service.exe
+
+# statik
+/assets/

@@ -1,6 +1,7 @@
 package web
 
 import (
+	"errors"
 	"net/http"
 	"net/url"
 	"strings"
@@ -47,9 +48,6 @@ func GetPost(router *gin.RouterGroup, relativePath string, handlers ...gin.Handl
 }
 
 var pub = map[string]bool{
-	`/`:                    true,
-	`/index.html`:          true,
-	`/angular`:             true,
 	`/api/ws/proxy/status`: true,
 	`/api/app/version`:     true,
 	`/api/app/restore`:     true,
@@ -58,7 +56,7 @@ var pub = map[string]bool{
 
 func checkRequest(c *gin.Context) {
 	path := c.Request.URL.Path
-	if strings.HasPrefix(path, `/angular`) ||
+	if strings.HasPrefix(path, `/view`) ||
 		pub[path] {
 		return
 	}
@@ -67,8 +65,12 @@ func checkRequest(c *gin.Context) {
 		c.AbortWithError(http.StatusUnauthorized, e)
 		return
 	}
+	if session == nil {
+		c.AbortWithError(http.StatusForbidden, errors.New(`session nil`))
+		return
+	}
 	if !session.Root {
-		c.AbortWithError(http.StatusUnauthorized, e)
+		c.AbortWithError(http.StatusForbidden, e)
 		return
 	}
 	return

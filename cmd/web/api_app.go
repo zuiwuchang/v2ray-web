@@ -19,7 +19,7 @@ type _apiAPP struct {
 }
 
 func (a *_apiAPP) Init(router *gin.RouterGroup) {
-	r := router.Group(`/api/app`)
+	r := router.Group(`/app`)
 	GetPost(r, `/version`, a.version)
 	GetPost(r, `/restore`, a.restore)
 	GetPost(r, `/login`, a.login)
