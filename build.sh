@@ -95,7 +95,7 @@ case $1 in
 			cd "$DirRoot/bin" && tar -Jcvf $dst "$Target" "$Target.jsonnet" \
 				geoip.dat geosite.dat \
 				v2ray-web.service \
-				run.sh view
+				run.sh
 		fi
 	;;
 
@@ -122,7 +122,7 @@ case $1 in
 			cd "$DirRoot/bin" && tar -Jcvf $dst "$Target" "$Target.jsonnet" \
 				geoip.dat geosite.dat \
 				v2ray-web.service \
-				run.sh view
+				run.sh
 		fi
 	;;
 
@@ -149,7 +149,7 @@ case $1 in
 			cd "$DirRoot/bin" && tar -Jcvf $dst "$Target.exe" "$Target.jsonnet" \
 				geoip.dat geosite.dat \
 				v2ray-web-service.xml v2ray-web-service.exe \
-				run.bat install.bat view
+				run.bat install.bat
 		fi
 	;;
 
