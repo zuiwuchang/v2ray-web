@@ -1,4 +1,4 @@
-import { isNumber, isObject, isString } from 'util'
+import { isBoolean, isNumber, isObject, isString } from 'util'
 import { Base64 } from 'js-base64';
 export class Source {
     private _items = new Array<Panel>()
@@ -132,6 +132,8 @@ export class Outbound {
     security: string = 'auto'
     // 用戶等級
     level: string = '0'
+
+    vless: boolean = false
     constructor(net?: Outbound) {
         if (isObject(net)) {
             if (isString(net.name)) {
@@ -167,7 +169,9 @@ export class Outbound {
             if (isString(net.level)) {
                 this.level = net.level
             }
-
+            if (isBoolean(net.vless)) {
+                this.vless = net.vless
+            }
         }
     }
     format() {
@@ -193,6 +197,7 @@ export class Outbound {
         other.alterID = this.alterID
         other.security = this.security
         other.level = this.level
+        other.vless = this.vless
     }
     equal(other: Outbound): boolean {
         return other.name == this.name &&
@@ -205,7 +210,8 @@ export class Outbound {
             other.userID == this.userID &&
             other.alterID == this.alterID &&
             other.security == this.security &&
-            other.level == this.level
+            other.level == this.level &&
+            other.vless == this.vless
     }
 
     static fromBase64(str: string): Outbound {
@@ -225,6 +231,7 @@ export class Outbound {
         outbound.alterID = obj.aid
         outbound.security = obj.type
         outbound.level = obj.v
+        outbound.vless = obj.vless
         return outbound
     }
     toBase64(): string {
@@ -240,6 +247,7 @@ export class Outbound {
             aid: this.alterID,
             type: this.security,
             v: this.level,
+            vless: this.vless ? true : false,
         })
         return Base64.encode(str)
     }

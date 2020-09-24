@@ -21,6 +21,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -58,6 +59,7 @@ import { environment } from '../environments/environment';
     MatDialogModule, MatProgressSpinnerModule, MatFormFieldModule,
     MatInputModule, MatAutocompleteModule, MatMenuModule,
     MatDividerModule, MatCardModule, MatCheckboxModule,
+    MatSlideToggleModule,
 
     SharedModule,
     AppRoutingModule,

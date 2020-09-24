@@ -65,6 +65,15 @@ export class ViewPanelComponent implements OnInit, OnDestroy, AfterViewInit {
     }
     return false
   }
+  getIcon(element: Element): string {
+    if (this.isCurrent(element)) {
+      return 'done'
+    }
+    if (element && element.outbound && element.outbound.vless) {
+      return 'star_half'
+    }
+    return 'star'
+  }
   isCurrent(element: Element) {
     if (this.status.run) {
       return this._status.subscription == this.panel.id && this._status.id == element.id
@@ -512,7 +521,8 @@ export class ViewPanelComponent implements OnInit, OnDestroy, AfterViewInit {
   }
   onClickCopy(element: Element) {
     try {
-      const str = 'vmess://' + element.outbound.toBase64()
+      const protocol = element.outbound.vless ? 'vless://' : 'vmess://'
+      const str = protocol + element.outbound.toBase64()
       this._btnClipboard.nativeElement.setAttribute("data-clipboard-text", str)
       this._btnClipboard.nativeElement.click()
     } catch (e) {
@@ -525,7 +535,8 @@ export class ViewPanelComponent implements OnInit, OnDestroy, AfterViewInit {
   }
   onClickShare(element: Element) {
     try {
-      const str = 'vmess://' + element.outbound.toBase64()
+      const protocol = element.outbound.vless ? 'vless://' : 'vmess://'
+      const str = protocol + element.outbound.toBase64()
       this.matDialog.open(QrcodeComponent, {
         data: str,
       })

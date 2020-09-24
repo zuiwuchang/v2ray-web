@@ -7,6 +7,8 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/gin-gonic/gin"
+
 	"go.uber.org/zap"
 
 	"gitlab.com/king011/v2ray-web/logger"
@@ -46,6 +48,9 @@ type Outbound struct {
 	Security string `json:"security,omitempty"`
 	// 用戶等級
 	Level string `json:"level,omitempty"`
+
+	// 是否是 vless 協議
+	Vless bool `json:"vless,omitempty"`
 }
 
 // ToContext .
@@ -57,17 +62,32 @@ func (o *Outbound) ToContext() (context *OutboundContext, e error) {
 	}
 	aid, e := strconv.ParseInt(strings.TrimSpace(o.AlterID), 10, 64)
 	level, e := strconv.ParseInt(strings.TrimSpace(o.Level), 10, 64)
-	vnext := &subscription.Vnext{
-		Address: o.Add,
-		Port:    uint32(port),
-		Users: []subscription.User{
-			subscription.User{
-				ID:       o.UserID,
-				AlterID:  aid,
-				Security: o.Security,
-				Level:    level,
+	var vnext interface{}
+	if o.Vless {
+		vnext = gin.H{
+			"address": o.Add,
+			"port":    port,
+			"users": []interface{}{
+				gin.H{
+					"id":         o.UserID,
+					"encryption": o.Security,
+					"level":      level,
+				},
 			},
-		},
+		}
+	} else {
+		vnext = &subscription.Vnext{
+			Address: o.Add,
+			Port:    uint32(port),
+			Users: []subscription.User{
+				subscription.User{
+					ID:       o.UserID,
+					AlterID:  aid,
+					Security: o.Security,
+					Level:    level,
+				},
+			},
+		}
 	}
 	// streamSettings
 	streamSettings := &subscription.StreamSettings{
@@ -112,12 +132,18 @@ func (o *Outbound) ToContext() (context *OutboundContext, e error) {
 			)
 		}
 	}
+	protocol := `vmess`
+	if o.Vless {
+		protocol = `vless`
+	}
 	context = &OutboundContext{
 		Outbound:       o,
-		AddIP:          str,
+		Protocol:       protocol,
 		Vnext:          utils.BytesToString(vnextBytes),
 		StreamSettings: utils.BytesToString(streamSettingsBytes),
+		AddIP:          str,
 		BasePath:       utils.BasePath(),
+		Vless:          o.Vless,
 	}
 	return
 }
@@ -125,8 +151,10 @@ func (o *Outbound) ToContext() (context *OutboundContext, e error) {
 // OutboundContext 模板 環境
 type OutboundContext struct {
 	Outbound       *Outbound
+	Protocol       string
 	Vnext          string
 	StreamSettings string
 	AddIP          string
 	BasePath       string
+	Vless          bool
 }

@@ -99,7 +99,7 @@ const V2rayTemplate = `{
         // 代理 訪問
         {
             "tag": "proxy",
-            "protocol": "vmess",
+            "protocol": "{{.Protocol}}",
             "settings": {
                 "vnext": [
                     {{.Vnext}}

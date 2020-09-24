@@ -79,7 +79,7 @@ func requestSubscription(url string) (result []*data.Outbound, e error) {
 		if str == "" {
 			continue
 		}
-		node := analyzeString(str)
+		vless, node := analyzeString(str)
 		if node != nil {
 			result = append(result, &data.Outbound{
 				Name:     node.Name,
@@ -93,14 +93,18 @@ func requestSubscription(url string) (result []*data.Outbound, e error) {
 				AlterID:  node.AlterID,
 				Security: node.Security,
 				Level:    node.Level,
+				Vless:    vless,
 			})
 		}
 	}
 	return
 }
-func analyzeString(str string) (result *Outbound) {
+func analyzeString(str string) (vless bool, result *Outbound) {
 	str = strings.TrimSpace(str)
-	if !strings.HasPrefix(str, "vmess://") {
+	if strings.HasPrefix(str, "vless://") {
+		vless = true
+	}
+	if !vless && !strings.HasPrefix(str, "vmess://") {
 		if ce := logger.Logger.Check(zap.WarnLevel, "not support outbound"); ce != nil {
 			ce.Write(
 				zap.String("value", str),

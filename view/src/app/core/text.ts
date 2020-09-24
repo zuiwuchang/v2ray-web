@@ -1,6 +1,7 @@
 export const ContextText = `{
-    Vnext string
-    StreamSettings string
+    Protocol string
+    Vnext JSONString
+    StreamSettings JSONString
     BasePath string
     AddIP string
     Outbound {
@@ -15,6 +16,7 @@ export const ContextText = `{
       AlterID string
       Security string
       Level string
+      Vless bool
     }
   }`
 export const V2rayTemplate = `{
@@ -100,7 +102,7 @@ export const V2rayTemplate = `{
       // 代理 訪問
       {
           "tag": "proxy",
-          "protocol": "vmess",
+          "protocol": "{{.Protocol}}",
           "settings": {
               "vnext": [
                   {{.Vnext}}

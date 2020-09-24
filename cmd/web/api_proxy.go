@@ -2,6 +2,7 @@ package web
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin/binding"
@@ -111,6 +112,7 @@ func (a *_apiProxy) put(c *gin.Context) {
 		c.String(http.StatusInternalServerError, e.Error())
 		return
 	}
+	fmt.Println(params.Outbound.Vless)
 	var mElement manipulator.Element
 	e = mElement.Put(params.Subscription, params.ID, &params.Outbound)
 	if e != nil {

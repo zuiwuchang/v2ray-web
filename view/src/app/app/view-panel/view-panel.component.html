@@ -37,7 +37,7 @@
     </button>
     <mat-list>
         <mat-list-item *ngFor="let item of panel.source">
-            <mat-icon matListIcon [color]="isCurrent(item)?'accent':''">{{isCurrent(item)?'done':'grade'}}</mat-icon>
+            <mat-icon matListIcon [color]="isCurrent(item)?'accent':''">{{getIcon(item)}}</mat-icon>
 
             <p matLine>{{item.outbound.name}}</p>
             <p matLine>{{item.outbound.net}} {{item.outbound.tls}} {{item.outbound.add}}:{{item.outbound.port}}</p>
