@@ -8,7 +8,6 @@ import (
 	"gitlab.com/king011/v2ray-web/db/data"
 	"gitlab.com/king011/v2ray-web/db/manipulator"
 	"v2ray.com/core"
-	"v2ray.com/ext/tools/conf/serial"
 )
 
 var srv = _Service{
@@ -72,7 +71,7 @@ func (s *_Service) Start(element *data.Element) (e error) {
 		return
 	}
 	// v2ray
-	cnf, e := serial.LoadJSONConfig(&buffer)
+	cnf, e := core.LoadConfig(`json`, `test.json`, &buffer)
 	if e != nil {
 		return
 	}

@@ -11,7 +11,6 @@ import (
 	"gitlab.com/king011/v2ray-web/db/data"
 	"gitlab.com/king011/v2ray-web/db/manipulator"
 	"v2ray.com/core"
-	"v2ray.com/ext/tools/conf/serial"
 )
 
 type _apiV2ray struct {
@@ -88,7 +87,7 @@ func (a *_apiV2ray) settingsTest(c *gin.Context) {
 		return
 	}
 	// v2ray
-	cnf, e := serial.LoadJSONConfig(&buffer)
+	cnf, e := core.LoadConfig(`json`, `test.json`, &buffer)
 	if e != nil {
 		c.String(http.StatusInternalServerError, e.Error())
 		return

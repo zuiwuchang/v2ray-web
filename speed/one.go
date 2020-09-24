@@ -13,7 +13,6 @@ import (
 	"gitlab.com/king011/v2ray-web/db/data"
 	"golang.org/x/net/proxy"
 	"v2ray.com/core"
-	"v2ray.com/ext/tools/conf/serial"
 )
 
 // DefaultURL .
@@ -60,7 +59,7 @@ func testOne(outbound *data.Outbound, port int, url string) (duration time.Durat
 		return
 	}
 	// v2ray
-	cnf, e := serial.LoadJSONConfig(&buffer)
+	cnf, e := core.LoadConfig(`json`, `test.json`, &buffer)
 	if e != nil {
 		return
 	}

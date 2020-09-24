@@ -8,7 +8,6 @@ import (
 
 	"github.com/spf13/cobra"
 	"v2ray.com/core"
-	"v2ray.com/ext/tools/conf/serial"
 )
 
 func init() {
@@ -19,7 +18,7 @@ func init() {
 		Short: `Start V2Ray server.`,
 		Run: func(cmd *cobra.Command, args []string) {
 			f, e := os.Open(filename)
-			cnf, e := serial.LoadJSONConfig(f)
+			cnf, e := core.LoadConfig(`json`, filename, f)
 			f.Close()
 			if e != nil {
 				log.Fatalln(e)
