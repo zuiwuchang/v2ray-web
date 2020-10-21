@@ -84,7 +84,7 @@ func testOne(outbound *data.Outbound, port int, url string) (duration time.Durat
 func requestURL(port int, url string) (e error) {
 	client := &http.Client{}
 	var dialer proxy.Dialer
-	fmt.Println(port)
+	// fmt.Println(port)
 	dialer, e = proxy.SOCKS5("tcp", fmt.Sprintf("127.0.0.1:%v", port), nil, proxy.Direct)
 	if e != nil {
 		return
