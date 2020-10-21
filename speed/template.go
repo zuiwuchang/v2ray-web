@@ -17,7 +17,7 @@ const templateText = `{
     ],
     "outbounds": [
         {
-            "protocol": "vmess",
+            "protocol": "{{.Protocol}}",
             "settings": {
                 "vnext": [
                     {{.Vnext}}

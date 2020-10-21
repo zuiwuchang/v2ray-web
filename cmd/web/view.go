@@ -82,6 +82,7 @@ func (v *_View) view(c *gin.Context) {
 		v.redirect(c)
 	}
 }
+
 func (v *_View) gzipFilter(c *gin.Context) {
 	str := c.Request.Header.Get(`Accept-Encoding`)
 	if !strings.Contains(str, `gzip`) {

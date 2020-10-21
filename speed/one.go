@@ -58,6 +58,7 @@ func testOne(outbound *data.Outbound, port int, url string) (duration time.Durat
 	if e != nil {
 		return
 	}
+	fmt.Println(buffer.String())
 	// v2ray
 	cnf, e := core.LoadConfig(`json`, `test.json`, &buffer)
 	if e != nil {
@@ -83,6 +84,7 @@ func testOne(outbound *data.Outbound, port int, url string) (duration time.Durat
 func requestURL(port int, url string) (e error) {
 	client := &http.Client{}
 	var dialer proxy.Dialer
+	fmt.Println(port)
 	dialer, e = proxy.SOCKS5("tcp", fmt.Sprintf("127.0.0.1:%v", port), nil, proxy.Direct)
 	if e != nil {
 		return
@@ -92,11 +94,11 @@ func requestURL(port int, url string) (e error) {
 		Dial: dialer.Dial,
 	}
 	response, e := client.Get(url)
+	if response != nil && response.Body != nil {
+		ioutil.ReadAll(response.Body)
+	}
 	if e != nil {
 		return
-	}
-	if response.Body != nil {
-		ioutil.ReadAll(response.Body)
 	}
 	return
 }

@@ -194,6 +194,7 @@ func (a *_apiProxy) test(c *gin.Context) {
 
 	duration, e := speed.TestOne(&params, getURL())
 	if e != nil {
+		c.String(http.StatusInternalServerError, e.Error())
 		return
 	}
 	c.JSON(http.StatusOK, duration.Milliseconds())

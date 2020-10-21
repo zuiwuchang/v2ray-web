@@ -18,7 +18,7 @@ export class LicenseComponent implements OnInit {
 
   ngOnInit(): void {
     this.httpClient.get(
-      'assets/LICENSE',
+      'assets/LICENSE.txt',
       {
         responseType: 'text',
       },

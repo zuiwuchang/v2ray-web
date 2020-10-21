@@ -21,6 +21,7 @@ type StreamSettings struct {
 	Security          string             `json:"security,omitempty"`
 	WebsocketSettings *WebsocketSettings `json:"wsSettings,omitempty"`
 	HTTPSettings      *HTTPSettings      `json:"httpSettings,omitempty"`
+	TLSSettings       *TLSSettings       `json:"tlsSettings,omitempty"`
 }
 
 // WebsocketSettings .
@@ -33,4 +34,9 @@ type WebsocketSettings struct {
 type HTTPSettings struct {
 	Path string   `json:"path,omitempty"`
 	Host []string `json:"host,omitempty"`
+}
+
+// TLSSettings .
+type TLSSettings struct {
+	AllowInsecure bool `json:"allowInsecure,omitempty"`
 }

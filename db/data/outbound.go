@@ -94,6 +94,11 @@ func (o *Outbound) ToContext() (context *OutboundContext, e error) {
 		Network:  o.Net,
 		Security: o.TLS,
 	}
+	if o.TLS == "tls" {
+		streamSettings.TLSSettings = &subscription.TLSSettings{
+			AllowInsecure: true,
+		}
+	}
 	if o.Net == "ws" {
 		streamSettings.WebsocketSettings = &subscription.WebsocketSettings{
 			Path:    o.Path,

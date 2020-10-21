@@ -21,10 +21,8 @@ require (
 	gitlab.com/king011/king-go v0.0.10
 	go.uber.org/multierr v1.6.0 // indirect
 	go.uber.org/zap v1.16.0
-	golang.org/x/net v0.0.0-20200923182212-328152dc79b1
-	golang.org/x/sys v0.0.0-20200923182605-d9f96fdee20d // indirect
+	golang.org/x/net v0.0.0-20201016165138-7b1cca2348c0
 	golang.org/x/text v0.3.3 // indirect
-	google.golang.org/genproto v0.0.0-20200923140941-5646d36feee1 // indirect
 	gopkg.in/go-playground/assert.v1 v1.2.1 // indirect
 	gopkg.in/go-playground/validator.v8 v8.18.2 // indirect
 	gopkg.in/yaml.v2 v2.3.0 // indirect
