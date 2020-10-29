@@ -4,6 +4,7 @@ export const ServerAPI = {
     v1: {
         version: new RESTful(root, 'v1', 'version'),
         session: new RESTful(root, 'v1', 'session'),
+        users: new RESTful(root, 'v1', 'users'),
     },
     static: {
         licenses: '/static/3rdpartylicenses.txt',
@@ -14,12 +15,6 @@ export const ServerAPI = {
     settings: {
         get: `${root}/settings/get`,
         put: `${root}/settings/put`,
-    },
-    user: {
-        list: `${root}/user/list`,
-        add: `${root}/user/add`,
-        remove: `${root}/user/remove`,
-        password: `${root}/user/password`,
     },
     v2ray: {
         settings: {

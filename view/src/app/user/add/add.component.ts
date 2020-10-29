@@ -33,10 +33,10 @@ export class AddComponent implements OnInit, OnDestroy {
   onSave() {
     this._disabled = true
     const password = sha512(this.password).toString()
-    this.httpClient.post(ServerAPI.user.add, {
+    ServerAPI.v1.users.post(this.httpClient, {
       name: this.name,
       password: password,
-    }).toPromise().then(() => {
+    }).then(() => {
       if (this._closed) {
         return
       }

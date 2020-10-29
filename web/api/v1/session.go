@@ -91,7 +91,7 @@ func (s *_SessionLock) UnlockIP(key string) {
 	s.mutex.Unlock()
 }
 
-// Session .
+// Session 會話
 type Session struct {
 	web.Helper
 }
@@ -101,7 +101,6 @@ func (h Session) Register(router *gin.RouterGroup) {
 	r := router.Group(`/session`)
 	r.POST(``, h.login)
 	r.GET(`:at/:maxage/:token`, h.restore)
-	// r.PATCH(`/password`, h.password)
 }
 
 func (h Session) login(c *gin.Context) {

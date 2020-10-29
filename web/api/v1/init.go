@@ -21,7 +21,7 @@ func (h Helper) Register(router *gin.RouterGroup) {
 		// Debug{},
 		Session{},
 		Other{},
-		// Users{},
+		Users{},
 		// Shells{},
 		// FS{},
 	}

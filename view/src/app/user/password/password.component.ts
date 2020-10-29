@@ -34,10 +34,10 @@ export class PasswordComponent implements OnInit, OnDestroy {
   onSave() {
     this._disabled = true
     const password = sha512(this.password).toString()
-    this.httpClient.post(ServerAPI.user.password, {
+    ServerAPI.v1.users.patch(this.httpClient, `password`, {
       name: this.name,
       password: password,
-    }).toPromise().then(() => {
+    }).then(() => {
       if (this._closed) {
         return
       }

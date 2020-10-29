@@ -49,7 +49,7 @@ export class ListComponent implements OnInit, OnDestroy {
   load() {
     this.err = null
     this._ready = false
-    this.httpClient.get<Array<User>>(ServerAPI.user.list).toPromise().then((data) => {
+    ServerAPI.v1.users.get<Array<User>>(this.httpClient).then((data) => {
       if (this._closed) {
         return
       }
@@ -88,9 +88,11 @@ export class ListComponent implements OnInit, OnDestroy {
   }
   private _delete(node: User) {
     this._disabled = true
-    this.httpClient.post(ServerAPI.user.remove, {
-      name: node.name,
-    }).toPromise().then(() => {
+    ServerAPI.v1.users.delete(this.httpClient, {
+      params: {
+        name: node.name,
+      },
+    }).then(() => {
       const index = this._source.indexOf(node)
       this._source.splice(index, 1)
       this.toasterService.pop('success',
