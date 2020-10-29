@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ToasterService } from 'angular2-toaster';
 import { I18nService } from 'src/app/core/i18n/i18n.service';
-import { Utils } from 'src/app/core/utils';
+import { ServerAPI } from 'src/app/core/core/api';
+import { resolveError } from 'src/app/core/core/restful';
 
 @Component({
   selector: 'app-license',
@@ -18,7 +19,7 @@ export class LicenseComponent implements OnInit {
 
   ngOnInit(): void {
     this.httpClient.get(
-      'assets/LICENSE.txt',
+      ServerAPI.static.license,
       {
         responseType: 'text',
       },
@@ -28,7 +29,7 @@ export class LicenseComponent implements OnInit {
       console.warn(e)
       this.toasterService.pop('error',
         this.i18nService.get('error'),
-        Utils.resolveError(e),
+        resolveError(e),
       )
     })
   }

@@ -4,7 +4,6 @@ import { HttpClient } from '@angular/common/http';
 import { ServerAPI, getWebSocketAddr } from 'src/app/core/core/api';
 import { ToasterService } from 'angular2-toaster';
 import { I18nService } from 'src/app/core/i18n/i18n.service';
-import { Utils } from 'src/app/core/utils';
 import { isArray, isString, isNumber } from 'util';
 import { MatDialog } from '@angular/material/dialog';
 import { AddComponent } from '../add/add.component';
@@ -303,7 +302,7 @@ export class ViewPanelComponent implements OnInit, OnDestroy, AfterViewInit {
       console.warn(e)
       this.toasterService.pop('error',
         this.i18nService.get('error'),
-        Utils.resolveError(e),
+        e,
       )
     }).finally(() => {
       this._disabled = false
@@ -337,7 +336,7 @@ export class ViewPanelComponent implements OnInit, OnDestroy, AfterViewInit {
       console.warn(e)
       this.toasterService.pop('error',
         this.i18nService.get('error'),
-        Utils.resolveError(e),
+        e,
       )
     }).finally(() => {
       this._disabled = false
@@ -360,7 +359,7 @@ export class ViewPanelComponent implements OnInit, OnDestroy, AfterViewInit {
       console.warn(e)
       this.toasterService.pop('error',
         this.i18nService.get('error'),
-        Utils.resolveError(e),
+        e,
       )
     }).finally(() => {
       this._disabled = false
@@ -383,7 +382,7 @@ export class ViewPanelComponent implements OnInit, OnDestroy, AfterViewInit {
       console.warn(e)
       this.toasterService.pop('error',
         this.i18nService.get('error'),
-        Utils.resolveError(e),
+        e,
       )
     }).finally(() => {
       this._disabled = false
@@ -412,9 +411,9 @@ export class ViewPanelComponent implements OnInit, OnDestroy, AfterViewInit {
       console.warn(e)
       this.toasterService.pop('error',
         this.i18nService.get('error'),
-        Utils.resolveError(e),
+        e,
       )
-      element.error = Utils.resolveError(e)
+      element.error = e
     }).finally(() => {
       element.request = undefined
       if (this._closed) {
@@ -440,7 +439,7 @@ export class ViewPanelComponent implements OnInit, OnDestroy, AfterViewInit {
       console.warn(e)
       this.toasterService.pop('error',
         this.i18nService.get('error'),
-        Utils.resolveError(e),
+        e,
       )
     }).finally(() => {
       this._disabled = false
@@ -463,7 +462,7 @@ export class ViewPanelComponent implements OnInit, OnDestroy, AfterViewInit {
       console.warn(e)
       this.toasterService.pop('error',
         this.i18nService.get('error'),
-        Utils.resolveError(e),
+        e,
       )
     }).finally(() => {
       this._disabled = false
@@ -513,7 +512,7 @@ export class ViewPanelComponent implements OnInit, OnDestroy, AfterViewInit {
       console.warn(e)
       this.toasterService.pop('error',
         this.i18nService.get('error'),
-        Utils.resolveError(e),
+        e,
       )
     }).finally(() => {
       this._disabled = false
@@ -529,7 +528,7 @@ export class ViewPanelComponent implements OnInit, OnDestroy, AfterViewInit {
       console.warn(e)
       this.toasterService.pop('error',
         this.i18nService.get('error'),
-        Utils.resolveError(e),
+        e,
       )
     }
   }
@@ -544,7 +543,7 @@ export class ViewPanelComponent implements OnInit, OnDestroy, AfterViewInit {
       console.warn(e)
       this.toasterService.pop('error',
         this.i18nService.get('error'),
-        Utils.resolveError(e),
+        e,
       )
     }
   }

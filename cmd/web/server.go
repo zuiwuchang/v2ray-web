@@ -11,7 +11,6 @@ import (
 	"gitlab.com/king011/v2ray-web/db/data"
 	"gitlab.com/king011/v2ray-web/db/manipulator"
 	"gitlab.com/king011/v2ray-web/logger"
-	"gitlab.com/king011/v2ray-web/web/view"
 	"go.uber.org/zap"
 )
 
@@ -23,26 +22,9 @@ type Server struct {
 
 // NewServer 創建 服務器
 func NewServer(l net.Listener) (server *Server, e error) {
-	router := gin.Default()
 	server = &Server{
 		l:      l,
-		router: router,
-	}
-	v := view.Helper{}
-	v.Register(&router.RouterGroup)
-	ms := []IModule{
-		&_apiAPP{},
-		&_apiIPTables{},
-		&_apiProxy{},
-		&_apiSettings{},
-		&_apiUser{},
-		&_apiV2ray{},
-		&_apiWebsocket{},
-	}
-	r := router.Group(`api`)
-	r.Use(checkRequest)
-	for _, m := range ms {
-		m.Init(r)
+		router: newGIN(),
 	}
 	return
 }

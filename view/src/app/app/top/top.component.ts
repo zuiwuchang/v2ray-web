@@ -6,7 +6,6 @@ import { HttpClient } from '@angular/common/http';
 import { ToasterService } from 'angular2-toaster';
 import { I18nService } from 'src/app/core/i18n/i18n.service';
 import { ServerAPI, getWebSocketAddr } from 'src/app/core/core/api';
-import { Utils } from 'src/app/core/utils';
 import { isString } from 'util';
 const MaxCount = 50
 
@@ -123,7 +122,7 @@ export class TopComponent implements OnInit, OnDestroy {
       console.warn(e)
       this.toasterService.pop('error',
         this.i18nService.get('error'),
-        Utils.resolveError(e),
+        e,
       )
     }).finally(() => {
       this._disabled = false

@@ -154,6 +154,13 @@ case $1 in
 	;;
 
 	s|source)
+		cp "$DirRoot/view/dist/view/en-US/3rdpartylicenses.txt" "$DirRoot/static/3rdpartylicenses.txt"
+
+		echo statik -src="$DirRoot/static" -dest "$DirRoot/assets/static"  -ns static -f
+		rm "$DirRoot/assets/static" -rf
+		mkdir "$DirRoot/assets/static" -p
+		statik -src="$DirRoot/static" -dest "$DirRoot/assets/static"  -ns static -f
+
 		buildSource zh-Hant
 		buildSource zh-Hans
 	;;

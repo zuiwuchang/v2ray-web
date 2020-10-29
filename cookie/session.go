@@ -2,6 +2,7 @@ package cookie
 
 import (
 	"encoding/gob"
+	"fmt"
 )
 
 const (
@@ -17,6 +18,11 @@ func init() {
 type Session struct {
 	Name string `json:"name,omitempty"`
 	Root bool   `json:"root,omitempty"`
+}
+
+// Cookie encode to cookie
+func (s *Session) String() string {
+	return fmt.Sprintf(`%s root=%v`, s.Name, s.Root)
 }
 
 // Cookie encode to cookie

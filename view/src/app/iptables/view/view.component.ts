@@ -1,7 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ServerAPI } from 'src/app/core/core/api';
-import { Utils } from 'src/app/core/utils';
 import { isString } from 'util';
 import { SessionService } from 'src/app/core/session/session.service';
 
@@ -45,7 +44,7 @@ export class ViewComponent implements OnInit, OnDestroy {
         return
       }
       console.warn(e)
-      this.err = Utils.resolveError(e)
+      this.err = e
     }).finally(() => {
       this._ready = true
     })

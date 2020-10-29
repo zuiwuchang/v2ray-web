@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
@@ -37,6 +37,7 @@ import { SettingsComponent } from './app/settings/settings.component';
 import { QrcodeComponent } from './app/dialog/qrcode/qrcode.component';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
+import { HeaderInterceptor } from './app/service/header.interceptor';
 
 @NgModule({
   declarations: [
@@ -66,7 +67,12 @@ import { environment } from '../environments/environment';
     ToasterModule.forRoot(),
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
   ],
-  providers: [ToasterService],
+  providers: [{
+    provide: HTTP_INTERCEPTORS,
+    useClass: HeaderInterceptor,
+    multi: true,
+  },
+    ToasterService],
   entryComponents: [AddComponent, EditComponent, QrcodeComponent],
   bootstrap: [AppComponent]
 })
