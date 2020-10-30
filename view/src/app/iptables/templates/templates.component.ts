@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { ServerAPI } from 'src/app/core/core/api';
 import { ToasterService } from 'angular2-toaster';
 import { I18nService } from 'src/app/core/i18n/i18n.service';
-import { isString } from 'util';
+import { isString } from 'king-node/dist/core';
 import { ContextText } from '../../core/text';
 import { SessionService } from 'src/app/core/session/session.service';
 class Context {

@@ -21,10 +21,6 @@ func (a *_apiV2ray) Init(router *gin.RouterGroup) {
 	GetPost(r, `/settings/get`, a.settingsGet)
 	GetPost(r, `/settings/put`, a.settingsPut)
 	GetPost(r, `/settings/test`, a.settingsTest)
-	GetPost(r, `/subscription/list`, a.subscriptionList)
-	GetPost(r, `/subscription/put`, a.subscriptionPut)
-	GetPost(r, `/subscription/add`, a.subscriptionAdd)
-	GetPost(r, `/subscription/remove`, a.subscriptionRemove)
 }
 
 func (a *_apiV2ray) settingsGet(c *gin.Context) {
@@ -98,61 +94,4 @@ func (a *_apiV2ray) settingsTest(c *gin.Context) {
 		return
 	}
 	server.Close()
-}
-func (a *_apiV2ray) subscriptionList(c *gin.Context) {
-	var mSubscription manipulator.Subscription
-	result, e := mSubscription.List()
-	if e != nil {
-		c.String(http.StatusInternalServerError, e.Error())
-		return
-	}
-	c.JSON(http.StatusOK, result)
-}
-
-func (a *_apiV2ray) subscriptionPut(c *gin.Context) {
-	var params data.Subscription
-	e := c.ShouldBindWith(&params, binding.JSON)
-	if e != nil {
-		c.String(http.StatusInternalServerError, e.Error())
-		return
-	}
-
-	var mSubscription manipulator.Subscription
-	e = mSubscription.Put(&params)
-	if e != nil {
-		c.String(http.StatusInternalServerError, e.Error())
-		return
-	}
-}
-func (a *_apiV2ray) subscriptionAdd(c *gin.Context) {
-	var params data.Subscription
-	e := c.ShouldBindWith(&params, binding.JSON)
-	if e != nil {
-		c.String(http.StatusInternalServerError, e.Error())
-		return
-	}
-	var mSubscription manipulator.Subscription
-	e = mSubscription.Add(&params)
-	if e != nil {
-		c.String(http.StatusInternalServerError, e.Error())
-		return
-	}
-	c.JSON(http.StatusOK, params.ID)
-}
-func (a *_apiV2ray) subscriptionRemove(c *gin.Context) {
-	var params struct {
-		ID uint64
-	}
-	e := c.ShouldBindWith(&params, binding.JSON)
-	if e != nil {
-		c.String(http.StatusInternalServerError, e.Error())
-		return
-	}
-	var mSubscription manipulator.Subscription
-	e = mSubscription.Remove(params.ID)
-	if e != nil {
-		c.String(http.StatusInternalServerError, e.Error())
-		return
-	}
-	c.JSON(http.StatusOK, params.ID)
 }

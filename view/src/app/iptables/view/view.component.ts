@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ServerAPI } from 'src/app/core/core/api';
-import { isString } from 'util';
+import { isString } from 'king-node/dist/core';
 import { SessionService } from 'src/app/core/session/session.service';
 
 @Component({

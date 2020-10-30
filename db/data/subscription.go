@@ -15,11 +15,11 @@ const SubscriptionBucket = "subscription"
 // Subscription 訂閱服務
 type Subscription struct {
 	// 唯一識別碼
-	ID uint64 `json:"id,omitempty"`
+	ID uint64 `json:"id,omitempty" xml:"id,omitempty" yaml:"id,omitempty"`
 	// 給人類看的名稱
-	Name string `json:"name,omitempty"`
+	Name string `json:"name,omitempty" xml:"name,omitempty" yaml:"name,omitempty"`
 	// 訂閱地址
-	URL string `json:"url,omitempty"`
+	URL string `json:"url,omitempty" xml:"url,omitempty" yaml:"url,omitempty"`
 }
 
 // Decode 由 []byte 解碼

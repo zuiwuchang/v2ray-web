@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { ServerAPI, getWebSocketAddr } from '../core/api';
-import { isString, isNumber } from 'util';
+import { isString, isNumber } from 'king-node/dist/core';
 
 export interface Status {
   run: boolean

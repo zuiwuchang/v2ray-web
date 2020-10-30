@@ -4,7 +4,7 @@ import { ToasterService } from 'angular2-toaster';
 import { I18nService } from 'src/app/core/i18n/i18n.service';
 import { SessionService } from 'src/app/core/session/session.service';
 import { ServerAPI } from 'src/app/core/core/api';
-import { isString } from 'util';
+import { isString } from 'king-node/dist/core';
 interface Result {
   url: string
   v2ray: boolean
@@ -48,7 +48,7 @@ export class SettingsComponent implements OnInit {
   load() {
     this.err = null
     this._ready = false
-    this.httpClient.get<Result>(ServerAPI.settings.get).toPromise().then((data) => {
+    ServerAPI.v1.settings.get<Result>(this.httpClient).then((data) => {
       if (this._closed) {
         return
       }
@@ -75,11 +75,11 @@ export class SettingsComponent implements OnInit {
   }
   onClickSave() {
     this._disabled = true
-    this.httpClient.post(ServerAPI.settings.put, {
+    ServerAPI.v1.settings.put(this.httpClient, {
       url: this.url,
       v2ray: this.v2ray,
       iptables: this.iptables,
-    }).toPromise().then(() => {
+    }).then(() => {
       if (this._closed) {
         return
       }

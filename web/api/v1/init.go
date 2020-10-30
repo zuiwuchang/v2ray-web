@@ -18,12 +18,11 @@ func (h Helper) Register(router *gin.RouterGroup) {
 	r := router.Group(BaseURL)
 
 	ms := []web.IHelper{
-		// Debug{},
 		Session{},
 		Other{},
 		Users{},
-		// Shells{},
-		// FS{},
+		Settings{},
+		Subscriptions{},
 	}
 	for _, m := range ms {
 		m.Register(r)

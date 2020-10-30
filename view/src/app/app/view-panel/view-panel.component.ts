@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { ServerAPI, getWebSocketAddr } from 'src/app/core/core/api';
 import { ToasterService } from 'angular2-toaster';
 import { I18nService } from 'src/app/core/i18n/i18n.service';
-import { isArray, isString, isNumber } from 'util';
+import { isArray, isString, isNumber } from 'king-node/dist/core';
 import { MatDialog } from '@angular/material/dialog';
 import { AddComponent } from '../add/add.component';
 import { EditComponent } from '../edit/edit.component';

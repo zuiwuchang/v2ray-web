@@ -5,7 +5,7 @@ import { ToasterService } from 'angular2-toaster';
 import { I18nService } from 'src/app/core/i18n/i18n.service';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Element } from '../subscription';
-import { isString } from 'util';
+import { isString } from 'king-node/dist/core';
 @Component({
   selector: 'app-subscription-edit',
   templateUrl: './subscription-edit.component.html',
@@ -50,11 +50,11 @@ export class SubscriptionEditComponent implements OnInit, OnDestroy {
     this._disabled = true
     const name = this.name.trim()
     const url = this.url.trim()
-    this.httpClient.post(ServerAPI.v2ray.subscription.put, {
+    ServerAPI.v1.subscriptions.put(this.httpClient, {
       id: this.data.id,
       name: name,
       url: url,
-    }).toPromise().then(() => {
+    }).then(() => {
       if (this._closed) {
         return
       }

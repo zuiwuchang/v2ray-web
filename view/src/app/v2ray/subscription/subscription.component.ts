@@ -4,7 +4,7 @@ import { ServerAPI } from 'src/app/core/core/api';
 import { ToasterService } from 'angular2-toaster';
 import { I18nService } from 'src/app/core/i18n/i18n.service';
 import { SessionService } from 'src/app/core/session/session.service';
-import { isArray } from 'util';
+import { isArray } from 'king-node/dist/core';
 import { Element } from './subscription';
 import { MatDialog } from '@angular/material/dialog';
 import { SubscriptionAddComponent } from './subscription-add/subscription-add.component';
@@ -52,7 +52,7 @@ export class SubscriptionComponent implements OnInit, OnDestroy {
   load() {
     this.err = null
     this._ready = false
-    this.httpClient.get<Array<Element>>(ServerAPI.v2ray.subscription.list).toPromise().then((source) => {
+    ServerAPI.v1.subscriptions.get<Array<Element>>(this.httpClient).then((source) => {
       if (this._closed) {
         return
       }
@@ -112,9 +112,11 @@ export class SubscriptionComponent implements OnInit, OnDestroy {
   }
   private _delete(element: Element) {
     this._disabled = true
-    this.httpClient.post(ServerAPI.v2ray.subscription.remove, {
-      id: element.id,
-    }).toPromise().then(() => {
+    ServerAPI.v1.subscriptions.delete(this.httpClient, {
+      params: {
+        id: element.id.toString(),
+      },
+    }).then(() => {
       const index = this._source.indexOf(element)
       this._source.splice(index, 1)
       this.toasterService.pop('success',

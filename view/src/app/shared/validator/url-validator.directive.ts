@@ -1,6 +1,6 @@
 import { Directive, Input } from '@angular/core';
 import { NG_VALIDATORS, AbstractControl } from '@angular/forms'
-import { isString } from 'util';
+import { isString } from 'king-node/dist/core';
 @Directive({
   selector: '[sharedUrlValidator]',
   providers: [{ provide: NG_VALIDATORS, useExisting: UrlValidatorDirective, multi: true }]

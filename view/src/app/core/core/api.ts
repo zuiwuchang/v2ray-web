@@ -5,6 +5,8 @@ export const ServerAPI = {
         version: new RESTful(root, 'v1', 'version'),
         session: new RESTful(root, 'v1', 'session'),
         users: new RESTful(root, 'v1', 'users'),
+        settings: new RESTful(root, 'v1', 'settings'),
+        subscriptions: new RESTful(root, 'v1', 'subscriptions'),
     },
     static: {
         licenses: '/static/3rdpartylicenses.txt',
@@ -12,21 +14,11 @@ export const ServerAPI = {
     },
 
     logs: `${root}/ws/app/logs`,
-    settings: {
-        get: `${root}/settings/get`,
-        put: `${root}/settings/put`,
-    },
     v2ray: {
         settings: {
             get: `${root}/v2ray/settings/get`,
             put: `${root}/v2ray/settings/put`,
             test: `${root}/v2ray/settings/test`,
-        },
-        subscription: {
-            list: `${root}/v2ray/subscription/list`,
-            put: `${root}/v2ray/subscription/put`,
-            add: `${root}/v2ray/subscription/add`,
-            remove: `${root}/v2ray/subscription/remove`,
         },
     },
     proxy: {

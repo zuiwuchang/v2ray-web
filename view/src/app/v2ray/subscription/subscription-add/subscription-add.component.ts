@@ -33,10 +33,10 @@ export class SubscriptionAddComponent implements OnInit, OnDestroy {
     this._disabled = true
     const name = this.name.trim()
     const url = this.url.trim()
-    this.httpClient.post<number>(ServerAPI.v2ray.subscription.add, {
+    ServerAPI.v1.subscriptions.post<number>(this.httpClient, {
       name: name,
       url: url,
-    }).toPromise().then((id) => {
+    }).then((id) => {
       if (this._closed) {
         return
       }

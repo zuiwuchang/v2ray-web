@@ -6,7 +6,7 @@ import { HttpClient } from '@angular/common/http';
 import { ToasterService } from 'angular2-toaster';
 import { I18nService } from 'src/app/core/i18n/i18n.service';
 import { ServerAPI, getWebSocketAddr } from 'src/app/core/core/api';
-import { isString } from 'util';
+import { isString } from 'king-node/dist/core';
 const MaxCount = 50
 
 class Source {

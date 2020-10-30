@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { isString } from 'util';
+import { isString } from 'king-node/dist/core';
 
 @Injectable({
   providedIn: 'root'
