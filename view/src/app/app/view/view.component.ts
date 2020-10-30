@@ -46,7 +46,7 @@ export class ViewComponent implements OnInit, OnDestroy {
   load() {
     this.err = null
     this._ready = false
-    this.httpClient.get<Response>(ServerAPI.proxy.list).toPromise().then((response) => {
+    ServerAPI.v1.proxys.get<Response>(this.httpClient).then((response) => {
       if (this._closed) {
         return
       }

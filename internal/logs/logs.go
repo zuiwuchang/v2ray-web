@@ -1,4 +1,4 @@
-package web
+package logs
 
 import (
 	"strings"
@@ -8,7 +8,7 @@ import (
 // MaxLogsCount .
 const MaxLogsCount = 50
 
-var logs = _Logs{
+var single = _Logs{
 	listeners: make(map[int64]logsListenerFunc),
 	items:     make([]string, MaxLogsCount),
 }
@@ -97,4 +97,19 @@ func (l *_Logs) notify(str string) {
 	for _, f := range l.listeners {
 		f(str)
 	}
+}
+
+// AddListener 添加監聽器
+func AddListener(listener logsListenerFunc) (id int64) {
+	return single.AddListener(listener)
+}
+
+// RemoveListener 移除監聽器
+func RemoveListener(id int64) {
+	single.RemoveListener(id)
+}
+
+// Push 壓入日誌
+func Push(v string) {
+	single.Push(v)
 }

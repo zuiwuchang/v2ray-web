@@ -17,6 +17,7 @@ type Users struct {
 func (h Users) Register(router *gin.RouterGroup) {
 	r := router.Group(`/users`)
 	r.Use(h.CheckSession)
+	
 	r.GET(``, h.list)
 	r.POST(``, h.add)
 	r.PATCH(`password`, h.password)

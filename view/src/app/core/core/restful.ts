@@ -58,10 +58,12 @@ export class RESTful {
     onePatchURL(id: string | number | boolean | Array<any>, patch: string): string {
         return `${this.oneURL(id)}/${patch}`
     }
-    websocketURL(id: string | number | boolean | Array<any>): string {
+    websocketURL(id: string | number | boolean | Array<any>, params?: {
+        [param: string]: string;
+    }): string {
         const location = document.location
         let addr: string
-        console.log(location.protocol)
+        // console.log(location.protocol)
         if (location.protocol == "https:") {
             addr = `wss://${location.hostname}`
             if (location.port == "") {
@@ -89,7 +91,15 @@ export class RESTful {
         if (!isUndefinedOrNull(val)) {
             url += '/' + val
         }
-        return `${url}/websocket`
+        url += '/websocket'
+        if (params) {
+            const query = new URLSearchParams('')
+            for (const key in params) {
+                query.set(key, params[key])
+            }
+            return `${url}?${query.toString()}`
+        }
+        return url
     }
     get<T>(client: HttpClient, options?: {
         headers?: HttpHeaders | {

@@ -7,6 +7,7 @@ import { ToasterService } from 'angular2-toaster';
 import { I18nService } from 'src/app/core/i18n/i18n.service';
 import { ServerAPI, getWebSocketAddr } from 'src/app/core/core/api';
 import { isString } from 'king-node/dist/core';
+import { SessionService } from 'src/app/core/session/session.service';
 const MaxCount = 50
 
 class Source {
@@ -61,6 +62,7 @@ export class TopComponent implements OnInit, OnDestroy {
     private httpClient: HttpClient,
     private toasterService: ToasterService,
     private i18nService: I18nService,
+    public readonly sessionService: SessionService,
   ) { }
   private _closed = false
   private _disabled = false
@@ -132,8 +134,10 @@ export class TopComponent implements OnInit, OnDestroy {
     if (this._closed) {
       return
     }
-    const addr = getWebSocketAddr(ServerAPI.logs)
-    console.info('ws connect', addr)
+    const addr = ServerAPI.v1.logs.websocketURL(null, {
+      token: this.sessionService.token(),
+    })
+    console.info('logs ws connect', addr)
 
     const websocket = new WebSocket(addr)
     this._websocket = websocket

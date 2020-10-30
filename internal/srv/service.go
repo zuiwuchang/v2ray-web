@@ -1,4 +1,4 @@
-package web
+package srv
 
 import (
 	"bytes"
@@ -10,7 +10,7 @@ import (
 	"v2ray.com/core"
 )
 
-var srv = _Service{
+var single = _Service{
 	listeners: make(map[int64]ListenerFunc),
 	status:    &ListenerStatus{},
 }
@@ -127,4 +127,24 @@ func (s *_Service) notify(status *ListenerStatus) {
 	for _, f := range s.listeners {
 		f(status)
 	}
+}
+
+// AddListener .
+func AddListener(listener ListenerFunc) (id int64) {
+	return single.AddListener(listener)
+}
+
+// RemoveListener .
+func RemoveListener(id int64) {
+	single.RemoveListener(id)
+}
+
+// Start .
+func Start(element *data.Element) (e error) {
+	return single.Start(element)
+}
+
+// Stop .
+func Stop() {
+	single.Stop()
 }

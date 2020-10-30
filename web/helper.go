@@ -8,10 +8,16 @@ import (
 	"github.com/gin-contrib/gzip"
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
+	"github.com/gorilla/websocket"
 	"gitlab.com/king011/v2ray-web/cookie"
 	"gitlab.com/king011/v2ray-web/logger"
 	"go.uber.org/zap"
 )
+
+var upgrader = websocket.Upgrader{
+	ReadBufferSize:  1024,
+	WriteBufferSize: 1024,
+}
 
 // Offered accept Offered
 var Offered = []string{
@@ -76,7 +82,7 @@ func (h Helper) BindWith(c *gin.Context, obj interface{}, b binding.Binding) (e 
 }
 
 // ShouldBindSession 返回session 不進行響應
-func (Helper) ShouldBindSession(c *gin.Context) (session *cookie.Session, e error) {
+func (h Helper) ShouldBindSession(c *gin.Context) (session *cookie.Session, e error) {
 	v, exists := c.Get(`session`)
 	if exists {
 		if v == nil {
@@ -97,7 +103,16 @@ func (Helper) ShouldBindSession(c *gin.Context) (session *cookie.Session, e erro
 		}
 		return
 	}
-	token := c.GetHeader("token")
+	token, e := h.getToken(c)
+	if e != nil {
+		if ce := logger.Logger.Check(zap.ErrorLevel, `get token`); ce != nil {
+			ce.Write(
+				zap.Error(e),
+				zap.String(`method`, c.Request.Method),
+			)
+		}
+		return
+	}
 	if token == "" {
 		c.Set(`session`, nil)
 		return
@@ -108,6 +123,24 @@ func (Helper) ShouldBindSession(c *gin.Context) (session *cookie.Session, e erro
 	} else {
 		c.Set(`session`, e)
 	}
+	return
+}
+func (h Helper) getToken(c *gin.Context) (value string, e error) {
+	value = c.GetHeader("token")
+	if value != "" {
+		return
+	}
+	if !c.IsWebsocket() {
+		return
+	}
+	var obj struct {
+		Token string `form:"token"`
+	}
+	e = c.ShouldBindQuery(&obj)
+	if e != nil {
+		return
+	}
+	value = obj.Token
 	return
 }
 
@@ -142,4 +175,9 @@ func (h Helper) BindQuery(c *gin.Context, obj interface{}) error {
 // Compression .
 func (h Helper) Compression() gin.HandlerFunc {
 	return _compression
+}
+
+// Upgrade .
+func (h Helper) Upgrade(w http.ResponseWriter, r *http.Request, responseHeader http.Header) (*websocket.Conn, error) {
+	return upgrader.Upgrade(w, r, responseHeader)
 }

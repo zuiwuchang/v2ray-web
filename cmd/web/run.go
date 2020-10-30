@@ -9,6 +9,7 @@ import (
 	"go.uber.org/zap"
 
 	"gitlab.com/king011/v2ray-web/configure"
+	"gitlab.com/king011/v2ray-web/internal/logs"
 	"gitlab.com/king011/v2ray-web/logger"
 )
 

@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { ServerAPI, getWebSocketAddr } from '../core/api';
 import { isString, isNumber } from 'king-node/dist/core';
+import { SessionService } from '../session/session.service';
 
 export interface Status {
   run: boolean
@@ -13,7 +14,7 @@ export interface Status {
   providedIn: 'root'
 })
 export class StatusService {
-  constructor() {
+  constructor(public readonly sessionService: SessionService) {
     this._do()
   }
   private _subject = new BehaviorSubject<Status>({
@@ -26,8 +27,10 @@ export class StatusService {
   private _wait = 1
   private _timer
   private _do() {
-    const addr = getWebSocketAddr(ServerAPI.proxy.status)
-    console.info('ws connect', addr)
+    const addr = ServerAPI.v1.proxys.websocketURL(`status`, {
+      token: this.sessionService.token(),
+    })
+    console.info('status ws connect', addr)
 
     const websocket = new WebSocket(addr)
     this._websocket = websocket

@@ -7,13 +7,13 @@ export const ServerAPI = {
         users: new RESTful(root, 'v1', 'users'),
         settings: new RESTful(root, 'v1', 'settings'),
         subscriptions: new RESTful(root, 'v1', 'subscriptions'),
+        logs: new RESTful(root, 'v1', 'logs'),
+        proxys: new RESTful(root, 'v1', 'proxys'),
     },
     static: {
         licenses: '/static/3rdpartylicenses.txt',
         license: '/static/LICENSE.txt',
     },
-
-    logs: `${root}/ws/app/logs`,
     v2ray: {
         settings: {
             get: `${root}/v2ray/settings/get`,
@@ -22,7 +22,6 @@ export const ServerAPI = {
         },
     },
     proxy: {
-        list: `${root}/proxy/list`,
         update: `${root}/proxy/update`,
         add: `${root}/proxy/add`,
         put: `${root}/proxy/put`,
@@ -32,7 +31,6 @@ export const ServerAPI = {
         stop: `${root}/proxy/stop`,
         testOne: `${root}/proxy/test`,
         test: `${root}/ws/proxy/test`,
-        status: `${root}/ws/proxy/status`,
     },
     iptables: {
         view: `${root}/iptables/view`,
