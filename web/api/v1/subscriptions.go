@@ -16,7 +16,7 @@ type Subscriptions struct {
 
 // Register impl IHelper
 func (h Subscriptions) Register(router *gin.RouterGroup) {
-	r := router.Group(`/subscriptions`)
+	r := router.Group(`subscriptions`)
 	r.Use(h.CheckSession)
 
 	r.GET(``, h.list)

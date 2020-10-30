@@ -424,7 +424,7 @@ export class ViewPanelComponent implements OnInit, OnDestroy, AfterViewInit {
   }
   onClickSetIPTables(element: Element) {
     this._disabled = true
-    this.httpClient.post(ServerAPI.iptables.init, element.outbound).toPromise().then(() => {
+    ServerAPI.v1.iptables.postOne(this.httpClient, 'init', element.outbound).then(() => {
       if (this._closed) {
         return
       }
@@ -447,7 +447,7 @@ export class ViewPanelComponent implements OnInit, OnDestroy, AfterViewInit {
   }
   onClickRestoreIPTables(element: Element) {
     this._disabled = true
-    this.httpClient.post(ServerAPI.iptables.restore, element.outbound).toPromise().then(() => {
+    ServerAPI.v1.iptables.postOne(this.httpClient, 'restore', element.outbound).then(() => {
       if (this._closed) {
         return
       }
@@ -492,10 +492,12 @@ export class ViewPanelComponent implements OnInit, OnDestroy, AfterViewInit {
   }
   private _delete(element: Element) {
     this._disabled = true
-    this.httpClient.post(ServerAPI.proxy.remove, {
-      subscription: this.panel.id,
-      id: element.id,
-    }).toPromise().then(() => {
+    ServerAPI.v1.proxys.delete(this.httpClient, {
+      params: {
+        subscription: this.panel.id.toString(),
+        id: element.id.toString(),
+      },
+    }).then(() => {
       if (this._closed) {
         return
       }

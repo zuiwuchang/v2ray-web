@@ -102,7 +102,7 @@ func (s *Server) setIPTables(iptables *data.IPTables, element *data.Element) {
 	if strings.TrimSpace(iptables.Init) == "" {
 		return
 	}
-	text, e := getTemplate("init", element.Outbound, iptables.Init)
+	text, e := element.Outbound.ToTemplate(`init`, iptables.Init)
 	if e != nil {
 		return
 	}

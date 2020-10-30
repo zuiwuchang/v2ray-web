@@ -44,7 +44,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
   load() {
     this.err = null
     this._ready = false
-    this.httpClient.get<string>(ServerAPI.v2ray.settings.get).toPromise().then((text) => {
+    ServerAPI.v1.v2ray.get<string>(this.httpClient).then((text) => {
       if (this._closed) {
         return
       }
@@ -67,9 +67,9 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
   onClickSave() {
     this._disabled = true
-    this.httpClient.post(ServerAPI.v2ray.settings.put, {
+    ServerAPI.v1.v2ray.put(this.httpClient, {
       text: this.text,
-    }).toPromise().then(() => {
+    }).then(() => {
       if (this._closed) {
         return
       }
@@ -96,9 +96,9 @@ export class SettingsComponent implements OnInit, OnDestroy {
   }
   onClickTest() {
     this._disabled = true
-    this.httpClient.post(ServerAPI.v2ray.settings.test, {
+    ServerAPI.v1.v2ray.postOne(this.httpClient, "test", {
       text: this.text,
-    }).toPromise().then(() => {
+    }).then(() => {
       if (this._closed) {
         return
       }

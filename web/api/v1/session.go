@@ -98,7 +98,7 @@ type Session struct {
 
 // Register impl IHelper
 func (h Session) Register(router *gin.RouterGroup) {
-	r := router.Group(`/session`)
+	r := router.Group(`session`)
 	r.POST(``, h.login)
 	r.GET(`:at/:maxage/:token`, h.restore)
 }

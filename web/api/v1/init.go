@@ -24,6 +24,8 @@ func (h Helper) Register(router *gin.RouterGroup) {
 		Settings{},
 		Subscriptions{},
 		Proxys{},
+		V2ray{},
+		IPTables{},
 	}
 	for _, m := range ms {
 		m.Register(r)

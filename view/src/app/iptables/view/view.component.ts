@@ -34,7 +34,7 @@ export class ViewComponent implements OnInit, OnDestroy {
   load() {
     this.err = null
     this._ready = false
-    this.httpClient.get<string>(ServerAPI.iptables.view).toPromise().then((text) => {
+    ServerAPI.v1.iptables.getOne<string>(this.httpClient,'view').then((text) => {
       if (this._closed) {
         return
       }

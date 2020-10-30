@@ -21,33 +21,16 @@ type _apiProxy struct {
 
 func (a *_apiProxy) Init(router *gin.RouterGroup) {
 	r := router.Group(`/proxy`)
-	GetPost(r, `/list`, a.list)
+
 	GetPost(r, `/update`, a.update)
 	GetPost(r, `/add`, a.add)
 	GetPost(r, `/put`, a.put)
-	GetPost(r, `/remove`, a.remove)
 	GetPost(r, `/clear`, a.clear)
 	GetPost(r, `/start`, a.start)
 	GetPost(r, `/stop`, a.stop)
 	GetPost(r, `/test`, a.test)
 }
-func (a *_apiProxy) list(c *gin.Context) {
-	var mElement manipulator.Element
-	element, subscription, e := mElement.List()
-	if e != nil {
-		c.String(http.StatusInternalServerError, e.Error())
-		return
-	}
 
-	c.JSON(http.StatusOK, &struct {
-		Element      []*data.Element      `json:"element,omitempty"`
-		Subscription []*data.Subscription `json:"subscription,omitempty"`
-	}{
-		element,
-		subscription,
-	})
-	return
-}
 func (a *_apiProxy) update(c *gin.Context) {
 	var params struct {
 		ID uint64
@@ -123,24 +106,6 @@ func (a *_apiProxy) put(c *gin.Context) {
 	return
 }
 
-func (a *_apiProxy) remove(c *gin.Context) {
-	var params struct {
-		ID           uint64
-		Subscription uint64
-	}
-	e := c.ShouldBindWith(&params, binding.JSON)
-	if e != nil {
-		c.String(http.StatusInternalServerError, e.Error())
-		return
-	}
-	var mElement manipulator.Element
-	e = mElement.Remove(params.Subscription, params.ID)
-	if e != nil {
-		c.String(http.StatusInternalServerError, e.Error())
-		return
-	}
-	return
-}
 func (a *_apiProxy) clear(c *gin.Context) {
 	var params struct {
 		Subscription uint64

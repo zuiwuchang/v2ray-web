@@ -1,11 +1,13 @@
 package data
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"net"
 	"strconv"
 	"strings"
+	"text/template"
 
 	"github.com/gin-gonic/gin"
 
@@ -51,6 +53,26 @@ type Outbound struct {
 
 	// 是否是 vless 協議
 	Vless bool `json:"vless,omitempty"`
+}
+
+// ToTemplate .
+func (o *Outbound) ToTemplate(name, text string) (result string, e error) {
+	t := template.New(name)
+	t, e = t.Parse(text)
+	if e != nil {
+		return
+	}
+	ctx, e := o.ToContext()
+	if e != nil {
+		return
+	}
+	var buffer bytes.Buffer
+	e = t.Execute(&buffer, ctx)
+	if e != nil {
+		return
+	}
+	result = buffer.String()
+	return
 }
 
 // ToContext .

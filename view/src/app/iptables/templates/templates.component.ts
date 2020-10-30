@@ -3,7 +3,6 @@ import { HttpClient } from '@angular/common/http';
 import { ServerAPI } from 'src/app/core/core/api';
 import { ToasterService } from 'angular2-toaster';
 import { I18nService } from 'src/app/core/i18n/i18n.service';
-import { isString } from 'king-node/dist/core';
 import { ContextText } from '../../core/text';
 import { SessionService } from 'src/app/core/session/session.service';
 class Context {
@@ -55,7 +54,7 @@ export class TemplatesComponent implements OnInit, OnDestroy {
   load() {
     this.err = null
     this._ready = false
-    this.httpClient.get<Context>(ServerAPI.iptables.get).toPromise().then((data) => {
+    ServerAPI.v1.iptables.get<Context>(this.httpClient).then((data) => {
       if (this._closed) {
         return
       }
@@ -74,7 +73,7 @@ export class TemplatesComponent implements OnInit, OnDestroy {
   }
   onClickSave() {
     this._disabled = true
-    this.httpClient.post(ServerAPI.iptables.put, this.context).toPromise().then(() => {
+    ServerAPI.v1.iptables.put(this.httpClient, this.context).then(() => {
       if (this._closed) {
         return
       }
@@ -97,7 +96,7 @@ export class TemplatesComponent implements OnInit, OnDestroy {
   }
   onClickResetDefault() {
     this._disabled = true
-    this.httpClient.get<Context>(ServerAPI.iptables.getDefault).toPromise().then((data) => {
+    ServerAPI.v1.iptables.getOne<Context>(this.httpClient, 'default').then((data) => {
       if (this._closed) {
         return
       }

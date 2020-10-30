@@ -210,10 +210,10 @@ func (settings *Settings) ResetDefault() {
 
 // IPTables 防火牆設置
 type IPTables struct {
-	Shell string `json:"shell,omitempty"`
-	View  string `json:"view,omitempty"`
-	Clear string `json:"clear,omitempty"`
-	Init  string `json:"init,omitempty"`
+	Shell string `json:"shell,omitempty" xml:"shell,omitempty" yaml:"shell,omitempty"`
+	View  string `json:"view,omitempty" xml:"view,omitempty" yaml:"view,omitempty"`
+	Clear string `json:"clear,omitempty" xml:"clear,omitempty" yaml:"clear,omitempty"`
+	Init  string `json:"init,omitempty" xml:"init,omitempty" yaml:"init,omitempty"`
 }
 
 // ResetDefault 重新 置爲默認值

@@ -22,28 +22,15 @@ type Proxys struct {
 
 // Register impl IHelper
 func (h Proxys) Register(router *gin.RouterGroup) {
-	r := router.Group(`/proxys`)
+	r := router.Group(`proxys`)
 	r.Use(h.CheckSession)
 
-	r.GET(``, h.list)
 	r.GET(`status/websocket`, h.status)
-}
-func (h Proxys) list(c *gin.Context) {
-	var mElement manipulator.Element
-	element, subscription, e := mElement.List()
-	if e != nil {
-		h.NegotiateError(c, http.StatusInternalServerError, e)
-		return
-	}
 
-	h.NegotiateData(c, http.StatusOK, &struct {
-		Element      []*data.Element      `json:"element,omitempty" xml:"element,omitempty" yaml:"element,omitempty"`
-		Subscription []*data.Subscription `json:"subscription,omitempty" xml:"subscription,omitempty" yaml:"subscription,omitempty"`
-	}{
-		element,
-		subscription,
-	})
+	r.GET(``, h.list)
+	r.DELETE(``, h.remove)
 }
+
 func (h Proxys) status(c *gin.Context) {
 	ws, e := h.Upgrade(c.Writer, c.Request, nil)
 	if e != nil {
@@ -98,4 +85,37 @@ func (h Proxys) status(c *gin.Context) {
 		}
 	}
 	srv.RemoveListener(id)
+}
+func (h Proxys) list(c *gin.Context) {
+	var mElement manipulator.Element
+	element, subscription, e := mElement.List()
+	if e != nil {
+		h.NegotiateError(c, http.StatusInternalServerError, e)
+		return
+	}
+
+	h.NegotiateData(c, http.StatusOK, &struct {
+		Element      []*data.Element      `json:"element,omitempty" xml:"element,omitempty" yaml:"element,omitempty"`
+		Subscription []*data.Subscription `json:"subscription,omitempty" xml:"subscription,omitempty" yaml:"subscription,omitempty"`
+	}{
+		element,
+		subscription,
+	})
+}
+func (h Proxys) remove(c *gin.Context) {
+	var obj struct {
+		ID           uint64 `form:"id" json:"id" xml:"id" yaml:"id" binding:"required"`
+		Subscription uint64 `form:"subscription" json:"subscription" xml:"subscription" yaml:"subscription" binding:"required"`
+	}
+	e := c.Bind(&obj)
+	if e != nil {
+		return
+	}
+	var mElement manipulator.Element
+	e = mElement.Remove(obj.Subscription, obj.ID)
+	if e != nil {
+		h.NegotiateError(c, http.StatusInternalServerError, e)
+		return
+	}
+	c.Status(http.StatusNoContent)
 }

@@ -16,7 +16,7 @@ type Settings struct {
 
 // Register impl IHelper
 func (h Settings) Register(router *gin.RouterGroup) {
-	r := router.Group(`/settings`)
+	r := router.Group(`settings`)
 	r.Use(h.CheckSession)
 
 	r.GET(``, h.get)

@@ -9,36 +9,22 @@ export const ServerAPI = {
         subscriptions: new RESTful(root, 'v1', 'subscriptions'),
         logs: new RESTful(root, 'v1', 'logs'),
         proxys: new RESTful(root, 'v1', 'proxys'),
+        v2ray: new RESTful(root, 'v1', 'v2ray'),
+        iptables: new RESTful(root, 'v1', 'iptables'),
     },
     static: {
         licenses: '/static/3rdpartylicenses.txt',
         license: '/static/LICENSE.txt',
     },
-    v2ray: {
-        settings: {
-            get: `${root}/v2ray/settings/get`,
-            put: `${root}/v2ray/settings/put`,
-            test: `${root}/v2ray/settings/test`,
-        },
-    },
     proxy: {
         update: `${root}/proxy/update`,
         add: `${root}/proxy/add`,
         put: `${root}/proxy/put`,
-        remove: `${root}/proxy/remove`,
         clear: `${root}/proxy/clear`,
         start: `${root}/proxy/start`,
         stop: `${root}/proxy/stop`,
         testOne: `${root}/proxy/test`,
         test: `${root}/ws/proxy/test`,
-    },
-    iptables: {
-        view: `${root}/iptables/view`,
-        get: `${root}/iptables/get`,
-        getDefault: `${root}/iptables/get/default`,
-        put: `${root}/iptables/put`,
-        init: `${root}/iptables/init`,
-        restore: `${root}/iptables/restore`,
     },
 }
 export function getWebSocketAddr(path: string): string {
