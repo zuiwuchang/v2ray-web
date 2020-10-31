@@ -1,7 +1,4 @@
 export const ContextText = `{
-    Protocol string
-    Vnext JSONString
-    StreamSettings JSONString
     BasePath string
     AddIP string
     Outbound {
@@ -16,7 +13,7 @@ export const ContextText = `{
       AlterID string
       Security string
       Level string
-      Vless bool
+      Protocol string
     }
   }`
 export const V2rayTemplate = `{

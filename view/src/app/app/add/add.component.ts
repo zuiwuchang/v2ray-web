@@ -71,17 +71,7 @@ export class AddComponent implements OnInit, OnDestroy {
   url: string = ''
   onClickImport() {
     try {
-      let str = this.url.trim()
-      if (!str.startsWith('vmess://')) {
-        this.toasterService.pop('error',
-          this.i18nService.get('error'),
-          'url only support vmess',
-        )
-        return
-      }
-      str = str.substring('vmess://'.length)
-      const outbound = Outbound.fromBase64(str)
-      outbound.cloneTo(this.outbound)
+      Outbound.fromURL(this.url).cloneTo(this.outbound)
     } catch (e) {
       console.warn(e)
       this.toasterService.pop('error',
@@ -89,5 +79,23 @@ export class AddComponent implements OnInit, OnDestroy {
         e,
       )
     }
+  }
+  get isDisabledNet(): boolean {
+    return this.outbound.protocol == "shadowsocks"
+  }
+  get isDisabledTLS(): boolean {
+    return this.outbound.protocol == "shadowsocks"
+  }
+  get isDisabledHost(): boolean {
+    return this.outbound.protocol == "shadowsocks"
+  }
+  get isDisabledPath(): boolean {
+    return this.outbound.protocol == "shadowsocks"
+  }
+  get isDisabledAlterID(): boolean {
+    return this.outbound.protocol == "shadowsocks"
+  }
+  get isDisabledLevel(): boolean {
+    return this.outbound.protocol == "shadowsocks"
   }
 }

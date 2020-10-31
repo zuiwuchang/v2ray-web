@@ -1,4 +1,4 @@
-import { isBoolean, isNumber, isObject, isString } from 'util'
+import { isBoolean, isNumber, isObject, isString } from 'king-node/dist/core'
 import { Base64 } from 'js-base64';
 export class Source {
     private _items = new Array<Panel>()
@@ -52,6 +52,7 @@ export class Panel {
         return l.name > r.name ? 1 : -1
     }
 }
+
 export class Element {
     id: number = 0
     subscription: number = 0
@@ -88,7 +89,26 @@ export class Element {
         }
         return ld > rd ? 1 : -1
     }
+    private _sortValue() {
+        if (this.outbound) {
+            const protocol = this.outbound.protocol
+            if (protocol == "vmess") {
+                return 5
+            } else if (protocol == "vless") {
+                return 4
+            } else if (protocol == "shadowsocks") {
+                return 15
+            }
+        }
+        return 100;
+    }
     static compare(l: Element, r: Element): number {
+        const lp = l._sortValue()
+        const rp = r._sortValue()
+        if (lp != rp) {
+            return lp - rp
+        }
+
         if (l.outbound.name != r.outbound.name) {
             return l.outbound.name > r.outbound.name ? 1 : -1
         }
@@ -102,6 +122,19 @@ export class Element {
             return l.id > r.id ? 1 : -1
         }
         return 0
+    }
+    /**
+     * 返回 分享字符串
+     */
+    toShare(): string {
+        if (this.outbound.protocol == "vmess") {
+            return `vmess://${this.outbound.toV2ray()}`
+        } else if (this.outbound.protocol == "vless") {
+            return `vless://${this.outbound.toV2ray()}`
+        } else if (this.outbound.protocol == "shadowsocks") {
+            return `ss://${this.outbound.toShadowsocks()}`
+        }
+        throw new Error("not support")
     }
 }
 export class Outbound {
@@ -133,7 +166,8 @@ export class Outbound {
     // 用戶等級
     level: string = '0'
 
-    vless: boolean = false
+    // 協議名稱
+    protocol: string = 'vmess'
     constructor(net?: Outbound) {
         if (isObject(net)) {
             if (isString(net.name)) {
@@ -169,8 +203,8 @@ export class Outbound {
             if (isString(net.level)) {
                 this.level = net.level
             }
-            if (isBoolean(net.vless)) {
-                this.vless = net.vless
+            if (isString(net.protocol)) {
+                this.protocol = net.protocol
             }
         }
     }
@@ -197,7 +231,7 @@ export class Outbound {
         other.alterID = this.alterID
         other.security = this.security
         other.level = this.level
-        other.vless = this.vless
+        other.protocol = this.protocol
     }
     equal(other: Outbound): boolean {
         return other.name == this.name &&
@@ -211,10 +245,10 @@ export class Outbound {
             other.alterID == this.alterID &&
             other.security == this.security &&
             other.level == this.level &&
-            other.vless == this.vless
+            other.protocol == this.protocol
     }
 
-    static fromBase64(str: string): Outbound {
+    static fromV2ray(protocol: string, str: string): Outbound {
         str = str.replace(/=+/, '')
         str = Base64.decode(str)
         const obj = JSON.parse(str)
@@ -231,10 +265,75 @@ export class Outbound {
         outbound.alterID = obj.aid
         outbound.security = obj.type
         outbound.level = obj.v
-        outbound.vless = obj.vless
+        outbound.protocol = protocol
         return outbound
     }
-    toBase64(): string {
+    static fromShadowsocks(str: string): Outbound {
+        const outbound = new Outbound()
+        outbound.protocol = "shadowsocks"
+        str = outbound._ssSafe(str)
+        if (!str) {
+            return outbound
+        }
+        str = outbound._ssAddr(str)
+        if (!str) {
+            return outbound
+        }
+        str = outbound._ssPort(str)
+        if (!str) {
+            return outbound
+        }
+        outbound.name = decodeURIComponent(str)
+        return outbound
+    }
+    private _ssAddr(str: string): string {
+        let result
+        let strs = str.split(":", 2)
+        if (strs.length > 1) {
+            result = strs[1]
+        }
+        this.add = strs[0]
+        return result
+    }
+    private _ssPort(str: string): string {
+        let result
+        let strs = str.split("#", 2)
+        if (strs.length > 1) {
+            result = strs[1]
+        }
+        this.port = strs[0]
+        return result
+    }
+    private _ssSafe(str: string): string {
+        let result
+        let strs = str.split("@", 2)
+        if (strs.length > 1) {
+            result = strs[1]
+        }
+        str = strs[0].replace("=", "")
+        str = Base64.decode(str)
+        strs = str.split(":", 2)
+        this.security = strs[0]
+        if (strs.length > 1) {
+            this.userID = strs[1]
+        }
+        return result
+    }
+    static fromURL(str: string): Outbound {
+        str = str.trim()
+        if (str.startsWith('vmess://')) {
+            str = str.substring('vmess://'.length)
+            return Outbound.fromV2ray("vmess", str)
+        } else if (str.startsWith('vless://')) {
+            str = str.substring('vless://'.length)
+            return Outbound.fromV2ray("vless", str)
+        } else if (str.startsWith('ss://')) {
+            str = str.substring('ss://'.length)
+            return Outbound.fromShadowsocks(str)
+        }
+        throw new Error("url not supported")
+    }
+    toV2ray(): string {
         const str = JSON.stringify({
             ps: this.name,
             add: this.add,
@@ -247,8 +346,11 @@ export class Outbound {
             aid: this.alterID,
             type: this.security,
             v: this.level,
-            vless: this.vless ? true : false,
         })
         return Base64.encode(str)
+    }
+    toShadowsocks(): string {
+        const str = Base64.encode(`${this.security}:${this.userID}`)
+        return `${str}@${this.add}:${this.port}#${encodeURIComponent(this.name)}`
     }
 }

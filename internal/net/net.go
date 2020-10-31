@@ -81,7 +81,7 @@ func RequestSubscription(url string) (result []*data.Outbound, e error) {
 		if str == "" {
 			continue
 		}
-		vless, node := analyzeString(str)
+		protocol, node := analyzeString(str)
 		if node != nil {
 			result = append(result, &data.Outbound{
 				Name:     node.Name,
@@ -95,25 +95,37 @@ func RequestSubscription(url string) (result []*data.Outbound, e error) {
 				AlterID:  node.AlterID,
 				Security: node.Security,
 				Level:    node.Level,
-				Vless:    vless,
+				Protocol: protocol,
 			})
 		}
 	}
 	return
 }
-func analyzeString(str string) (vless bool, result *Outbound) {
+func analyzeString(str string) (protocol string, result *Outbound) {
 	str = strings.TrimSpace(str)
 	if strings.HasPrefix(str, "vless://") {
-		vless = true
-	}
-	if !vless && !strings.HasPrefix(str, "vmess://") {
+		protocol = "vless"
+		result = analyzeVMess(str)
+	} else if strings.HasPrefix(str, "vmess://") {
+		protocol = "vmess"
+		result = analyzeVMess(str)
+	} else if strings.HasPrefix(str, "ss://") {
+		protocol = "shadowsocks"
+		var analyze analyzeSS
+		result = analyze.do(str)
+	} else {
 		if ce := logger.Logger.Check(zap.WarnLevel, "not support outbound"); ce != nil {
 			ce.Write(
 				zap.String("value", str),
 			)
 		}
-		return
 	}
+	return
+}
+
+var replaceNumber = regexp.MustCompile(`"\s*:\s*([\d]+)\s*,`)
+
+func analyzeVMess(str string) (result *Outbound) {
 	str = str[len("vmess://"):]
 	str = strings.ReplaceAll(strings.TrimSpace(str), "=", "")
 	b, e := base64.RawStdEncoding.DecodeString(str)
@@ -141,5 +153,3 @@ func analyzeString(str string) (vless bool, result *Outbound) {
 	result = &node
 	return
 }
-
-var replaceNumber = regexp.MustCompile(`"\s*:\s*([\d]+)\s*,`)

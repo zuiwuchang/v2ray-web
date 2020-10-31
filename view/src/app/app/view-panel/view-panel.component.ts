@@ -70,10 +70,16 @@ export class ViewPanelComponent implements OnInit, OnDestroy, AfterViewInit {
     if (this.isCurrent(element)) {
       return 'done'
     }
-    if (element && element.outbound && element.outbound.vless) {
-      return 'star_half'
+    if (element && element.outbound) {
+      if (element.outbound.protocol == "vless") {
+        return 'star_half'
+      } else if (element.outbound.protocol == "vmess") {
+        return 'star'
+      } else if (element.outbound.protocol == "shadowsocks") {
+        return 'flight'
+      }
     }
-    return 'star'
+    return 'feedback'
   }
   isCurrent(element: Element) {
     if (this.status.run) {
@@ -120,7 +126,7 @@ export class ViewPanelComponent implements OnInit, OnDestroy, AfterViewInit {
       this._websocket.close()
     }
 
-   const addr= ServerAPI.v1.proxys.websocketURL('test',{
+    const addr = ServerAPI.v1.proxys.websocketURL('test', {
       token: this.sessionService.token(),
     })
     const websocket = new WebSocket(addr)
@@ -531,8 +537,7 @@ export class ViewPanelComponent implements OnInit, OnDestroy, AfterViewInit {
   }
   onClickCopy(element: Element) {
     try {
-      const protocol = element.outbound.vless ? 'vless://' : 'vmess://'
-      const str = protocol + element.outbound.toBase64()
+      const str = element.toShare()
       this._btnClipboard.nativeElement.setAttribute("data-clipboard-text", str)
       this._btnClipboard.nativeElement.click()
     } catch (e) {
@@ -545,8 +550,7 @@ export class ViewPanelComponent implements OnInit, OnDestroy, AfterViewInit {
   }
   onClickShare(element: Element) {
     try {
-      const protocol = element.outbound.vless ? 'vless://' : 'vmess://'
-      const str = protocol + element.outbound.toBase64()
+      const str = element.toShare()
       this.matDialog.open(QrcodeComponent, {
         data: str,
       })
