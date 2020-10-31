@@ -66,6 +66,7 @@ func (h V2ray) test(c *gin.Context) {
 		Net:      "tcp",
 		Security: "auto",
 		UserID:   "83b81e69-b1c7-077f-10d9-75b015b24651",
+		Protocol: "vmess",
 	}
 	t := template.New("v2ray")
 	t, e = t.Parse(obj.Text)

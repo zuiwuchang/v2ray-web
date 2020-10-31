@@ -152,11 +152,11 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app/add/add.component.html</context>
-          <context context-type="linenumber">99</context>
+          <context context-type="linenumber">108</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app/edit/edit.component.html</context>
-          <context context-type="linenumber">99</context>
+          <context context-type="linenumber">108</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/user/add/add.component.html</context>
@@ -187,11 +187,11 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app/add/add.component.html</context>
-          <context context-type="linenumber">100</context>
+          <context context-type="linenumber">109</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app/edit/edit.component.html</context>
-          <context context-type="linenumber">100</context>
+          <context context-type="linenumber">109</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/user/add/add.component.html</context>
@@ -617,114 +617,125 @@
           <context context-type="linenumber">22</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="1f5fd9147f9854f5d93d04b679a0761963e588bf" datatype="html">
+        <source>Proxy Protocol</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app/add/add.component.html</context>
+          <context context-type="linenumber">26</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app/edit/edit.component.html</context>
+          <context context-type="linenumber">26</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="799da2b03e3fa2ddc3f207d19dbd2b15b6d79451" datatype="html">
         <source>Outbound Addr</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app/add/add.component.html</context>
-          <context context-type="linenumber">28</context>
+          <context context-type="linenumber">37</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app/edit/edit.component.html</context>
-          <context context-type="linenumber">28</context>
+          <context context-type="linenumber">37</context>
         </context-group>
       </trans-unit>
       <trans-unit id="b6d314c3fd1d9ff0fc7a27f6845fbc06e8f8bcaf" datatype="html">
         <source>Outbound Port</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app/add/add.component.html</context>
-          <context context-type="linenumber">32</context>
+          <context context-type="linenumber">41</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app/edit/edit.component.html</context>
-          <context context-type="linenumber">32</context>
+          <context context-type="linenumber">41</context>
         </context-group>
       </trans-unit>
       <trans-unit id="c7de68565a5bde42ab1c9fc09df9a98472d6dff6" datatype="html">
         <source>Outbound Net</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app/add/add.component.html</context>
-          <context context-type="linenumber">38</context>
+          <context context-type="linenumber">47</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app/edit/edit.component.html</context>
-          <context context-type="linenumber">38</context>
+          <context context-type="linenumber">47</context>
         </context-group>
       </trans-unit>
       <trans-unit id="856b7df5e90c0728b2e8bc422b5d5145ed1b749b" datatype="html">
         <source>Outbound TLS</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app/add/add.component.html</context>
-          <context context-type="linenumber">50</context>
+          <context context-type="linenumber">59</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app/edit/edit.component.html</context>
-          <context context-type="linenumber">50</context>
+          <context context-type="linenumber">59</context>
         </context-group>
       </trans-unit>
       <trans-unit id="d3a6be4eb574c1877b8a70712b216f96c750b87e" datatype="html">
         <source>Outbound Host</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app/add/add.component.html</context>
-          <context context-type="linenumber">60</context>
+          <context context-type="linenumber">69</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app/edit/edit.component.html</context>
-          <context context-type="linenumber">60</context>
+          <context context-type="linenumber">69</context>
         </context-group>
       </trans-unit>
       <trans-unit id="9a6cd406062ee8d391db099f30d0595a642f3003" datatype="html">
         <source>Outbound Path</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app/add/add.component.html</context>
-          <context context-type="linenumber">64</context>
+          <context context-type="linenumber">73</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app/edit/edit.component.html</context>
-          <context context-type="linenumber">64</context>
+          <context context-type="linenumber">73</context>
         </context-group>
       </trans-unit>
       <trans-unit id="a8b14e056adc98d3fd745de763f55e9f59dfa9ba" datatype="html">
         <source>Outbound User UUID</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app/add/add.component.html</context>
-          <context context-type="linenumber">70</context>
+          <context context-type="linenumber">79</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app/edit/edit.component.html</context>
-          <context context-type="linenumber">70</context>
+          <context context-type="linenumber">79</context>
         </context-group>
       </trans-unit>
       <trans-unit id="71c675201f889fb142e83feda3c7c5d2cfb4b0b5" datatype="html">
         <source>Outbound Alter ID</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app/add/add.component.html</context>
-          <context context-type="linenumber">74</context>
+          <context context-type="linenumber">83</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app/edit/edit.component.html</context>
-          <context context-type="linenumber">74</context>
+          <context context-type="linenumber">83</context>
         </context-group>
       </trans-unit>
       <trans-unit id="761e752b7d1deb9eae84752d6fbd4379f3577042" datatype="html">
         <source>Outbound Security</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app/add/add.component.html</context>
-          <context context-type="linenumber">80</context>
+          <context context-type="linenumber">89</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app/edit/edit.component.html</context>
-          <context context-type="linenumber">80</context>
+          <context context-type="linenumber">89</context>
         </context-group>
       </trans-unit>
       <trans-unit id="35398f71bb556187e23b586c3cac8b845371322d" datatype="html">
         <source>Outbound Level</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app/add/add.component.html</context>
-          <context context-type="linenumber">91</context>
+          <context context-type="linenumber">100</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app/edit/edit.component.html</context>
-          <context context-type="linenumber">91</context>
+          <context context-type="linenumber">100</context>
         </context-group>
       </trans-unit>
       <trans-unit id="8f84b0f53c6005d49a303ed08af14d1554770696" datatype="html">
@@ -874,7 +885,7 @@
         <source>Pause Display Logs</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app/top/top.component.html</context>
-          <context context-type="linenumber">21</context>
+          <context context-type="linenumber">20</context>
         </context-group>
       </trans-unit>
       <trans-unit id="eb3d5aefff38a814b76da74371cbf02c0789a1ef" datatype="html">
