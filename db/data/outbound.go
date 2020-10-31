@@ -24,35 +24,35 @@ import (
 type Outbound struct {
 
 	// 給人類看的 名稱
-	Name string `json:"name,omitempty"`
+	Name string `json:"name,omitempty" xml:"name,omitempty" yaml:"name,omitempty"`
 
 	// 連接地址
-	Add string `json:"add,omitempty"`
+	Add string `json:"add,omitempty" xml:"add,omitempty" yaml:"add,omitempty"`
 	// 連接端口
-	Port string `json:"port,omitempty"`
+	Port string `json:"port,omitempty" xml:"port,omitempty" yaml:"port,omitempty"`
 	// 連接主機名
-	Host string `json:"host,omitempty"`
+	Host string `json:"host,omitempty" xml:"host,omitempty" yaml:"host,omitempty"`
 
 	// 加密方案
-	TLS string `json:"tls,omitempty"`
+	TLS string `json:"tls,omitempty" xml:"tls,omitempty" yaml:"tls,omitempty"`
 
 	// 使用的網路協議
-	Net string `json:"net,omitempty"`
+	Net string `json:"net,omitempty" xml:"net,omitempty" yaml:"net,omitempty"`
 
 	// websocket 請求路徑
-	Path string `json:"path,omitempty"`
+	Path string `json:"path,omitempty" xml:"path,omitempty" yaml:"path,omitempty"`
 
 	// 用戶身份識別碼
-	UserID string `json:"userID,omitempty"`
+	UserID string `json:"userID,omitempty" xml:"userID,omitempty" yaml:"userID,omitempty"`
 	// 另外一個可選的用戶id
-	AlterID string `json:"alterID,omitempty"`
+	AlterID string `json:"alterID,omitempty" xml:"alterID,omitempty" yaml:"alterID,omitempty"`
 	// Security 加密方式
-	Security string `json:"security,omitempty"`
+	Security string `json:"security,omitempty" xml:"security,omitempty" yaml:"security,omitempty"`
 	// 用戶等級
-	Level string `json:"level,omitempty"`
+	Level string `json:"level,omitempty" xml:"level,omitempty" yaml:"level,omitempty"`
 
 	// 是否是 vless 協議
-	Vless bool `json:"vless,omitempty"`
+	Vless bool `json:"vless,omitempty" xml:"vless,omitempty" yaml:"vless,omitempty"`
 }
 
 // ToTemplate .

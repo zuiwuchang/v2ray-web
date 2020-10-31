@@ -9,6 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
 	"github.com/gorilla/websocket"
+	jsoniter "github.com/json-iterator/go"
 	"gitlab.com/king011/v2ray-web/cookie"
 	"gitlab.com/king011/v2ray-web/logger"
 	"go.uber.org/zap"
@@ -180,4 +181,9 @@ func (h Helper) Compression() gin.HandlerFunc {
 // Upgrade .
 func (h Helper) Upgrade(w http.ResponseWriter, r *http.Request, responseHeader http.Header) (*websocket.Conn, error) {
 	return upgrader.Upgrade(w, r, responseHeader)
+}
+
+// JSON .
+func (h Helper) JSON() jsoniter.API {
+	return json
 }

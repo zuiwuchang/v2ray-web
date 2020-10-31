@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { ServerAPI, getWebSocketAddr } from '../core/api';
+import { ServerAPI } from '../core/api';
 import { isString, isNumber } from 'king-node/dist/core';
 import { SessionService } from '../session/session.service';
 

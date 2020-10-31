@@ -2,7 +2,6 @@ package v1
 
 import (
 	"errors"
-	"fmt"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -191,7 +190,6 @@ func (h Session) restore(c *gin.Context) {
 			maxage = 0
 		}
 		c.Header("Cache-Control", "max-age="+strconv.Itoa((int(maxage))))
-		fmt.Println("max-age=", maxage)
 	}
 	if last.IsZero() {
 		last = now

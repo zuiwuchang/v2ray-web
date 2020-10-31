@@ -5,7 +5,7 @@ import { Subscription } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { ToasterService } from 'angular2-toaster';
 import { I18nService } from 'src/app/core/i18n/i18n.service';
-import { ServerAPI, getWebSocketAddr } from 'src/app/core/core/api';
+import { ServerAPI } from 'src/app/core/core/api';
 import { isString } from 'king-node/dist/core';
 import { SessionService } from 'src/app/core/session/session.service';
 const MaxCount = 50
@@ -109,7 +109,7 @@ export class TopComponent implements OnInit, OnDestroy {
       return
     }
     this._disabled = true
-    this.httpClient.get(ServerAPI.proxy.stop).toPromise().then(() => {
+    ServerAPI.v1.proxys.postOne(this.httpClient, 'stop', null).then(() => {
       if (this._closed) {
         return
       }

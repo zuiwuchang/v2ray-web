@@ -16,34 +16,4 @@ export const ServerAPI = {
         licenses: '/static/3rdpartylicenses.txt',
         license: '/static/LICENSE.txt',
     },
-    proxy: {
-        update: `${root}/proxy/update`,
-        add: `${root}/proxy/add`,
-        put: `${root}/proxy/put`,
-        clear: `${root}/proxy/clear`,
-        start: `${root}/proxy/start`,
-        stop: `${root}/proxy/stop`,
-        testOne: `${root}/proxy/test`,
-        test: `${root}/ws/proxy/test`,
-    },
-}
-export function getWebSocketAddr(path: string): string {
-    const location = document.location
-    let addr: string
-    if (location.protocol == "https") {
-        addr = `wss://${location.hostname}`
-        if (location.port == "") {
-            addr += ":443"
-        } else {
-            addr += `:${location.port}`
-        }
-    } else {
-        addr = `ws://${location.hostname}`
-        if (location.port == "") {
-            addr += ":80"
-        } else {
-            addr += `:${location.port}`
-        }
-    }
-    return `${addr}${path}`
 }

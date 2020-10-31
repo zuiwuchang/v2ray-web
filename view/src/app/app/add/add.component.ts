@@ -37,10 +37,10 @@ export class AddComponent implements OnInit, OnDestroy {
   onSave() {
     this._disabled = true
     this.outbound.format()
-    this.httpClient.post<number>(ServerAPI.proxy.add, {
+    ServerAPI.v1.proxys.post<number>(this.httpClient, {
       subscription: this.panel.id,
       outbound: this.outbound,
-    }).toPromise().then((id) => {
+    }).then((id) => {
       if (this._closed) {
         return
       }

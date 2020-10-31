@@ -43,11 +43,11 @@ export class EditComponent implements OnInit, OnDestroy {
   onSave() {
     this._disabled = true
     this.outbound.format()
-    this.httpClient.post<number>(ServerAPI.proxy.put, {
+    ServerAPI.v1.proxys.put(this.httpClient, {
       id: this.data.element.id,
       subscription: this.data.panel.id,
       outbound: this.outbound,
-    }).toPromise().then((id) => {
+    }).then(() => {
       if (this._closed) {
         return
       }

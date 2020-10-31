@@ -15,11 +15,11 @@ func init() {
 // Element 代理節點
 type Element struct {
 	// 唯一識別碼
-	ID uint64 `json:"id,omitempty"`
+	ID uint64 `json:"id,omitempty" xml:"id,omitempty" yaml:"id,omitempty"`
 	// 所屬的 訂閱組 如果爲0 則爲 自定義節點
-	Subscription uint64 `json:"subscription,omitempty"`
+	Subscription uint64 `json:"subscription,omitempty" xml:"subscription,omitempty" yaml:"subscription,omitempty"`
 	// 節點信息
-	Outbound *Outbound `json:"outbound,omitempty"`
+	Outbound *Outbound `json:"outbound,omitempty" xml:"outbound,omitempty" yaml:"outbound,omitempty"`
 }
 
 // Decode 由 []byte 解碼

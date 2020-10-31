@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, OnDestroy, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { Panel, Element } from '../view/source';
 import { HttpClient } from '@angular/common/http';
-import { ServerAPI, getWebSocketAddr } from 'src/app/core/core/api';
+import { ServerAPI } from 'src/app/core/core/api';
 import { ToasterService } from 'angular2-toaster';
 import { I18nService } from 'src/app/core/i18n/i18n.service';
 import { isArray, isString, isNumber } from 'king-node/dist/core';
@@ -13,6 +13,7 @@ import { StatusService, Status } from 'src/app/core/status/status.service';
 import { Subscription } from 'rxjs';
 import * as ClipboardJS from 'clipboard'
 import { QrcodeComponent } from '../dialog/qrcode/qrcode.component';
+import { SessionService } from 'src/app/core/session/session.service';
 // 正在運行
 const StatusRunning = 1
 // 錯誤
@@ -36,6 +37,7 @@ export class ViewPanelComponent implements OnInit, OnDestroy, AfterViewInit {
     private i18nService: I18nService,
     private matDialog: MatDialog,
     private statusService: StatusService,
+    public readonly sessionService: SessionService,
   ) { }
   @Input('panel')
   panel: Panel
@@ -118,7 +120,9 @@ export class ViewPanelComponent implements OnInit, OnDestroy, AfterViewInit {
       this._websocket.close()
     }
 
-    const addr = getWebSocketAddr(ServerAPI.proxy.test)
+   const addr= ServerAPI.v1.proxys.websocketURL('test',{
+      token: this.sessionService.token(),
+    })
     const websocket = new WebSocket(addr)
     this._websocket = websocket
     websocket.onerror = (evt) => {
@@ -284,9 +288,11 @@ export class ViewPanelComponent implements OnInit, OnDestroy, AfterViewInit {
   }
   private _clear() {
     this._disabled = true
-    this.httpClient.post(ServerAPI.proxy.clear, {
-      subscription: this.panel.id,
-    }).toPromise().then(() => {
+    ServerAPI.v1.proxys.deleteOne(this.httpClient, 'clear', {
+      params: {
+        subscription: this.panel.id.toString(),
+      }
+    }).then(() => {
       if (this._closed) {
         return
       }
@@ -310,9 +316,9 @@ export class ViewPanelComponent implements OnInit, OnDestroy, AfterViewInit {
   }
   onClickUpdate() {
     this._disabled = true
-    this.httpClient.post<Array<any>>(ServerAPI.proxy.update, {
+    ServerAPI.v1.proxys.postOne<Array<any>>(this.httpClient, 'update', {
       id: this.panel.id,
-    }).toPromise().then((data) => {
+    }).then((data) => {
       if (this._closed) {
         return
       }
@@ -344,7 +350,7 @@ export class ViewPanelComponent implements OnInit, OnDestroy, AfterViewInit {
   }
   onClickStart(element: Element) {
     this._disabled = true
-    this.httpClient.post(ServerAPI.proxy.start, element).toPromise().then(() => {
+    ServerAPI.v1.proxys.postOne(this.httpClient, 'start', element).then(() => {
       if (this._closed) {
         return
       }
@@ -367,7 +373,7 @@ export class ViewPanelComponent implements OnInit, OnDestroy, AfterViewInit {
   }
   onClickStop(element: Element) {
     this._disabled = true
-    this.httpClient.get(ServerAPI.proxy.stop).toPromise().then(() => {
+    ServerAPI.v1.proxys.postOne(this.httpClient, 'stop', null).then(() => {
       if (this._closed) {
         return
       }
@@ -393,7 +399,10 @@ export class ViewPanelComponent implements OnInit, OnDestroy, AfterViewInit {
     element.request = true
     element.error = undefined
     element.duration = undefined
-    this.httpClient.post<number>(ServerAPI.proxy.testOne, element.outbound).toPromise().then((data) => {
+    ServerAPI.v1.proxys.postOne<number>(this.httpClient,
+      'test',
+      element.outbound,
+    ).then((data) => {
       if (this._closed) {
         return
       }

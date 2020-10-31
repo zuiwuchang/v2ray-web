@@ -1,8 +1,9 @@
-package web
+package net
 
 import (
 	"bytes"
 	"encoding/base64"
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -48,7 +49,8 @@ type Outbound struct {
 	Level string `json:"v,omitempty"`
 }
 
-func requestSubscription(url string) (result []*data.Outbound, e error) {
+// RequestSubscription .
+func RequestSubscription(url string) (result []*data.Outbound, e error) {
 	response, e := http.Get(url)
 	if e != nil {
 		return
