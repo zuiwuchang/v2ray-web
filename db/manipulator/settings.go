@@ -14,7 +14,7 @@ type Settings struct {
 }
 
 // Init 初始化 bucket
-func (m Settings) Init(tx *bolt.Tx) (e error) {
+func (m Settings) Init(tx *bolt.Tx, version int) (e error) {
 	bucket, e := tx.CreateBucketIfNotExists([]byte(data.SettingsBucket))
 	if e != nil {
 		return
@@ -57,6 +57,23 @@ func (m Settings) Init(tx *bolt.Tx) (e error) {
 			return
 		}
 	}
+	return
+}
+
+// Upgrade 升級 bucket
+func (m Settings) Upgrade(tx *bolt.Tx, oldVersion, newVersion int) (e error) {
+	// 刪除不兼容的 舊數據庫
+	if oldVersion < 1 {
+		bucket := tx.Bucket([]byte(data.SettingsBucket))
+		if bucket != nil {
+			key := []byte(data.SettingsV2ray)
+			e = bucket.Put(key, []byte(data.V2rayTemplate))
+			if e != nil {
+				return
+			}
+		}
+	}
+	e = m.Init(tx, newVersion)
 	return
 }
 

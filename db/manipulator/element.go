@@ -14,7 +14,7 @@ type Element struct {
 }
 
 // Init 初始化 bucket
-func (m Element) Init(tx *bolt.Tx) (e error) {
+func (m Element) Init(tx *bolt.Tx, version int) (e error) {
 	bucket, e := tx.CreateBucketIfNotExists([]byte(data.ElementBucket))
 	if e != nil {
 		return
@@ -24,6 +24,12 @@ func (m Element) Init(tx *bolt.Tx) (e error) {
 		return
 	}
 	_, e = bucket.CreateBucketIfNotExists(key)
+	return
+}
+
+// Upgrade 升級 bucket
+func (m Element) Upgrade(tx *bolt.Tx, oldVersion, newVersion int) (e error) {
+	e = m.Init(tx, newVersion)
 	return
 }
 

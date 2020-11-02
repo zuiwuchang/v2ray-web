@@ -15,11 +15,17 @@ type Subscription struct {
 }
 
 // Init 初始化 bucket
-func (m Subscription) Init(tx *bolt.Tx) (e error) {
+func (m Subscription) Init(tx *bolt.Tx, version int) (e error) {
 	_, e = tx.CreateBucketIfNotExists([]byte(data.SubscriptionBucket))
 	if e != nil {
 		return
 	}
+	return
+}
+
+// Upgrade 升級 bucket
+func (m Subscription) Upgrade(tx *bolt.Tx, oldVersion, newVersion int) (e error) {
+	e = m.Init(tx, newVersion)
 	return
 }
 func (m Subscription) list(t *bolt.Tx) (result []*data.Subscription, e error) {

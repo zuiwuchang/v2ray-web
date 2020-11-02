@@ -18,7 +18,7 @@ type User struct {
 }
 
 // Init 初始化 bucket
-func (m User) Init(tx *bolt.Tx) (e error) {
+func (m User) Init(tx *bolt.Tx, version int) (e error) {
 	bucket, e := tx.CreateBucketIfNotExists([]byte(data.UserBucket))
 	if e != nil {
 		return
@@ -30,6 +30,12 @@ func (m User) Init(tx *bolt.Tx) (e error) {
 	}
 	password := sha512.Sum512([]byte("19890604"))
 	e = bucket.Put([]byte("killer"), utils.StringToBytes(hex.EncodeToString(password[:])))
+	return
+}
+
+// Upgrade 升級 bucket
+func (m User) Upgrade(tx *bolt.Tx, oldVersion, newVersion int) (e error) {
+	e = m.Init(tx, newVersion)
 	return
 }
 
