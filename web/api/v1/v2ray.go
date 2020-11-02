@@ -8,6 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"gitlab.com/king011/v2ray-web/db/data"
 	"gitlab.com/king011/v2ray-web/db/manipulator"
+	"gitlab.com/king011/v2ray-web/internal/net"
 	"gitlab.com/king011/v2ray-web/web"
 	"v2ray.com/core"
 )
@@ -25,6 +26,7 @@ func (h V2ray) Register(router *gin.RouterGroup) {
 	r.GET(``, h.get)
 	r.PUT(``, h.put)
 	r.POST(`test`, h.test)
+	r.POST(`preview`, h.preview)
 }
 func (h V2ray) get(c *gin.Context) {
 	var mSettings manipulator.Settings
@@ -54,19 +56,30 @@ func (h V2ray) put(c *gin.Context) {
 func (h V2ray) test(c *gin.Context) {
 	var obj struct {
 		Text string `form:"text" json:"text" xml:"text" yaml:"text" binding:"required"`
+		URL  string `form:"url" json:"url" xml:"url" yaml:"url" binding:"required"`
 	}
 	e := h.Bind(c, &obj)
 	if e != nil {
 		return
 	}
+	protocol, result := net.AnalyzeString(obj.URL)
+	if result == nil {
+		h.NegotiateErrorString(c, http.StatusBadRequest, `not support proxy url`)
+		return
+	}
 	outbound := &data.Outbound{
-		Name:     "測試",
-		Add:      "127.0.0.1",
-		Port:     "1989",
-		Net:      "tcp",
-		Security: "auto",
-		UserID:   "83b81e69-b1c7-077f-10d9-75b015b24651",
-		Protocol: "vmess",
+		Name:     result.Name,
+		Add:      result.Add,
+		Port:     result.Port,
+		Host:     result.Host,
+		TLS:      result.TLS,
+		Net:      result.Net,
+		Path:     result.Path,
+		UserID:   result.UserID,
+		AlterID:  result.AlterID,
+		Security: result.Security,
+		Level:    result.Level,
+		Protocol: protocol,
 	}
 	t := template.New("v2ray")
 	t, e = t.Parse(obj.Text)
@@ -85,17 +98,84 @@ func (h V2ray) test(c *gin.Context) {
 		h.NegotiateError(c, http.StatusInternalServerError, e)
 		return
 	}
-	str := buffer.String()
 	// v2ray
 	cnf, e := core.LoadConfig(`json`, `test.json`, &buffer)
 	if e != nil {
-		h.NegotiateErrorString(c, http.StatusInternalServerError, e.Error()+"\n"+str)
+		h.NegotiateError(c, http.StatusInternalServerError, e)
 		return
 	}
 	server, e := core.New(cnf)
 	if e != nil {
-		h.NegotiateErrorString(c, http.StatusInternalServerError, e.Error()+"\n"+str)
+		h.NegotiateError(c, http.StatusInternalServerError, e)
 		return
 	}
 	server.Close()
+}
+func (h V2ray) preview(c *gin.Context) {
+	var obj struct {
+		Text string `form:"text" json:"text" xml:"text" yaml:"text" binding:"required"`
+		URL  string `form:"url" json:"url" xml:"url" yaml:"url" binding:"required"`
+	}
+	e := h.Bind(c, &obj)
+	if e != nil {
+		return
+	}
+	protocol, result := net.AnalyzeString(obj.URL)
+	if result == nil {
+		h.NegotiateErrorString(c, http.StatusBadRequest, `not support proxy url`)
+		return
+	}
+	outbound := &data.Outbound{
+		Name:     result.Name,
+		Add:      result.Add,
+		Port:     result.Port,
+		Host:     result.Host,
+		TLS:      result.TLS,
+		Net:      result.Net,
+		Path:     result.Path,
+		UserID:   result.UserID,
+		AlterID:  result.AlterID,
+		Security: result.Security,
+		Level:    result.Level,
+		Protocol: protocol,
+	}
+	t := template.New("v2ray")
+	t, e = t.Parse(obj.Text)
+	if e != nil {
+		h.NegotiateError(c, http.StatusInternalServerError, e)
+		return
+	}
+	ctx, e := outbound.ToContext()
+	if e != nil {
+		h.NegotiateError(c, http.StatusInternalServerError, e)
+		return
+	}
+	var buffer bytes.Buffer
+	e = t.Execute(&buffer, ctx)
+	if e != nil {
+		h.NegotiateError(c, http.StatusInternalServerError, e)
+		return
+	}
+	// v2ray
+	text := buffer.String()
+	cnf, e := core.LoadConfig(`json`, `test.json`, &buffer)
+	if e != nil {
+		h.NegotiateData(c, http.StatusOK, gin.H{
+			"text":  text,
+			"error": e.Error(),
+		})
+		return
+	}
+	server, e := core.New(cnf)
+	if e != nil {
+		h.NegotiateData(c, http.StatusOK, gin.H{
+			"text":  text,
+			"error": e.Error(),
+		})
+		return
+	}
+	server.Close()
+	h.NegotiateData(c, http.StatusOK, gin.H{
+		"text": text,
+	})
 }

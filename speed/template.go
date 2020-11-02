@@ -22,10 +22,10 @@ const templateText = `{
 "settings": {
     "servers": [
         {
-            "address": "iepl10.dcnode.me",
-            "port": 10010,
-            "method": "aes-128-gcm",
-            "password": "8c4d5f75-4b53-4e3f-83ec-163e3662d7de",
+            "address": "{{.Outbound.Add}}",
+            "port": {{.Outbound.Port}},
+            "method": "{{.Outbound.Security}}",
+            "password": "{{.Outbound.UserID}}",
             "ota": false,
             "level": 0
         }
@@ -103,7 +103,7 @@ const templateText = `{
             "headers": {
                 {{if eq .Outbound.Host ""}}
                 {{else}}
-                    "Host": "{{.Outbound.Net.Host}}"
+                    "Host": "{{.Outbound.Host}}"
                 {{end}}
             }
         },
@@ -111,7 +111,7 @@ const templateText = `{
         "httpSettings": {
             {{if eq .Outbound.Host ""}}
             {{else}}
-                "Host": ["{{.Outbound.Net.Host}}"]
+                "Host": ["{{.Outbound.Host}}"]
             {{end}}
 
             {{if eq .Outbound.Path ""}}

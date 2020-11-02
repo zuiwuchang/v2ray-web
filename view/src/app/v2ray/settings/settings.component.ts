@@ -6,6 +6,8 @@ import { I18nService } from 'src/app/core/i18n/i18n.service';
 import { isString } from 'king-node/dist/core';
 import { ContextText, V2rayTemplate } from '../../core/text';
 import { SessionService } from 'src/app/core/session/session.service';
+import { MatDialog } from '@angular/material/dialog';
+import { PreviewComponent } from '../dialog/preview/preview.component';
 @Component({
   selector: 'app-settings',
   templateUrl: './settings.component.html',
@@ -16,6 +18,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
     private toasterService: ToasterService,
     private i18nService: I18nService,
     private sessionService: SessionService,
+    private matDialog: MatDialog,
   ) { }
   private _ready = false
   get ready(): boolean {
@@ -28,6 +31,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
   }
   err: any
   text: string = ''
+  url: string = 'vmess://eyJwcyI6InRlc3QiLCJhZGQiOiJmdWNrY2NwLmNvbSIsInBvcnQiOiI0NDMiLCJob3N0IjoiZnVja2NjcC5jb20iLCJ0bHMiOiJ0bHMiLCJuZXQiOiJ3cyIsInBhdGgiOiIvZnVja2NjcC9GaWdodE9yZGllIiwiaWQiOiIxZWYxOTdmNi03NzA4LTQ3NDItYjA5Zi1lNTBjNWVkMTVmNWUiLCJhaWQiOiIwIiwidHlwZSI6ImF1dG8iLCJ2IjoiMCJ9'
   contextText = ContextText
   private _text: string = ''
   ngOnInit(): void {
@@ -94,10 +98,50 @@ export class SettingsComponent implements OnInit, OnDestroy {
   get isNotChange(): boolean {
     return this.text.trim() == this._text.trim()
   }
+  onClickPreview() {
+    if (this.url == "") {
+      this.toasterService.pop('error',
+        this.i18nService.get('error'),
+        this.i18nService.get('proxy url not support empty'),
+      )
+      return
+    }
+    this._disabled = true
+    ServerAPI.v1.v2ray.postOne(this.httpClient, "preview", {
+      text: this.text,
+      url: this.url,
+    }).then((obj) => {
+      if (this._closed) {
+        return
+      }
+      this.matDialog.open(PreviewComponent, {
+        data: obj,
+      })
+    }, (e) => {
+      if (this._closed) {
+        return
+      }
+      console.warn(e)
+      this.toasterService.pop('error',
+        this.i18nService.get('error'),
+        e,
+      )
+    }).finally(() => {
+      this._disabled = false
+    })
+  }
   onClickTest() {
+    if (this.url == "") {
+      this.toasterService.pop('error',
+        this.i18nService.get('error'),
+        this.i18nService.get('proxy url not support empty'),
+      )
+      return
+    }
     this._disabled = true
     ServerAPI.v1.v2ray.postOne(this.httpClient, "test", {
       text: this.text,
+      url: this.url,
     }).then(() => {
       if (this._closed) {
         return

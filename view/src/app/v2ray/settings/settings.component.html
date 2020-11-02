@@ -29,10 +29,15 @@
                 <textarea matInput [disabled]="disabled" rows="15" spellcheck="false" autocapitalize="off"
                     autocomplete="off" autocorrect="off" [(ngModel)]="text"></textarea>
             </mat-form-field>
+            <mat-form-field class="full-width">
+                <mat-label i18n>Proxy URL</mat-label>
+                <input matInput [disabled]="disabled" [(ngModel)]="url">
+            </mat-form-field>
         </mat-card-content>
         <mat-card-actions>
             <button mat-stroked-button [disabled]="disabled || isNotChange" (click)="onClickSave()" i18n>Save</button>
             <button mat-stroked-button [disabled]="disabled" (click)="onClickTest()" i18n>Test</button>
+            <button mat-stroked-button [disabled]="disabled" (click)="onClickPreview()" i18n>Preview</button>
             <button mat-stroked-button [disabled]="disabled" (click)="onClickResetDefault()" i18n>Reset Default</button>
         </mat-card-actions>
     </mat-card>

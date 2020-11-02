@@ -81,7 +81,7 @@ func RequestSubscription(url string) (result []*data.Outbound, e error) {
 		if str == "" {
 			continue
 		}
-		protocol, node := analyzeString(str)
+		protocol, node := AnalyzeString(str)
 		if node != nil {
 			result = append(result, &data.Outbound{
 				Name:     node.Name,
@@ -101,7 +101,9 @@ func RequestSubscription(url string) (result []*data.Outbound, e error) {
 	}
 	return
 }
-func analyzeString(str string) (protocol string, result *Outbound) {
+
+// AnalyzeString 分享 鏈接
+func AnalyzeString(str string) (protocol string, result *Outbound) {
 	str = strings.TrimSpace(str)
 	if strings.HasPrefix(str, "vless://") {
 		protocol = "vless"

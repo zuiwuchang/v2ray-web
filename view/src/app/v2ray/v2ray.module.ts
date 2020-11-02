@@ -20,13 +20,15 @@ import { SettingsComponent } from './settings/settings.component';
 import { SubscriptionComponent } from './subscription/subscription.component';
 import { SubscriptionAddComponent } from './subscription/subscription-add/subscription-add.component';
 import { SubscriptionEditComponent } from './subscription/subscription-edit/subscription-edit.component';
+import { PreviewComponent } from './dialog/preview/preview.component';
 
 
 @NgModule({
   declarations: [SettingsComponent, SubscriptionComponent, SubscriptionAddComponent,
     SubscriptionEditComponent,
+    PreviewComponent,
   ],
-  entryComponents: [SubscriptionAddComponent, SubscriptionEditComponent],
+  entryComponents: [SubscriptionAddComponent, SubscriptionEditComponent, PreviewComponent],
   imports: [
     CommonModule, FormsModule,
     V2rayRoutingModule,
