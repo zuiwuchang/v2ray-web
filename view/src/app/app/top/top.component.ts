@@ -1,107 +1,84 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 
 import { StatusService, Status } from 'src/app/core/status/status.service';
-import { Subscription } from 'rxjs';
+import { fromEvent, Subscription } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { ToasterService } from 'angular2-toaster';
 import { I18nService } from 'src/app/core/i18n/i18n.service';
 import { ServerAPI } from 'src/app/core/core/api';
 import { isString } from 'king-node/dist/core';
 import { SessionService } from 'src/app/core/session/session.service';
-const MaxCount = 50
+import { Terminal } from 'xterm'
+import { FitAddon } from 'xterm-addon-fit';
+import { WebLinksAddon } from 'xterm-addon-web-links';
+import { takeUntil } from 'rxjs/operators';
+import { Closed } from 'src/app/core/core/utils';
 
-class Source {
-  private _items = new Array<string>(MaxCount)
-  private _index = 0
-  private _count = 0
-  private _text: string
-  get text(): string {
-    if (isString(this._text)) {
-      return this._text
-    }
-    if (this._count == 0) {
-      this._text = ''
-    } else if (this._count == 1) {
-      let index = this._index - 1
-      if (index < 0) {
-        index += this._items.length
-      }
-      this._text = this._items[index]
-    } else {
-      const arrs = new Array<string>(this._count)
-      for (let i = 0; i < this._count; i++) {
-        let index = this._index - 1 - i
-        if (index < 0) {
-          index += this._items.length
-        }
-        arrs[i] = this._items[index]
-      }
-      this._text = arrs.join("\n")
-    }
-    return this._text
-  }
-  push(v: string) {
-    this._items[this._index] = v
-    this._index++
-    if (this._index == this._items.length) {
-      this._index = 0
-    }
-    if (this._count < this._items.length) {
-      this._count++
-    }
-    this._text = undefined
-  }
-}
 @Component({
   selector: 'app-top',
   templateUrl: './top.component.html',
   styleUrls: ['./top.component.scss']
 })
-export class TopComponent implements OnInit, OnDestroy {
+export class TopComponent implements OnInit, OnDestroy, AfterViewInit {
   constructor(private statusService: StatusService,
     private httpClient: HttpClient,
     private toasterService: ToasterService,
     private i18nService: I18nService,
     public readonly sessionService: SessionService,
   ) { }
-  private _closed = false
+  private _closed = new Closed()
   private _disabled = false
   get disabled(): boolean {
     return this._disabled
   }
-  private _status: Status
+  private _status: Status = { run: false }
   get status(): Status {
     return this._status
   }
   private _subscription: Subscription
-  private _source = new Source()
-  private _text: string = ''
-  get text(): string {
-    if (!this.pause) {
-      this._text = this._source.text
-    }
-    return this._text
-  }
-  pause: boolean
 
   private _websocket: WebSocket
   private _wait = 1
   private _timer
+  private _xterm: Terminal
+  private _fitAddon = new FitAddon()
+  private _webLinksAddon = new WebLinksAddon()
   ngOnInit(): void {
-    this._subscription = this.statusService.observable.subscribe((status) => {
-      if (this._closed) {
-        return
-      }
+    this._subscription = this.statusService.observable.pipe(
+      takeUntil(this._closed.observable)
+    ).subscribe((status) => {
       this._status = status
     })
     this._do()
   }
   ngOnDestroy() {
-    this._closed = true
+    this._closed.close()
     this._subscription.unsubscribe()
     if (this._timer) {
       clearInterval(this._timer)
     }
+    this._xterm.dispose()
+    this._fitAddon.dispose()
+    this._webLinksAddon.dispose()
+  }
+  @ViewChild("xterm")
+  xterm: ElementRef
+  ngAfterViewInit() {
+    const xterm = new Terminal({
+      cursorBlink: false,
+      screenReaderMode: true,
+    })
+    this._xterm = xterm
+    xterm.loadAddon(this._fitAddon)
+    xterm.loadAddon(this._webLinksAddon)
+    xterm.open(this.xterm.nativeElement)
+    this._fitAddon.fit()
+    this._do()
+    fromEvent(window, 'resize').pipe(
+      takeUntil(this._closed.observable),
+    ).subscribe(() => {
+      this._fitAddon.fit()
+    })
   }
   onClickStop(evt: Event) {
     evt.stopPropagation()
@@ -110,7 +87,7 @@ export class TopComponent implements OnInit, OnDestroy {
     }
     this._disabled = true
     ServerAPI.v1.proxys.postOne(this.httpClient, 'stop', null).then(() => {
-      if (this._closed) {
+      if (this._closed.isClosed) {
         return
       }
       this.toasterService.pop('success',
@@ -118,7 +95,7 @@ export class TopComponent implements OnInit, OnDestroy {
         this.i18nService.get('proxy element has been stopped'),
       )
     }, (e) => {
-      if (this._closed) {
+      if (this._closed.isClosed) {
         return
       }
       console.warn(e)
@@ -131,7 +108,7 @@ export class TopComponent implements OnInit, OnDestroy {
     })
   }
   private _do() {
-    if (this._closed) {
+    if (this._closed.isClosed) {
       return
     }
     const addr = ServerAPI.v1.logs.websocketURL(null, {
@@ -213,7 +190,7 @@ export class TopComponent implements OnInit, OnDestroy {
     for (let i = 0; i < strs.length; i++) {
       const str = strs[i].trim()
       if (str != "") {
-        this._source.push(str)
+        this._xterm.writeln(str)
       }
     }
   }

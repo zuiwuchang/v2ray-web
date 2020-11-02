@@ -111,7 +111,14 @@ export const V2rayTemplate = `{
             "ota": false,
             "level": 0
           }
-      ]
+      ],
+      "streamSettings": {
+        "sockopt": {
+            "mark": 0,
+            "tcpFastOpen": false,
+            "tproxy": "off"
+        }
+      }
   }
   {{else}}
   "settings": {

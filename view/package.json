@@ -33,6 +33,9 @@
     "qrcode": "^1.4.4",
     "rxjs": "~6.5.4",
     "tslib": "^1.10.0",
+    "xterm": "^4.9.0",
+    "xterm-addon-fit": "^0.4.0",
+    "xterm-addon-web-links": "^0.4.0",
     "zone.js": "~0.10.2"
   },
   "devDependencies": {

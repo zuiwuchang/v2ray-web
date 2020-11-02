@@ -16,11 +16,5 @@
             </ng-template>
         </mat-panel-title>
     </mat-expansion-panel-header>
-
-    <mat-checkbox [(ngModel)]="pause" i18n>Pause Display Logs</mat-checkbox>
-    <mat-form-field class="full-width">
-        <mat-label i18n>Logs</mat-label>
-        <textarea readonly matInput [disabled]="disabled" rows="15" spellcheck="false" autocapitalize="off"
-            autocomplete="off" autocorrect="off" [value]="text"></textarea>
-    </mat-form-field>
+    <div #xterm></div>
 </mat-expansion-panel>
