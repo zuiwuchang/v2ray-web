@@ -247,13 +247,12 @@ func (h Proxys) testOne(c *gin.Context) {
 	if e != nil {
 		return
 	}
-
 	duration, e := speed.TestOne(&obj, h.getURL())
 	if e != nil {
-		c.String(http.StatusInternalServerError, e.Error())
+		h.NegotiateError(c, http.StatusInternalServerError, e)
 		return
 	}
-	c.JSON(http.StatusOK, duration.Milliseconds())
+	h.NegotiateData(c, http.StatusOK, duration.Milliseconds())
 }
 func (h Proxys) getURL() (url string) {
 	var mSettings manipulator.Settings
