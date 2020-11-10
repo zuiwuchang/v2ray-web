@@ -62,6 +62,7 @@ func (m Settings) Init(tx *bolt.Tx, version int) (e error) {
 
 // Upgrade 升級 bucket
 func (m Settings) Upgrade(tx *bolt.Tx, oldVersion, newVersion int) (e error) {
+	fmt.Println(newVersion)
 	// 刪除不兼容的 舊數據庫
 	if newVersion <= 2 {
 		bucket := tx.Bucket([]byte(data.SettingsBucket))

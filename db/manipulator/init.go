@@ -33,6 +33,11 @@ func Init(cnf *configure.Database) (e error) {
 		var oldVersion int
 		oldVersion, e = updateVersion(tx)
 		if e != nil {
+			if ce := logger.Logger.Check(zap.WarnLevel, "database is not compatible"); ce != nil {
+				ce.Write(
+					zap.Error(e),
+				)
+			}
 			return
 		}
 		if oldVersion < 0 {
@@ -44,14 +49,14 @@ func Init(cnf *configure.Database) (e error) {
 			Subscription{},
 			Element{},
 		}
-		if oldVersion == 0 || oldVersion == Version {
+		if oldVersion == 0 {
 			for i := 0; i < len(buckets); i++ {
 				e = buckets[i].Init(tx, Version)
 				if e != nil {
 					return
 				}
 			}
-		} else {
+		} else if oldVersion < Version {
 			for i := 0; i < len(buckets); i++ {
 				e = buckets[i].Upgrade(tx, oldVersion, Version)
 				if e != nil {
