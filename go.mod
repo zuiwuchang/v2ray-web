@@ -18,7 +18,7 @@ require (
 	gitlab.com/king011/king-go v0.0.10
 	go.uber.org/multierr v1.6.0 // indirect
 	go.uber.org/zap v1.16.0
-	golang.org/x/net v0.0.0-20201029221708-28c70e62bb1d
+	golang.org/x/net v0.0.0-20201031054903-ff519b6c9102
 	gopkg.in/yaml.v2 v2.3.0
 	v2ray.com/core v0.0.0-00010101000000-000000000000
 )

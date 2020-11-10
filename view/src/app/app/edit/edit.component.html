@@ -24,7 +24,8 @@
                 </mat-form-field>
                 <mat-form-field>
                     <mat-label i18n>Proxy Protocol</mat-label>
-                    <input matInput [disabled]="disabled" [(ngModel)]="outbound.protocol" name="protocol" [matAutocomplete]="protocol">
+                    <input matInput [disabled]="disabled" [(ngModel)]="outbound.protocol" name="protocol"
+                        [matAutocomplete]="protocol">
                     <mat-autocomplete #protocol="matAutocomplete">
                         <mat-option [value]="'vmess'">vmess</mat-option>
                         <mat-option [value]="'vless'">vless</mat-option>
@@ -45,7 +46,8 @@
             <div class="row">
                 <mat-form-field>
                     <mat-label i18n>Outbound Net</mat-label>
-                    <input matInput [disabled]="disabled || isDisabledNet" [(ngModel)]="outbound.net" name="net" [matAutocomplete]="net">
+                    <input matInput [disabled]="disabled || isDisabledNet" [(ngModel)]="outbound.net" name="net"
+                        [matAutocomplete]="net">
                     <mat-autocomplete #net="matAutocomplete">
                         <mat-option [value]="'tcp'">tcp</mat-option>
                         <mat-option [value]="'ws'">ws</mat-option>
@@ -57,7 +59,8 @@
                 </mat-form-field>
                 <mat-form-field>
                     <mat-label i18n>Outbound TLS</mat-label>
-                    <input matInput [disabled]="disabled || isDisabledTLS" [(ngModel)]="outbound.tls" name="tls" [matAutocomplete]="tls">
+                    <input matInput [disabled]="disabled || isDisabledTLS" [(ngModel)]="outbound.tls" name="tls"
+                        [matAutocomplete]="tls">
                     <mat-autocomplete #tls="matAutocomplete">
                         <mat-option [value]="'none'">none</mat-option>
                         <mat-option [value]="'tls'">tls</mat-option>
@@ -67,7 +70,8 @@
             <div class="row">
                 <mat-form-field>
                     <mat-label i18n>Outbound Host</mat-label>
-                    <input matInput [disabled]="disabled || isDisabledHost" cdkFocusInitial [(ngModel)]="outbound.host" name="host">
+                    <input matInput [disabled]="disabled || isDisabledHost" cdkFocusInitial [(ngModel)]="outbound.host"
+                        name="host">
                 </mat-form-field>
                 <mat-form-field>
                     <mat-label i18n>Outbound Path</mat-label>
@@ -81,24 +85,38 @@
                 </mat-form-field>
                 <mat-form-field>
                     <mat-label i18n>Outbound Alter ID</mat-label>
-                    <input matInput type="number" [disabled]="disabled || isDisabledAlterID" [(ngModel)]="outbound.alterID" name="alterID">
+                    <input matInput type="number" [disabled]="disabled || isDisabledAlterID"
+                        [(ngModel)]="outbound.alterID" name="alterID">
                 </mat-form-field>
             </div>
             <div class="row">
                 <mat-form-field>
                     <mat-label i18n>Outbound Security</mat-label>
-                    <input matInput [disabled]="disabled" [(ngModel)]="outbound.security" [matAutocomplete]="security"
-                        name="security">
+                    <input matInput [disabled]="disabled || isDisabledSecurity" [(ngModel)]="outbound.security"
+                        [matAutocomplete]="security" name="security">
                     <mat-autocomplete #security="matAutocomplete">
-                        <mat-option [value]="'auto'">auto</mat-option>
-                        <mat-option [value]="'none'">none</mat-option>
-                        <mat-option [value]="'aes-128-gcm'">aes-128-gcm</mat-option>
-                        <mat-option [value]="'chacha20-poly1305'">chacha20-poly1305</mat-option>
+                        <ng-container [ngSwitch]="outbound?.protocol">
+                            <ng-template [ngSwitchCase]="'vmess'">
+                                <mat-option [value]="'auto'">auto</mat-option>
+                                <mat-option [value]="'none'">none</mat-option>
+                                <mat-option [value]="'aes-128-gcm'">aes-128-gcm</mat-option>
+                                <mat-option [value]="'chacha20-poly1305'">chacha20-poly1305</mat-option>
+                            </ng-template>
+                            <ng-template [ngSwitchCase]="'shadowsocks'">
+                                <mat-option [value]="'none'">none</mat-option>
+                                <mat-option [value]="'plain'">plain</mat-option>
+                                <mat-option [value]="'aes-256-gcm'">aes-256-gcm</mat-option>
+                                <mat-option [value]="'aes-128-gcm'">aes-128-gcm</mat-option>
+                                <mat-option [value]="'chacha20-poly1305'">chacha20-poly1305</mat-option>
+                                <mat-option [value]="'chacha20-ietf-poly1305'">chacha20-ietf-poly1305</mat-option>
+                            </ng-template>
+                        </ng-container>
                     </mat-autocomplete>
                 </mat-form-field>
                 <mat-form-field>
                     <mat-label i18n>Outbound Level</mat-label>
-                    <input matInput type="number" [disabled]="disabled || isDisabledLevel" [(ngModel)]="outbound.level" name="level">
+                    <input matInput type="number" [disabled]="disabled || isDisabledLevel" [(ngModel)]="outbound.level"
+                        name="level">
                 </mat-form-field>
             </div>
         </div>

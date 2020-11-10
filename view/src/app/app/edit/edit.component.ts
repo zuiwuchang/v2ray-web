@@ -95,9 +95,12 @@ export class EditComponent implements OnInit, OnDestroy {
     return this.outbound.protocol == "shadowsocks"
   }
   get isDisabledAlterID(): boolean {
-    return this.outbound.protocol == "shadowsocks"
+    return this.outbound.protocol == "shadowsocks" || this.outbound.protocol == "vless"
   }
   get isDisabledLevel(): boolean {
     return this.outbound.protocol == "shadowsocks"
+  }
+  get isDisabledSecurity(): boolean {
+    return this.outbound.protocol == "vless"
   }
 }

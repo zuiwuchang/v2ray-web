@@ -1,4 +1,4 @@
-import { isBoolean, isNumber, isObject, isString } from 'king-node/dist/core'
+import {  isNumber, isObject, isString } from 'king-node/dist/core'
 import { Base64 } from 'js-base64';
 export class Source {
     private _items = new Array<Panel>()

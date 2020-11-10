@@ -5,6 +5,7 @@ import (
 	"errors"
 
 	"github.com/boltdb/bolt"
+	"gitlab.com/king011/v2ray-web/db/data"
 )
 
 // Version 數據庫 當前版本
@@ -30,6 +31,12 @@ func updateVersion(tx *bolt.Tx) (oldVersion int, e error) {
 	b := bucket.Get(keyVersion)
 	if len(b) == 4 {
 		oldVersion = int(binary.LittleEndian.Uint32(b))
+	}
+	if oldVersion == 0 {
+		bucket := tx.Bucket([]byte(data.UserBucket))
+		if bucket != nil {
+			oldVersion = 1
+		}
 	}
 	// 設置新版本
 	if oldVersion > Version {
