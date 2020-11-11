@@ -1,4 +1,4 @@
-import {  isNumber, isObject, isString } from 'king-node/dist/core'
+import { isNumber, isObject, isString } from 'king-node/dist/core'
 import { Base64 } from 'js-base64';
 export class Source {
     private _items = new Array<Panel>()
@@ -133,6 +133,8 @@ export class Element {
             return `vless://${this.outbound.toV2ray()}`
         } else if (this.outbound.protocol == "shadowsocks") {
             return `ss://${this.outbound.toShadowsocks()}`
+        } else if (this.outbound.protocol == "trojan") {
+            return `trojan://${this.outbound.toTrojan()}`
         }
         throw new Error("not support")
     }
@@ -207,6 +209,12 @@ export class Outbound {
                 this.protocol = net.protocol
             }
         }
+    }
+    toString(): string {
+        if (this.protocol == "vmess" || this.protocol == "vless") {
+            return `${this.protocol} -> ${this.net} ${this.tls} ${this.add}:${this.port}`
+        }
+        return `${this.protocol} -> ${this.add}:${this.port}`
     }
     format() {
         this.port = this._valNumber(this.port)
@@ -286,9 +294,27 @@ export class Outbound {
         outbound.name = decodeURIComponent(str)
         return outbound
     }
+    static fromTrojan(str: string): Outbound {
+        const outbound = new Outbound()
+        outbound.protocol = "trojan"
+        str = outbound._trojanSafe(str)
+        if (!str) {
+            return outbound
+        }
+        str = outbound._ssAddr(str)
+        if (!str) {
+            return outbound
+        }
+        str = outbound._trojanPort(str)
+        if (!str) {
+            return outbound
+        }
+        outbound._trojanMap(str)
+        return outbound
+    }
     private _ssAddr(str: string): string {
         let result
-        let strs = str.split(":", 2)
+        const strs = str.split(":", 2)
         if (strs.length > 1) {
             result = strs[1]
         }
@@ -297,7 +323,7 @@ export class Outbound {
     }
     private _ssPort(str: string): string {
         let result
-        let strs = str.split("#", 2)
+        const strs = str.split("#", 2)
         if (strs.length > 1) {
             result = strs[1]
         }
@@ -319,6 +345,39 @@ export class Outbound {
         }
         return result
     }
+    private _trojanPort(str: string): string {
+        let result
+        const strs = str.split("?", 2)
+        if (strs.length > 1) {
+            result = strs[1]
+        }
+        str = strs[0]
+        let index = str.indexOf("/")
+        if (index != -1) {
+            str = str.substring(0, index)
+        }
+        return result
+    }
+    private _trojanMap(str: string) {
+        const strs = str.split("&")
+        for (let i = 0; i < strs.length; i++) {
+            const str = strs[i]
+            if (str.startsWith('name=')) {
+                this.name = str.substr('name='.length)
+            } else if (str.startsWith('level=')) {
+                this.level = str.substr('level='.length)
+            }
+        }
+    }
+    private _trojanSafe(str: string): string {
+        let result
+        const strs = str.split("@", 2)
+        if (strs.length > 1) {
+            result = strs[1]
+        }
+        this.userID = decodeURIComponent(strs[0])
+        return result
+    }
     static fromURL(str: string): Outbound {
         str = str.trim()
         if (str.startsWith('vmess://')) {
@@ -330,6 +389,9 @@ export class Outbound {
         } else if (str.startsWith('ss://')) {
             str = str.substring('ss://'.length)
             return Outbound.fromShadowsocks(str)
+        } else if (str.startsWith('trojan://')) {
+            str = str.substring('trojan://'.length)
+            return Outbound.fromTrojan(str)
         }
         throw new Error("url not supported")
     }
@@ -352,5 +414,8 @@ export class Outbound {
     toShadowsocks(): string {
         const str = Base64.encode(`${this.security}:${this.userID}`)
         return `${str}@${this.add}:${this.port}#${encodeURIComponent(this.name)}`
+    }
+    toTrojan(): string {
+        return `${encodeURIComponent(this.userID)}@${this.add}:${this.port}?name=${encodeURIComponent(this.name)}&level=${this.level}`
     }
 }

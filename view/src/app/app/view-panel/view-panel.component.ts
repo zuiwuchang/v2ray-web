@@ -77,6 +77,8 @@ export class ViewPanelComponent implements OnInit, OnDestroy, AfterViewInit {
         return 'star'
       } else if (element.outbound.protocol == "shadowsocks") {
         return 'flight'
+      } else if (element.outbound.protocol == "trojan") {
+        return 'https'
       }
     }
     return 'feedback'

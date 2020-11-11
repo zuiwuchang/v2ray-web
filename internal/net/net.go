@@ -115,6 +115,10 @@ func AnalyzeString(str string) (protocol string, result *Outbound) {
 		protocol = "shadowsocks"
 		var analyze analyzeSS
 		result = analyze.do(str)
+	} else if strings.HasPrefix(str, "trojan://") {
+		protocol = "trojan"
+		var analyze analyzeTrojan
+		result = analyze.do(str)
 	} else {
 		if ce := logger.Logger.Check(zap.WarnLevel, "not support outbound"); ce != nil {
 			ce.Write(

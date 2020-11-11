@@ -40,7 +40,7 @@
             <mat-icon matListIcon [color]="isCurrent(item)?'accent':''">{{getIcon(item)}}</mat-icon>
 
             <p matLine>{{item.outbound.name}}</p>
-            <p matLine>{{item.outbound.net}} {{item.outbound.tls}} {{item.outbound.add}}:{{item.outbound.port}}</p>
+            <p matLine>{{item.outbound.toString()}}</p>
             <p matLine>{{item.error}} {{item.duration}}</p>
 
 

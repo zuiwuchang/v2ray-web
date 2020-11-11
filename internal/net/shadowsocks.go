@@ -9,6 +9,17 @@ import (
 	"go.uber.org/zap"
 )
 
+func splite2(str, sep string) (first, second string, ok bool) {
+	index := strings.Index(str, sep)
+	if index == -1 {
+		return
+	}
+	first = str[:index]
+	second = str[index+len(sep):]
+	ok = true
+	return
+}
+
 type analyzeSS struct {
 }
 
@@ -19,11 +30,11 @@ func (a *analyzeSS) do(str string) (result *Outbound) {
 	if !ok {
 		return
 	}
-	addr, str, ok := a.splite2(str, ":")
+	addr, str, ok := splite2(str, ":")
 	if !ok {
 		return
 	}
-	port, str, ok := a.splite2(str, "#")
+	port, str, ok := splite2(str, "#")
 	if !ok {
 		return
 	}
@@ -40,18 +51,9 @@ func (a *analyzeSS) do(str string) (result *Outbound) {
 	}
 	return
 }
-func (a *analyzeSS) splite2(str, sep string) (first, second string, ok bool) {
-	index := strings.Index(str, sep)
-	if index == -1 {
-		return
-	}
-	first = str[:index]
-	second = str[index+len(sep):]
-	ok = true
-	return
-}
+
 func (a *analyzeSS) analyzeSafe(str string) (security, userID, text string, ok bool) {
-	str, text, yes := a.splite2(str, "@")
+	str, text, yes := splite2(str, "@")
 	if !yes {
 		return
 	}
@@ -66,6 +68,6 @@ func (a *analyzeSS) analyzeSafe(str string) (security, userID, text string, ok b
 		}
 		return
 	}
-	security, userID, ok = a.splite2(string(b), ":")
+	security, userID, ok = splite2(string(b), ":")
 	return
 }

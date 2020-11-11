@@ -81,24 +81,24 @@ export class AddComponent implements OnInit, OnDestroy {
     }
   }
   get isDisabledNet(): boolean {
-    return this.outbound.protocol == "shadowsocks"
+    return this.outbound.protocol == "shadowsocks" || this.outbound.protocol == "trojan"
   }
   get isDisabledTLS(): boolean {
-    return this.outbound.protocol == "shadowsocks"
+    return this.outbound.protocol == "shadowsocks" || this.outbound.protocol == "trojan"
   }
   get isDisabledHost(): boolean {
-    return this.outbound.protocol == "shadowsocks"
+    return this.outbound.protocol == "shadowsocks" || this.outbound.protocol == "trojan"
   }
   get isDisabledPath(): boolean {
-    return this.outbound.protocol == "shadowsocks"
+    return this.outbound.protocol == "shadowsocks" || this.outbound.protocol == "trojan"
   }
   get isDisabledAlterID(): boolean {
-    return this.outbound.protocol == "shadowsocks" || this.outbound.protocol == "vless"
+    return this.outbound.protocol == "shadowsocks" || this.outbound.protocol == "vless" || this.outbound.protocol == "trojan"
   }
   get isDisabledLevel(): boolean {
     return this.outbound.protocol == "shadowsocks"
   }
   get isDisabledSecurity(): boolean {
-    return this.outbound.protocol == "vless"
+    return this.outbound.protocol == "vless" || this.outbound.protocol == "trojan"
   }
 }

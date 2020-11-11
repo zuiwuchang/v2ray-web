@@ -116,7 +116,11 @@ const V2rayTemplate = `{
             "method": "{{.Outbound.Security}}",
             "password": "{{.Outbound.UserID}}",
             "ota": false,
-            "level": 0
+            {{if eq .Outbound.Level ""}}
+                    "level": 0
+            {{else}}
+                    "level": {{.Outbound.Level}}
+            {{end}}
         }
     ],
     "streamSettings": {
@@ -126,6 +130,34 @@ const V2rayTemplate = `{
             "tproxy": "off"
         }
     }
+},
+"mux": {
+    "enabled": false
+}
+{{else if eq .Outbound.Protocol "trojan"}}
+"settings": {
+    "servers": [
+        {
+            "address": "{{.Outbound.Add}}",
+            "port": {{.Outbound.Port}},
+            "password": "{{.Outbound.UserID}}",
+            {{if eq .Outbound.Level ""}}
+                    "level": 0
+            {{else}}
+                    "level": {{.Outbound.Level}}
+            {{end}}
+        }
+    ],
+    "streamSettings": {
+        "sockopt": {
+            "mark": 0,
+            "tcpFastOpen": false,
+            "tproxy": "off"
+        }
+    }
+},
+"mux": {
+    "enabled": false
 }
 {{else}}
 "settings": {
@@ -160,7 +192,10 @@ const V2rayTemplate = `{
     "security": "{{.Outbound.TLS}}",
     {{if eq .Outbound.TLS "tls"}}
         "tlsSettings": {
+            {{if eq .Outbound.Host ""}}
+            {{else}}
             "serverName": "{{.Outbound.Host}}",
+            {{end}}
             "allowInsecure": false,
             "alpn": ["http/1.1"],
             "certificates": [],
@@ -194,7 +229,6 @@ const V2rayTemplate = `{
             {{else}}
                 "path": "{{.Outbound.Path}}",
             {{end}}
-            
             
             "headers": {
                 {{if eq .Outbound.Host ""}}
