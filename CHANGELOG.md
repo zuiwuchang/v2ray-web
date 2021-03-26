@@ -1,3 +1,8 @@
+# v1.1.0
+* 修改默認配置檔案
+* 修改默認iptables規則
+* 升級 v2ray-core 到 4.36.2
+
 # v1.0.14
 * 對 1k 到 2m 的檔案 使用 gzip 壓縮 加快 網頁打開速度
 * 網頁視圖部署 Service Worker
