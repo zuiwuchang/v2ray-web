@@ -5,9 +5,9 @@ import (
 	"sync"
 	"text/template"
 
+	core "github.com/v2fly/v2ray-core/v4"
 	"gitlab.com/king011/v2ray-web/db/data"
 	"gitlab.com/king011/v2ray-web/db/manipulator"
-	"v2ray.com/core"
 )
 
 var single = _Service{

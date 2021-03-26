@@ -10,9 +10,9 @@ import (
 	"text/template"
 	"time"
 
+	core "github.com/v2fly/v2ray-core/v4"
 	"gitlab.com/king011/v2ray-web/db/data"
 	"golang.org/x/net/proxy"
-	"v2ray.com/core"
 )
 
 // DefaultURL .

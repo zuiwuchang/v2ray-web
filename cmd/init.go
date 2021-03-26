@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"runtime"
 
+	core "github.com/v2fly/v2ray-core/v4"
 	"gitlab.com/king011/v2ray-web/version"
-	"v2ray.com/core"
 
 	"github.com/spf13/cobra"
 )

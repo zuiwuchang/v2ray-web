@@ -6,11 +6,11 @@ import (
 	"text/template"
 
 	"github.com/gin-gonic/gin"
+	core "github.com/v2fly/v2ray-core/v4"
 	"gitlab.com/king011/v2ray-web/db/data"
 	"gitlab.com/king011/v2ray-web/db/manipulator"
 	"gitlab.com/king011/v2ray-web/internal/net"
 	"gitlab.com/king011/v2ray-web/web"
-	"v2ray.com/core"
 )
 
 // V2ray 設定

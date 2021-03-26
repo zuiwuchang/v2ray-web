@@ -15,12 +15,10 @@ require (
 	github.com/spf13/cobra v1.0.0
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/ugorji/go v1.1.8 // indirect
+	github.com/v2fly/v2ray-core/v4 v4.36.2
 	gitlab.com/king011/king-go v0.0.10
 	go.uber.org/multierr v1.6.0 // indirect
 	go.uber.org/zap v1.16.0
-	golang.org/x/net v0.0.0-20201031054903-ff519b6c9102
+	golang.org/x/net v0.0.0-20210226172049-e18ecbb05110
 	gopkg.in/yaml.v2 v2.3.0
-	v2ray.com/core v0.0.0-00010101000000-000000000000
 )
-
-replace v2ray.com/core => ../v2ray-core

@@ -10,11 +10,11 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
+	core "github.com/v2fly/v2ray-core/v4"
 	"gitlab.com/king011/v2ray-web/internal/logs"
 	"gitlab.com/king011/v2ray-web/utils"
 	"gitlab.com/king011/v2ray-web/version"
 	"gitlab.com/king011/v2ray-web/web"
-	"v2ray.com/core"
 )
 
 var startAt = time.Now()
