@@ -9,7 +9,7 @@ import (
 )
 
 // Version 數據庫 當前版本
-const Version = 5
+const Version = 6
 
 // manipulator 定義數據庫 操縱器 接口
 type manipulator interface {
