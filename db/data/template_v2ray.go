@@ -231,12 +231,6 @@ const V2rayTemplate = `{
 		},
 	{{else if eq .Outbound.Net "http"}}
 		"httpSettings": {
-			{{if eq .Outbound.Host ""}}
-				"Host": ["{{.Outbound.Add}}"],
-			{{else}}
-				"Host": ["{{.Outbound.Host}}"],
-			{{end}}
-
 			{{if eq .Outbound.Path ""}}
 				"path": "/"
 			{{else}}
