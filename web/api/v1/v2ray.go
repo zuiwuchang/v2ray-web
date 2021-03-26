@@ -27,6 +27,7 @@ func (h V2ray) Register(router *gin.RouterGroup) {
 	r.PUT(``, h.put)
 	r.POST(`test`, h.test)
 	r.POST(`preview`, h.preview)
+	r.GET(`default`, h.def)
 }
 func (h V2ray) get(c *gin.Context) {
 	var mSettings manipulator.Settings
@@ -177,5 +178,10 @@ func (h V2ray) preview(c *gin.Context) {
 	server.Close()
 	h.NegotiateData(c, http.StatusOK, gin.H{
 		"text": text,
+	})
+}
+func (h V2ray) def(c *gin.Context) {
+	h.NegotiateData(c, http.StatusOK, gin.H{
+		"text": data.V2rayTemplate,
 	})
 }

@@ -4,10 +4,13 @@ import { ServerAPI } from 'src/app/core/core/api';
 import { ToasterService } from 'angular2-toaster';
 import { I18nService } from 'src/app/core/i18n/i18n.service';
 import { isString } from 'king-node/dist/core';
-import { ContextText, V2rayTemplate } from '../../core/text';
+import { ContextText } from '../../core/text';
 import { SessionService } from 'src/app/core/session/session.service';
 import { MatDialog } from '@angular/material/dialog';
 import { PreviewComponent } from '../dialog/preview/preview.component';
+interface Response {
+  text: string
+}
 @Component({
   selector: 'app-settings',
   templateUrl: './settings.component.html',
@@ -164,6 +167,23 @@ export class SettingsComponent implements OnInit, OnDestroy {
     })
   }
   onClickResetDefault() {
-    this.text = V2rayTemplate
+    this._disabled = true
+    ServerAPI.v1.v2ray.getOne<Response>(this.httpClient, 'default').then((data) => {
+      if (this._closed) {
+        return
+      }
+      this.text = data.text
+    }, (e) => {
+      if (this._closed) {
+        return
+      }
+      console.warn(e)
+      this.toasterService.pop('error',
+        this.i18nService.get('error'),
+        e,
+      )
+    }).finally(() => {
+      this._disabled = false
+    })
   }
 }
