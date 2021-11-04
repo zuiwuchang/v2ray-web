@@ -3,7 +3,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { ServerAPI } from '../core/api';
 import { isString, isNumber } from 'king-node/dist/core';
 import { SessionService } from '../session/session.service';
-
+var Value: any
 export interface Status {
   run: boolean
   id?: number
@@ -23,9 +23,9 @@ export class StatusService {
   get observable(): Observable<Status> {
     return this._subject
   }
-  private _websocket: WebSocket
+  private _websocket: WebSocket = Value
   private _wait = 1
-  private _timer
+  private _timer = Value
   private _do() {
     const addr = ServerAPI.v1.proxys.websocketURL(`status`, {
       token: this.sessionService.token(),
@@ -64,7 +64,7 @@ export class StatusService {
     if (this._websocket != websocket) {
       return
     }
-    this._websocket = null
+    this._websocket = Value
     if (this._timer) {
       clearInterval(this._timer)
       this._timer = null
@@ -76,7 +76,7 @@ export class StatusService {
     if (this._websocket != websocket) {
       return
     }
-    this._websocket = null
+    this._websocket = Value
     if (this._timer) {
       clearInterval(this._timer)
       this._timer = null

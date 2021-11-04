@@ -12,7 +12,7 @@ export interface Data {
 export class ConfirmComponent implements OnInit {
 
   constructor(private dialogRef: MatDialogRef<ConfirmComponent>,
-    @Inject(MAT_DIALOG_DATA) public data,
+    @Inject(MAT_DIALOG_DATA) public data: any,
   ) { }
 
   ngOnInit(): void {

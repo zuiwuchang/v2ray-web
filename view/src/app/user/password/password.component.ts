@@ -21,11 +21,11 @@ export class PasswordComponent implements OnInit, OnDestroy {
   ) {
   }
   private _closed = false
-  private _disabled: boolean
+  private _disabled = false
   get disabled(): boolean {
     return this._disabled
   }
-  password: string
+  password = ''
   ngOnInit(): void {
   }
   ngOnDestroy() {

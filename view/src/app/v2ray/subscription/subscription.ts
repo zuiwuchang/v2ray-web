@@ -1,7 +1,7 @@
 export class Element {
-    id: number
-    name: string
-    url: string
+    id: number = 0
+    name: string = ''
+    url: string = ''
     static compare(l: Element, r: Element): number {
         if (l.name == r.name) {
             if (l.id == r.id) {

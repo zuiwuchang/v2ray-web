@@ -12,7 +12,8 @@ export class UrlValidatorDirective {
     if (isString(str)) {
       str = str.trim()
       if (str.startsWith("http://") || str.startsWith("https://")) {
-        return null
+        var result: any = null
+        return result
       }
     }
 

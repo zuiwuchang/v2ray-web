@@ -35,8 +35,6 @@ import { EditComponent } from './app/edit/edit.component';
 import { TopComponent } from './app/top/top.component';
 import { SettingsComponent } from './app/settings/settings.component';
 import { QrcodeComponent } from './app/dialog/qrcode/qrcode.component';
-import { ServiceWorkerModule } from '@angular/service-worker';
-import { environment } from '../environments/environment';
 import { HeaderInterceptor } from './app/service/header.interceptor';
 
 @NgModule({
@@ -65,7 +63,6 @@ import { HeaderInterceptor } from './app/service/header.interceptor';
     SharedModule,
     AppRoutingModule,
     ToasterModule.forRoot(),
-    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
   ],
   providers: [{
     provide: HTTP_INTERCEPTORS,

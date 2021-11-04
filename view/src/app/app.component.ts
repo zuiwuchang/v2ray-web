@@ -15,8 +15,11 @@ export class AppComponent implements AfterViewInit {
       positionClass: "toast-bottom-right"
     })
   @ViewChild("xi18n")
-  private xi18nRef: ElementRef
+  private xi18nRef?: ElementRef
   ngAfterViewInit() {
+    if (!this.xi18nRef) {
+      return
+    }
     this.i18nService.init(this.xi18nRef.nativeElement);
   }
 }

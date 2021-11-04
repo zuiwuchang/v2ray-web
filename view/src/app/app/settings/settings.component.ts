@@ -31,9 +31,9 @@ export class SettingsComponent implements OnInit {
     return this._disabled
   }
   err: any
-  url: string
-  v2ray: boolean
-  iptables: boolean
+  url: string = ''
+  v2ray: boolean = false
+  iptables: boolean = false
   ngOnInit(): void {
     this.sessionService.ready.then(() => {
       if (this._closed) {

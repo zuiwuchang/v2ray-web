@@ -23,7 +23,7 @@ export class EditComponent implements OnInit, OnDestroy {
     private matDialogRef: MatDialogRef<EditComponent>,
     @Inject(MAT_DIALOG_DATA) public data: Data,) { }
   private _closed = false
-  private _disabled: boolean
+  private _disabled: boolean = false
   get disabled(): boolean {
     return this._disabled
   }

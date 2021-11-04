@@ -19,7 +19,7 @@ export class Source {
         panel.source.push(element)
     }
     private _getPanel(id: number): Panel {
-        let panel = this._keys.get(id)
+        let panel: any = this._keys.get(id)
         if (!panel) {
             panel = this._keys.get(0)
         }
@@ -34,8 +34,8 @@ export class Source {
     }
 }
 export class Panel {
-    id: number
-    name: string
+    id: number = 0
+    name: string = ''
     source = new Array<Element>()
     sort() {
         this.source.sort(Element.compare)
@@ -62,7 +62,7 @@ export class Element {
     duration?: number
     error?: string
 
-    constructor(net?: Element) {
+    constructor(net?: any/*Element*/) {
         if (isObject(net)) {
             if (isNumber(net.id)) {
                 this.id = net.id
@@ -76,8 +76,8 @@ export class Element {
         }
     }
     static compareDuration(l: Element, r: Element): number {
-        let ld = l.duration
-        let rd = r.duration
+        let ld: any = l.duration
+        let rd: any = r.duration
         if (!isNumber(ld) || ld <= 0) {
             ld = 1000 * 60 * 60
         }
@@ -170,7 +170,7 @@ export class Outbound {
 
     // 協議名稱
     protocol: string = 'vmess'
-    constructor(net?: Outbound) {
+    constructor(net?: any/* Outbound*/) {
         if (isObject(net)) {
             if (isString(net.name)) {
                 this.name = net.name
@@ -313,7 +313,7 @@ export class Outbound {
         return outbound
     }
     private _ssAddr(str: string): string {
-        let result
+        let result: any
         const strs = str.split(":", 2)
         if (strs.length > 1) {
             result = strs[1]
@@ -322,7 +322,7 @@ export class Outbound {
         return result
     }
     private _ssPort(str: string): string {
-        let result
+        let result: any
         const strs = str.split("#", 2)
         if (strs.length > 1) {
             result = strs[1]
@@ -331,7 +331,7 @@ export class Outbound {
         return result
     }
     private _ssSafe(str: string): string {
-        let result
+        let result: any
         let strs = str.split("@", 2)
         if (strs.length > 1) {
             result = strs[1]
@@ -346,7 +346,7 @@ export class Outbound {
         return result
     }
     private _trojanPort(str: string): string {
-        let result
+        let result: any
         const strs = str.split("?", 2)
         if (strs.length > 1) {
             result = strs[1]
@@ -370,7 +370,7 @@ export class Outbound {
         }
     }
     private _trojanSafe(str: string): string {
-        let result
+        let result: any
         const strs = str.split("@", 2)
         if (strs.length > 1) {
             result = strs[1]

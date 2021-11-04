@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { SessionService, Session } from 'src/app/core/session/session.service';
 import { filter, first } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
+var Value: any
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -12,7 +13,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   constructor(private sessionService: SessionService,
   ) { }
   private _closed = false
-  private _session: Session
+  private _session: Session = Value
   get session(): Session {
     return this._session
   }
@@ -20,7 +21,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   get ready(): boolean {
     return this._ready
   }
-  private _subscription: Subscription
+  private _subscription: Subscription = Value
   ngOnInit(): void {
     this.sessionService.ready.then(() => {
       this._ready = true

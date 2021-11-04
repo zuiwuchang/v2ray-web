@@ -17,11 +17,11 @@ interface Version {
 })
 export class AboutComponent implements OnInit {
   VERSION = VERSION
-  content: string
+  content: string = ''
   constructor(private httpClient: HttpClient,
     private toasterService: ToasterService,
   ) { }
-  version: Version
+  version?: Version
   ngOnInit(): void {
     ServerAPI.v1.version.get<Version>(this.httpClient).then((data) => {
       this.version = data

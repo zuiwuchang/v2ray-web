@@ -21,7 +21,7 @@ export class AddComponent implements OnInit, OnDestroy {
   ) { }
 
   private _closed = false
-  private _disabled: boolean
+  private _disabled: boolean = false
   get disabled(): boolean {
     return this._disabled
   }

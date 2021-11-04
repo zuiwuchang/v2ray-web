@@ -13,7 +13,7 @@ import { FitAddon } from 'xterm-addon-fit';
 import { WebLinksAddon } from 'xterm-addon-web-links';
 import { takeUntil } from 'rxjs/operators';
 import { Closed } from 'src/app/core/core/utils';
-
+var Value: any
 @Component({
   selector: 'app-top',
   templateUrl: './top.component.html',
@@ -35,12 +35,12 @@ export class TopComponent implements OnInit, OnDestroy, AfterViewInit {
   get status(): Status {
     return this._status
   }
-  private _subscription: Subscription
+  private _subscription: Subscription = Value
 
-  private _websocket: WebSocket
+  private _websocket: WebSocket = Value
   private _wait = 1
-  private _timer
-  private _xterm: Terminal
+  private _timer = Value
+  private _xterm: Terminal = Value
   private _fitAddon = new FitAddon()
   private _webLinksAddon = new WebLinksAddon()
   ngOnInit(): void {
@@ -62,7 +62,7 @@ export class TopComponent implements OnInit, OnDestroy, AfterViewInit {
     this._webLinksAddon.dispose()
   }
   @ViewChild("xterm")
-  xterm: ElementRef
+  xterm: ElementRef = Value
   ngAfterViewInit() {
     const xterm = new Terminal({
       cursorBlink: false,
@@ -111,7 +111,7 @@ export class TopComponent implements OnInit, OnDestroy, AfterViewInit {
     if (this._closed.isClosed) {
       return
     }
-    const addr = ServerAPI.v1.logs.websocketURL(null, {
+    const addr = ServerAPI.v1.logs.websocketURL(Value, {
       token: this.sessionService.token(),
     })
     console.info('logs ws connect', addr)
@@ -148,7 +148,7 @@ export class TopComponent implements OnInit, OnDestroy, AfterViewInit {
     if (this._websocket != websocket) {
       return
     }
-    this._websocket = null
+    this._websocket = Value
     if (this._timer) {
       clearInterval(this._timer)
       this._timer = null
@@ -160,7 +160,7 @@ export class TopComponent implements OnInit, OnDestroy, AfterViewInit {
     if (this._websocket != websocket) {
       return
     }
-    this._websocket = null
+    this._websocket = Value
     if (this._timer) {
       clearInterval(this._timer)
       this._timer = null

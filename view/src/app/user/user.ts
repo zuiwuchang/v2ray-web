@@ -1,6 +1,6 @@
 export class User {
-    name: string
-    password: string
+    name: string = ''
+    password: string = ''
     static compare(l: User, r: User): number {
         if (l.name == r.name) {
             return 0

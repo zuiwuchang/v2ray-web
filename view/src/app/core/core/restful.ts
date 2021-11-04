@@ -1,6 +1,6 @@
 import { HttpHeaders, HttpParams, HttpClient } from '@angular/common/http'
 import { isNumber, isString, isObject, isArray, isUndefinedOrNull } from "king-node/dist/core";
-export function resolveError(e): string {
+export function resolveError(e: any): string {
     if (!e) {
         return "nil"
     }
@@ -12,7 +12,7 @@ export function resolveError(e): string {
     }
     return "unknow"
 }
-export function resolveHttpError(e) {
+export function resolveHttpError(e: any) {
     if (isString(e.error)) {
         return `${e.status} ${e.error}`
     }
@@ -40,7 +40,7 @@ export function wrapPromise<T>(promise: Promise<T>): Promise<T> {
     })
 }
 export class RESTful {
-    constructor(public root, public version, public url: string) {
+    constructor(public root: any, public version: any, public url: string) {
 
     }
     get baseURL(): string {
@@ -79,7 +79,7 @@ export class RESTful {
                 addr += `:${location.port}`
             }
         }
-        let val: string
+        let val: any// string
         if (!isUndefinedOrNull(id)) {
             if (isArray(id)) {
                 val = (id as Array<any>).map<string>((val) => encodeURIComponent(encodeURIComponent(val))).join('/')

@@ -1,6 +1,7 @@
 import { Component, OnInit, Inject, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import * as QRCode from 'qrcode';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+var Value: any
 @Component({
   selector: 'app-qrcode',
   templateUrl: './qrcode.component.html',
@@ -13,7 +14,7 @@ export class QrcodeComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
   }
   @ViewChild("canvas")
-  private _canvas: ElementRef
+  private _canvas: ElementRef = Value
   ngAfterViewInit() {
     QRCode.toCanvas(this._canvas.nativeElement,
       this.data,

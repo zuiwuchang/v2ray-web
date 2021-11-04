@@ -6,10 +6,10 @@ import { I18nService } from 'src/app/core/i18n/i18n.service';
 import { ContextText } from '../../core/text';
 import { SessionService } from 'src/app/core/session/session.service';
 class Context {
-  shell: string
-  view: string
-  clear: string
-  init: string
+  shell: string = ''
+  view: string = ''
+  clear: string = ''
+  init: string = ''
   cloneFrom(other: Context) {
     this.shell = other.shell
     this.view = other.view

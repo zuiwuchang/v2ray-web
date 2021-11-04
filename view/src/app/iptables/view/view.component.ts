@@ -1,7 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ServerAPI } from 'src/app/core/core/api';
-import { isString } from 'king-node/dist/core';
 import { SessionService } from 'src/app/core/session/session.service';
 
 @Component({
@@ -34,7 +33,7 @@ export class ViewComponent implements OnInit, OnDestroy {
   load() {
     this.err = null
     this._ready = false
-    ServerAPI.v1.iptables.getOne<string>(this.httpClient,'view').then((text) => {
+    ServerAPI.v1.iptables.getOne<string>(this.httpClient, 'view').then((text) => {
       if (this._closed) {
         return
       }

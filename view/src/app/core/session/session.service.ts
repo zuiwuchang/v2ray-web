@@ -6,16 +6,16 @@ import { Completer } from 'king-node/dist/async/completer';
 import { Mutex } from 'king-node/dist/async/sync';
 import { isString, Exception, isNumber } from 'king-node/dist/core';
 import { SaveToken, LoadToken, DeleteToken } from './token'
-
+var Value: any
 interface Response {
   session: Session
   token: string
   maxage: number
 }
 export class Session {
-  name: string
+  name: string = ''
   root = false
-  token: string
+  token: string = ''
 }
 
 @Injectable({
@@ -27,7 +27,7 @@ export class SessionService {
     this._restore();
   }
   private readonly mutex_ = new Mutex()
-  private readonly subject_ = new BehaviorSubject<Session>(null)
+  private readonly subject_ = new BehaviorSubject<Session>(Value)
   private readonly ready_ = new Completer<boolean>()
   get observable(): Observable<Session> {
     return this.subject_
@@ -63,7 +63,7 @@ export class SessionService {
  */
   async login(name: string, password: string, remember: boolean): Promise<Session> {
     await this.mutex_.lock()
-    let result: Session
+    let result: any// Session
     try {
       const timestamp = new Date().getTime()
       const response = await ServerAPI.v1.session.post<Response>(this.httpClient, {
@@ -97,7 +97,7 @@ export class SessionService {
         return
       }
       DeleteToken(this.subject_.value.token)
-      this.subject_.next(null)
+      this.subject_.next(Value)
     } finally {
       this.mutex_.unlock()
     }
@@ -106,6 +106,6 @@ export class SessionService {
     if (this.subject_.value) {
       return this.subject_.value.token
     }
-    return null
+    return Value
   }
 }

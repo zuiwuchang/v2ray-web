@@ -1,5 +1,5 @@
 import { isNumber, isString } from 'king-node/dist/core'
-
+var Value: any
 const TokenKey = 'token'
 export class Token {
     constructor(public readonly value: string,
@@ -34,13 +34,13 @@ export function SaveToken(value: string, at: number, maxage: number) {
 export function LoadToken(): Token {
     try {
         if (typeof localStorage == 'undefined') {
-            return null
+            return Value
         }
         const str = localStorage.getItem(TokenKey)
         if (!isString(str)) {
-            return null
+            return Value
         }
-        const obj = JSON.parse(str)
+        const obj = JSON.parse(str as string)
         if (obj && isNumber(obj.at) && isNumber(obj.maxage) && isString(obj.value)) {
             const token = new Token(obj.value, obj.at, obj.maxage)
             if (!token.isExpired()) {
@@ -50,7 +50,7 @@ export function LoadToken(): Token {
     } catch (e) {
         console.log(`load token error : `, e)
     }
-    return null
+    return Value
 }
 export function DeleteToken(value: string) {
     try {

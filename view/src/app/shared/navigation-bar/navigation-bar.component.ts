@@ -3,6 +3,7 @@ import { Session, SessionService } from 'src/app/core/session/session.service';
 import { Subscription } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { LoginComponent } from '../login/login.component';
+var Value: any
 @Component({
   selector: 'shared-navigation-bar',
   templateUrl: './navigation-bar.component.html',
@@ -12,16 +13,16 @@ export class NavigationBarComponent implements OnInit, OnDestroy {
   constructor(
     private sessionService: SessionService,
     private matDialog: MatDialog
-  ) {}
+  ) { }
   private _ready = false;
   get ready(): boolean {
     return this._ready;
   }
-  private _session: Session;
+  private _session: Session = Value;
   get session(): Session {
     return this._session;
   }
-  private _subscription: Subscription;
+  private _subscription: Subscription = Value;
   ngOnInit(): void {
     this.sessionService.ready.then((data) => {
       this._ready = data;

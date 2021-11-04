@@ -19,12 +19,12 @@ export class AddComponent implements OnInit, OnDestroy {
     private matDialogRef: MatDialogRef<AddComponent>,
   ) { }
   private _closed = false
-  private _disabled: boolean
+  private _disabled = false
   get disabled(): boolean {
     return this._disabled
   }
-  name: string
-  password: string
+  name: string = ''
+  password: string = ''
   ngOnInit(): void {
   }
   ngOnDestroy() {

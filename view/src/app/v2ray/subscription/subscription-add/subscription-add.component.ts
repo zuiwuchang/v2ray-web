@@ -18,12 +18,12 @@ export class SubscriptionAddComponent implements OnInit, OnDestroy {
     private matDialogRef: MatDialogRef<SubscriptionAddComponent>,
   ) { }
   private _closed = false
-  private _disabled: boolean
+  private _disabled = false
   get disabled(): boolean {
     return this._disabled
   }
-  name: string
-  url: string
+  name: string = ''
+  url: string = ''
   ngOnInit(): void {
   }
   ngOnDestroy() {

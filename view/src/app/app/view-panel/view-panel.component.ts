@@ -26,6 +26,7 @@ interface Message {
   error?: string
   duration?: number
 }
+var Value: any
 @Component({
   selector: 'app-view-panel',
   templateUrl: './view-panel.component.html',
@@ -40,18 +41,18 @@ export class ViewPanelComponent implements OnInit, OnDestroy, AfterViewInit {
     public readonly sessionService: SessionService,
   ) { }
   @Input('panel')
-  panel: Panel
+  panel: Panel = Value
   private _disabled = false
   get disabled(): boolean {
     return this._disabled
   }
   private _closed = false
-  private _websocket: WebSocket
-  private _status: Status
+  private _websocket: WebSocket = Value
+  private _status: Status = Value
   get status(): Status {
     return this._status
   }
-  private _subscription: Subscription
+  private _subscription: Subscription = Value
   ngOnInit(): void {
     this._subscription = this.statusService.observable.subscribe((status) => {
       if (this._closed) {
@@ -94,7 +95,7 @@ export class ViewPanelComponent implements OnInit, OnDestroy, AfterViewInit {
     this._subscription.unsubscribe()
     if (this._websocket) {
       const websocket = this._websocket
-      this._websocket = null
+      this._websocket = Value
       websocket.close()
     }
     const source = this.panel.source
@@ -107,7 +108,7 @@ export class ViewPanelComponent implements OnInit, OnDestroy, AfterViewInit {
   }
   private _clipboard: any = null
   @ViewChild("btnClipboard")
-  private _btnClipboard: ElementRef
+  private _btnClipboard: ElementRef = Value
   ngAfterViewInit() {
     this._clipboard = new ClipboardJS(this._btnClipboard.nativeElement).on('success', () => {
       this.toasterService.pop('success',
@@ -273,7 +274,7 @@ export class ViewPanelComponent implements OnInit, OnDestroy, AfterViewInit {
       source[i].request = undefined
     }
     this._disabled = false
-    this._websocket = null
+    this._websocket = Value
   }
   onClickAdd() {
     this.matDialog.open(AddComponent, {
