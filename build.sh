@@ -4,6 +4,7 @@
 #
 #Email:
 #       zuiwuchang@gmail.com
+set -e
 DirRoot=`cd $(dirname $BASH_SOURCE) && pwd`
 Target=v2ray-web
 TestItems=(
@@ -73,6 +74,7 @@ function DisplayHelp(){
 }
 case $1 in
 	l|linux)
+		cd "$DirRoot"
 		export GOOS=linux
 		export CGO_ENABLED=0
 
@@ -80,26 +82,32 @@ case $1 in
 		if [[ $2 == d ]]; then
 			Target="$Target"d
 			echo go build -tags=jsoniter -o "$DirRoot/bin/$Target"
-			cd "$DirRoot" && go build -tags=jsoniter -o "$DirRoot/bin/$Target"
+			go build -tags=jsoniter -o "$DirRoot/bin/$Target"
 		else
 			echo go build -tags=jsoniter -ldflags "-s -w" -o "$DirRoot/bin/$Target"
-			cd "$DirRoot" && go build -tags=jsoniter -ldflags "-s -w" -o "$DirRoot/bin/$Target"
+			go build -tags=jsoniter -ldflags "-s -w" -o "$DirRoot/bin/$Target"
 		fi
 		check $?
 
 		if [[ $3 == tar || $3 == t ]]; then
-			dst=linux.amd64.tar.xz
+			dst=linux.amd64.tar.gz
 			if [[ $GOARCH == 386 ]];then
-				dst=linux.386.tar.xz
+				dst=linux.386.tar.gz
 			fi
-			cd "$DirRoot/bin" && tar -Jcvf $dst "$Target" "$Target.jsonnet" \
+			cd bin 
+			tar -zcvf $dst "$Target" "$Target.jsonnet" \
 				geoip.dat geosite.dat \
 				v2ray-web.service \
 				run.sh
+				
+			exec="sha256sum $dst > $dst.sha256"
+			echo $exec
+			eval "$exec"
 		fi
 	;;
 
 	d|darwin)
+		cd "$DirRoot"
 		export GOOS=darwin
 		export CGO_ENABLED=0
 
@@ -107,26 +115,32 @@ case $1 in
 		if [[ $2 == d ]]; then
 			Target="$Target"d
 			echo go build -tags=jsoniter -o "$DirRoot/bin/$Target"
-			cd "$DirRoot" && go build -tags=jsoniter -o "$DirRoot/bin/$Target"
+			 go build -tags=jsoniter -o "$DirRoot/bin/$Target"
 		else
 			echo go build -tags=jsoniter -ldflags "-s -w" -o "$DirRoot/bin/$Target"
-			cd "$DirRoot" && go build -tags=jsoniter -ldflags "-s -w" -o "$DirRoot/bin/$Target"
+			 go build -tags=jsoniter -ldflags "-s -w" -o "$DirRoot/bin/$Target"
 		fi
 		check $?
 
 		if [[ $3 == tar || $3 == t ]]; then
-			dst=darwin.amd64.tar.xz
+			dst=darwin.amd64.tar.gz
 			if [[ $GOARCH == 386 ]];then
-				dst=darwin.386.tar.xz
+				dst=darwin.386.tar.gz
 			fi
-			cd "$DirRoot/bin" && tar -Jcvf $dst "$Target" "$Target.jsonnet" \
+			cd bin
+			tar -zcvf $dst "$Target" "$Target.jsonnet" \
 				geoip.dat geosite.dat \
 				v2ray-web.service \
 				run.sh
+			
+			exec="sha256sum $dst > $dst.sha256"
+			echo $exec
+			eval "$exec"
 		fi
 	;;
 
 	w|windows)
+		cd "$DirRoot"
 		export GOOS=windows
 		export CGO_ENABLED=0
 
@@ -134,22 +148,27 @@ case $1 in
 		if [[ $2 == d ]]; then
 			Target="$Target"d
 			echo go build -tags=jsoniter -o "$DirRoot/bin/$Target.exe"
-			cd "$DirRoot" && go build -tags=jsoniter -o "$DirRoot/bin/$Target.exe"
+			go build -tags=jsoniter -o "$DirRoot/bin/$Target.exe"
 		else
 			echo go build -tags=jsoniter -ldflags "-s -w" -o "$DirRoot/bin/$Target.exe"
-			cd "$DirRoot" && go build -tags=jsoniter -ldflags "-s -w" -o "$DirRoot/bin/$Target.exe"
+			go build -tags=jsoniter -ldflags "-s -w" -o "$DirRoot/bin/$Target.exe"
 		fi
 		check $?
 
 		if [[ $3 == tar || $3 == t ]]; then
-			dst=windows.amd64.tar.xz
+			dst=windows.amd64.tar.gz
 			if [[ $GOARCH == 386 ]];then
-				dst=windows.386.tar.xz
+				dst=windows.386.tar.gz
 			fi
-			cd "$DirRoot/bin" && tar -Jcvf $dst "$Target.exe" "$Target.jsonnet" \
+			cd bin
+			tar -zcvf $dst "$Target.exe" "$Target.jsonnet" \
 				geoip.dat geosite.dat \
 				v2ray-web-service.xml v2ray-web-service.exe \
 				run.bat install.bat
+
+			exec="sha256sum $dst > $dst.sha256"
+			echo $exec
+			eval "$exec"
 		fi
 	;;
 

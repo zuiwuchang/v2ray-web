@@ -19,6 +19,7 @@
 *.7z
 *.db.lock
 *.tmp
+*.sha256
 
 /v2ray-web
 /v2ray-webd
