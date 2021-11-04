@@ -12,13 +12,13 @@ require (
 	github.com/gorilla/websocket v1.4.2
 	github.com/json-iterator/go v1.1.10
 	github.com/rakyll/statik v0.1.7
-	github.com/spf13/cobra v1.0.0
-	github.com/spf13/pflag v1.0.5 // indirect
+	github.com/spf13/cobra v1.1.3
 	github.com/ugorji/go v1.1.8 // indirect
-	github.com/v2fly/v2ray-core/v4 v4.36.2
+	github.com/v2fly/v2ray-core/v4 v4.43.0
 	gitlab.com/king011/king-go v0.0.10
 	go.uber.org/multierr v1.6.0 // indirect
 	go.uber.org/zap v1.16.0
-	golang.org/x/net v0.0.0-20210226172049-e18ecbb05110
-	gopkg.in/yaml.v2 v2.3.0
+	golang.org/x/net v0.0.0-20210903162142-ad29c8ab022f
+	golang.org/x/sys v0.0.0-20211103235746-7861aae1554b // indirect
+	gopkg.in/yaml.v2 v2.4.0
 )
