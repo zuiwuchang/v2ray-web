@@ -277,22 +277,48 @@ export class Outbound {
         outbound.protocol = protocol
         return outbound
     }
+    static fromVless(rawStr: string): Outbound {
+        let str = "http://" + rawStr
+        const url = new URL(str)
+        if (url.search == "") {
+            return Outbound.fromV2ray("vless", rawStr)
+        }
+        const outbound = new Outbound()
+        outbound.protocol = "vless"
+        outbound.add = url.hostname
+        outbound.port = url.port
+        outbound.userID = url.username
+        if (url.hash.startsWith('#')) {
+            outbound.name = decodeURIComponent(url.hash.substring(1))
+        }
+        const params = new HttpParams({
+            fromString: url.search,
+        })
+        outbound.host = params.get('host') ?? ''
+        outbound.tls = params.get('security') ?? ''
+        outbound.net = params.get('type') ?? ''
+        outbound.path = params.get('path') ?? '/'
+        // outbound.alterID = obj.aid
+        // outbound.security = obj.type
+        outbound.level = params.get('level') ?? '0'
+        return outbound
+    }
     static fromShadowsocks(str: string): Outbound {
+        str = "http://" + str
+        const url = new URL(str)
         const outbound = new Outbound()
         outbound.protocol = "shadowsocks"
-        str = outbound._ssSafe(str)
-        if (!str) {
-            return outbound
+        outbound.add = url.hostname
+        outbound.port = url.port
+        if (url.hash.startsWith('#')) {
+            outbound.name = decodeURIComponent(url.hash.substring(1))
         }
-        str = outbound._ssAddr(str)
-        if (!str) {
-            return outbound
+        str = Base64.decode(url.username)
+        const strs = str.split(":", 2)
+        outbound.security = strs[0]
+        if (strs.length > 1) {
+            outbound.userID = strs[1]
         }
-        str = outbound._ssPort(str)
-        if (!str) {
-            return outbound
-        }
-        outbound.name = decodeURIComponent(str)
         return outbound
     }
     static fromTrojan(str: string): Outbound {
@@ -311,89 +337,12 @@ export class Outbound {
         if (typeof name === "string" && name != "") {
             outbound.name = name
         } else if (typeof url.hash === "string" && url.hash.startsWith("#")) {
-            const codec = new HttpUrlEncodingCodec()
-            outbound.name = codec.decodeValue(url.hash.substring(1))
+            outbound.name = decodeURIComponent(url.hash.substring(1))
         }
         if (typeof level === "string") {
             outbound.level = level
         }
         return outbound
-    }
-    private _ssAddr(str: string): string {
-        let result: any
-        const strs = str.split(":", 2)
-        if (strs.length > 1) {
-            result = strs[1]
-        }
-        this.add = strs[0]
-        return result
-    }
-    private _ssPort(str: string): string {
-        let result: any
-        const strs = str.split("#", 2)
-        if (strs.length > 1) {
-            result = strs[1]
-        }
-        this.port = strs[0]
-        return result
-    }
-    private _ssSafe(str: string): string {
-        let result: any
-        let strs = str.split("@", 2)
-        if (strs.length > 1) {
-            result = strs[1]
-        }
-        str = strs[0].replace("=", "")
-        str = Base64.decode(str)
-        strs = str.split(":", 2)
-        this.security = strs[0]
-        if (strs.length > 1) {
-            this.userID = strs[1]
-        }
-        return result
-    }
-    private _trojanPort(str: string): string {
-        let result: any
-        const strs = str.split("?", 2)
-        if (strs.length > 1) {
-            result = strs[1]
-        }
-        str = strs[0]
-        let index = str.indexOf("/")
-        if (index != -1) {
-            str = str.substring(0, index)
-        }
-        const port = Math.floor(parseInt(str))
-        if (!isNaN(port) && port > 0 && port <= 65535) {
-            this.port = port.toString()
-        }
-        return result
-    }
-    private _trojanMap(str: string) {
-        const codec = new HttpUrlEncodingCodec()
-        const index = str.indexOf('#')
-        if (index > 0) {
-            this.name = str.substring(index + 1)
-            str = codec.decodeValue(str.substring(0, index))
-        }
-        const strs = str.split("&")
-        for (let i = 0; i < strs.length; i++) {
-            const str = strs[i]
-            if (str.startsWith('name=')) {
-                this.name = codec.decodeValue(str.substr('name='.length))
-            } else if (str.startsWith('level=')) {
-                this.level = str.substr('level='.length)
-            }
-        }
-    }
-    private _trojanSafe(str: string): string {
-        let result: any
-        const strs = str.split("@", 2)
-        if (strs.length > 1) {
-            result = strs[1]
-        }
-        this.userID = decodeURIComponent(strs[0])
-        return result
     }
     static fromURL(str: string): Outbound {
         str = str.trim()
@@ -402,7 +351,7 @@ export class Outbound {
             return Outbound.fromV2ray("vmess", str)
         } else if (str.startsWith('vless://')) {
             str = str.substring('vless://'.length)
-            return Outbound.fromV2ray("vless", str)
+            return Outbound.fromVless(str)
         } else if (str.startsWith('ss://')) {
             str = str.substring('ss://'.length)
             return Outbound.fromShadowsocks(str)
@@ -413,6 +362,9 @@ export class Outbound {
         throw new Error("url not supported")
     }
     toV2ray(): string {
+        if (this.protocol == "vless") {
+            return this.toVless()
+        }
         const str = JSON.stringify({
             ps: this.name,
             add: this.add,
@@ -427,6 +379,18 @@ export class Outbound {
             v: this.level,
         })
         return Base64.encode(str)
+    }
+    toVless(): string {
+        const params = new HttpParams({
+            fromObject: {
+                host: this.host,
+                security: this.tls,
+                type: this.net,
+                path: this.path,
+                level: this.level,
+            },
+        })
+        return `${encodeURIComponent(this.userID)}@${this.add}:${this.port}?${params.toString()}#${encodeURIComponent(this.name)}`
     }
     toShadowsocks(): string {
         const str = Base64.encode(`${this.security}:${this.userID}`)

@@ -107,7 +107,7 @@ func AnalyzeString(str string) (protocol string, result *Outbound) {
 	str = strings.TrimSpace(str)
 	if strings.HasPrefix(str, "vless://") {
 		protocol = "vless"
-		result = analyzeVMess(str)
+		result = analyzeVless(str)
 	} else if strings.HasPrefix(str, "vmess://") {
 		protocol = "vmess"
 		result = analyzeVMess(str)

@@ -17,12 +17,16 @@ func (a *analyzeTrojan) do(str string) (result *Outbound) {
 	if name == "" {
 		name = u.Fragment
 	}
+	var userID string
+	if u.User != nil {
+		userID = u.User.Username()
+	}
 	result = &Outbound{
 		Add:    u.Hostname(),
 		Port:   u.Port(),
 		Level:  query.Get(`level`),
 		Name:   name,
-		UserID: u.User.Username(),
+		UserID: userID,
 	}
 	return
 }

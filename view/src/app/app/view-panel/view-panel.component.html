@@ -31,6 +31,7 @@
         [disabled]="disabled || !panel.source.length">
         <mat-icon>clear</mat-icon>
     </button>
+    
     <button mat-icon-button *ngIf="panel.id!=0" i18n-matTooltip matTooltip="update subscription"
         (click)="onClickUpdate()" [disabled]="disabled">
         <mat-icon>update</mat-icon>

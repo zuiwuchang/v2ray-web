@@ -9,65 +9,38 @@ import (
 	"go.uber.org/zap"
 )
 
-func splite2(str, sep string) (first, second string, ok bool) {
-	index := strings.Index(str, sep)
-	if index == -1 {
-		return
-	}
-	first = str[:index]
-	second = str[index+len(sep):]
-	ok = true
-	return
-}
-
 type analyzeSS struct {
 }
 
 func (a *analyzeSS) do(str string) (result *Outbound) {
-	str = str[len("ss://"):]
-	str = strings.TrimSpace(str)
-	security, userID, str, ok := a.analyzeSafe(str)
-	if !ok {
+	u, e := url.Parse(str)
+	if e != nil {
 		return
 	}
-	addr, str, ok := splite2(str, ":")
-	if !ok {
-		return
-	}
-	port, str, ok := splite2(str, "#")
-	if !ok {
-		return
-	}
-	name, e := url.QueryUnescape(str)
-	if e == nil {
-		str = name
+	var userID, security string
+	if u.User != nil {
+		b, e := base64.RawStdEncoding.DecodeString(u.User.Username())
+		if e != nil {
+			if ce := logger.Logger.Check(zap.WarnLevel, "decode base64 outbound error"); ce != nil {
+				ce.Write(
+					zap.Error(e),
+					zap.String("value", str),
+				)
+			}
+			return
+		}
+		strs := strings.SplitN(string(b), ":", 2)
+		security = strs[0]
+		if len(strs) > 1 {
+			userID = strs[1]
+		}
 	}
 	result = &Outbound{
-		Name:     str,
-		Add:      addr,
-		Port:     port,
-		Security: security,
+		Add:      u.Hostname(),
+		Port:     u.Port(),
+		Name:     u.Fragment,
 		UserID:   userID,
+		Security: security,
 	}
-	return
-}
-
-func (a *analyzeSS) analyzeSafe(str string) (security, userID, text string, ok bool) {
-	str, text, yes := splite2(str, "@")
-	if !yes {
-		return
-	}
-	str = strings.ReplaceAll(str, "=", "")
-	b, e := base64.RawStdEncoding.DecodeString(str)
-	if e != nil {
-		if ce := logger.Logger.Check(zap.WarnLevel, "decode base64 outbound error"); ce != nil {
-			ce.Write(
-				zap.Error(e),
-				zap.String("value", str),
-			)
-		}
-		return
-	}
-	security, userID, ok = splite2(string(b), ":")
 	return
 }
