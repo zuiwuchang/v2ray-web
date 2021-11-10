@@ -84,8 +84,8 @@ func (u *Upgrade) Do(yes bool) (upgraded bool, newversion string, e error) {
 	}
 	// find assets
 	var downloadTar, downloadHash string
-	nameTar := runtime.GOOS + `_` + runtime.GOARCH + `.tar.gz`
-	nameHash := nameTar + `.sha256.txt`
+	nameTar := runtime.GOOS + `.` + runtime.GOARCH + `.tar.gz`
+	nameHash := nameTar + `.sha256`
 	for _, asset := range response.Assets {
 		if nameTar == asset.Name {
 			downloadTar = asset.BrowserDownloadURL
