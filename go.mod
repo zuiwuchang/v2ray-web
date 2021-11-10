@@ -10,10 +10,9 @@ require (
 	github.com/google/go-jsonnet v0.16.0
 	github.com/gorilla/securecookie v1.1.1
 	github.com/gorilla/websocket v1.4.2
-	github.com/inconshreveable/go-update v0.0.0-20160112193335-8152e7eb6ccf // indirect
+	github.com/inconshreveable/go-update v0.0.0-20160112193335-8152e7eb6ccf
 	github.com/json-iterator/go v1.1.12
 	github.com/mattn/go-isatty v0.0.14 // indirect
-	github.com/powerpuffpenguin/downloader v1.0.0 // indirect
 	github.com/rakyll/statik v0.1.7
 	github.com/spf13/cobra v1.2.1
 	github.com/ugorji/go v1.2.6 // indirect
