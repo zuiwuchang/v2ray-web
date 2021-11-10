@@ -8,16 +8,20 @@ import (
 
 	"github.com/spf13/cobra"
 	core "github.com/v2fly/v2ray-core/v4"
+	"gitlab.com/king011/v2ray-web/single/upgrade"
 )
 
 func init() {
 	var filename string
-	var test bool
+	var test, noupgrade bool
 	cmd := &cobra.Command{
 		Use:   `start`,
 		Short: `Start V2Ray server.`,
 		Run: func(cmd *cobra.Command, args []string) {
 			f, e := os.Open(filename)
+			if e != nil {
+				log.Fatalln(e)
+			}
 			cnf, e := core.LoadConfig(`json`, filename, f)
 			f.Close()
 			if e != nil {
@@ -35,23 +39,31 @@ func init() {
 				log.Fatalln(e)
 			}
 			defer server.Close()
+			if !noupgrade {
+				go upgrade.DefaultUpgrade().Serve()
+			}
+			
 			{
 				osSignals := make(chan os.Signal, 1)
-				signal.Notify(osSignals, os.Interrupt, os.Kill, syscall.SIGTERM)
+				signal.Notify(osSignals, os.Interrupt, syscall.SIGTERM)
 				<-osSignals
 			}
 		},
 	}
-	flasg := cmd.Flags()
-	flasg.StringVarP(&filename,
+	flags := cmd.Flags()
+	flags.StringVarP(&filename,
 		"config", "c",
 		"",
 		"Config file for V2Ray",
 	)
-	flasg.BoolVarP(&test,
+	flags.BoolVarP(&test,
 		"test", "t",
 		false,
 		"Test config file only, without launching V2Ray server.",
+	)
+	flags.BoolVar(&noupgrade, `no-upgrade`,
+		false,
+		`disable automatic upgrades`,
 	)
 	rootCmd.AddCommand(cmd)
 }

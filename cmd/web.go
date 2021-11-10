@@ -9,12 +9,13 @@ import (
 	"gitlab.com/king011/v2ray-web/cookie"
 	"gitlab.com/king011/v2ray-web/db/manipulator"
 	"gitlab.com/king011/v2ray-web/logger"
+	"gitlab.com/king011/v2ray-web/single/upgrade"
 	"gitlab.com/king011/v2ray-web/utils"
 )
 
 func init() {
 	var filename string
-	var debug bool
+	var noupgrade, debug bool
 	basePath := utils.BasePath()
 	cmd := &cobra.Command{
 		Use:   `web`,
@@ -48,21 +49,26 @@ func init() {
 			if e != nil {
 				log.Fatalln(e)
 			}
-
+			if !noupgrade {
+				go upgrade.DefaultUpgrade().Serve()
+			}
 			web.Run(cnf, debug)
 		},
 	}
-	flasg := cmd.Flags()
-	flasg.StringVarP(&filename,
+	flags := cmd.Flags()
+	flags.StringVarP(&filename,
 		"config", "c",
 		utils.Abs(basePath, "v2ray-web.jsonnet"),
 		"Config file for Web",
 	)
-	flasg.BoolVarP(&debug,
+	flags.BoolVarP(&debug,
 		"debug", "d",
 		false,
 		"Run as debug",
 	)
-
+	flags.BoolVar(&noupgrade, `no-upgrade`,
+		false,
+		`disable automatic upgrades`,
+	)
 	rootCmd.AddCommand(cmd)
 }
