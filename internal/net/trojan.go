@@ -13,11 +13,15 @@ func (a *analyzeTrojan) do(str string) (result *Outbound) {
 		return
 	}
 	query := u.Query()
+	name := query.Get(`name`)
+	if name == "" {
+		name = u.Fragment
+	}
 	result = &Outbound{
 		Add:    u.Hostname(),
 		Port:   u.Port(),
 		Level:  query.Get(`level`),
-		Name:   query.Get(`name`),
+		Name:   name,
 		UserID: u.User.Username(),
 	}
 	return

@@ -1,5 +1,6 @@
 import { isNumber, isObject, isString } from 'king-node/dist/core'
 import { Base64 } from 'js-base64';
+import { HttpParams, HttpUrlEncodingCodec } from '@angular/common/http';
 export class Source {
     private _items = new Array<Panel>()
     private _keys = new Map<number, Panel>()
@@ -295,21 +296,27 @@ export class Outbound {
         return outbound
     }
     static fromTrojan(str: string): Outbound {
+        str = "http://" + str
+        const url = new URL(str)
         const outbound = new Outbound()
         outbound.protocol = "trojan"
-        str = outbound._trojanSafe(str)
-        if (!str) {
-            return outbound
+        outbound.add = url.hostname
+        outbound.port = url.port
+        outbound.userID = url.username
+        const params = new HttpParams({
+            fromString: url.search,
+        })
+        const name = params.get("name")
+        const level = params.get("level")
+        if (typeof name === "string" && name != "") {
+            outbound.name = name
+        } else if (typeof url.hash === "string" && url.hash.startsWith("#")) {
+            const codec = new HttpUrlEncodingCodec()
+            outbound.name = codec.decodeValue(url.hash.substring(1))
         }
-        str = outbound._ssAddr(str)
-        if (!str) {
-            return outbound
+        if (typeof level === "string") {
+            outbound.level = level
         }
-        str = outbound._trojanPort(str)
-        if (!str) {
-            return outbound
-        }
-        outbound._trojanMap(str)
         return outbound
     }
     private _ssAddr(str: string): string {
@@ -356,14 +363,24 @@ export class Outbound {
         if (index != -1) {
             str = str.substring(0, index)
         }
+        const port = Math.floor(parseInt(str))
+        if (!isNaN(port) && port > 0 && port <= 65535) {
+            this.port = port.toString()
+        }
         return result
     }
     private _trojanMap(str: string) {
+        const codec = new HttpUrlEncodingCodec()
+        const index = str.indexOf('#')
+        if (index > 0) {
+            this.name = str.substring(index + 1)
+            str = codec.decodeValue(str.substring(0, index))
+        }
         const strs = str.split("&")
         for (let i = 0; i < strs.length; i++) {
             const str = strs[i]
             if (str.startsWith('name=')) {
-                this.name = str.substr('name='.length)
+                this.name = codec.decodeValue(str.substr('name='.length))
             } else if (str.startsWith('level=')) {
                 this.level = str.substr('level='.length)
             }
@@ -416,6 +433,6 @@ export class Outbound {
         return `${str}@${this.add}:${this.port}#${encodeURIComponent(this.name)}`
     }
     toTrojan(): string {
-        return `${encodeURIComponent(this.userID)}@${this.add}:${this.port}?name=${encodeURIComponent(this.name)}&level=${this.level}`
+        return `${encodeURIComponent(this.userID)}@${this.add}:${this.port}?level=${this.level}#${encodeURIComponent(this.name)}`
     }
 }
