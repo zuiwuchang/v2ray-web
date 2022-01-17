@@ -3,7 +3,7 @@ package speed
 import (
 	"bytes"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net"
 	"net/http"
 	"sync"
@@ -77,7 +77,7 @@ func testOne(outbound *data.Outbound, port int, url string) (duration time.Durat
 	if e != nil {
 		return
 	}
-	duration = time.Now().Sub(last)
+	duration = time.Since(last)
 	return
 }
 func requestURL(port int, url string) (e error) {
@@ -93,11 +93,10 @@ func requestURL(port int, url string) (e error) {
 		Dial: dialer.Dial,
 	}
 	response, e := client.Get(url)
-	if response != nil && response.Body != nil {
-		ioutil.ReadAll(response.Body)
-	}
 	if e != nil {
 		return
 	}
+	defer response.Body.Close()
+	_, e = io.ReadAll(response.Body)
 	return
 }

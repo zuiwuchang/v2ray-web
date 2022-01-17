@@ -16,7 +16,7 @@ require (
 	github.com/rakyll/statik v0.1.7
 	github.com/spf13/cobra v1.2.1
 	github.com/ugorji/go v1.2.6 // indirect
-	github.com/v2fly/v2ray-core/v4 v4.43.0
+	github.com/v2fly/v2ray-core/v4 v4.44.0
 	gitlab.com/king011/king-go v0.0.10
 	go.uber.org/zap v1.17.0
 	golang.org/x/crypto v0.0.0-20211108221036-ceb1ce70b4fa // indirect
