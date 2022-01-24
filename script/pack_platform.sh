@@ -83,7 +83,7 @@ if [[ "$debug" == 1 ]];then
 else
     target="${Target}"
 fi
-name="${target}_${GOOS}_$GOARCH"
+name="${GOOS}.$GOARCH"
 if [[ "$os" == "windows" ]];then
     target="$target.exe"
 fi
@@ -117,13 +117,24 @@ if [[ -f "$name" ]];then
     rm "$name"
 fi
 source=(
-    "$target"
-    etc
+    "$target" v2ray-web.jsonnet
+    geoip.dat geosite.dat 
 )
-exec="${args[@]} ${source[@]}"
+if [[ "$os" == "windows" ]];then
+    others=(
+        install.bat run.bat
+        v2ray-web-service.exe v2ray-web-service.xml
+    )
+else
+    others=(
+        v2ray-web.service run.sh
+    )
+fi
+
+exec="${args[@]} ${source[@]} ${others[@]}"
 echo $exec
 eval "$exec >> /dev/null"
 
-exec="sha256sum $name > $name.sha256.txt"
+exec="sha256sum $name > $name.sha256"
 echo $exec
 eval "$exec"
