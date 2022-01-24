@@ -1,0 +1,161 @@
+#!/usr/bin/env bash
+
+set -e
+
+BashDir=$(cd "$(dirname $BASH_SOURCE)" && pwd)
+eval $(cat "$BashDir/conf.sh")
+if [[ "$Command" == "" ]];then
+    Command="$0"
+fi
+
+function help(){
+    echo "static build helper"
+    echo
+    echo "Usage:"
+    echo "  $Command [flags]"
+    echo
+    echo "Flags:"
+    echo "  -i, --i18n          ng extract-i18n [en zh-Hant zh-Hans]"
+    echo "  -s, --static        build static"
+    echo "  -h, --help          help for $Command"
+}
+
+ARGS=`getopt -o hi:s --long help,i18n:,static -n "$Command" -- "$@"`
+eval set -- "${ARGS}"
+i18n="none"
+static=0
+while true
+do
+    case "$1" in
+        -h|--help)
+            help
+            exit 0
+        ;;
+        -i|--i18n)
+            i18n="$2"
+            shift 2
+        ;;
+        -s|--static)
+            static=1
+            shift
+        ;;
+        --)
+            shift
+            break
+        ;;
+        *)
+            echo Error: unknown flag "$1" for "$Command"
+            echo "Run '$Command --help' for usage."
+            exit 1
+        ;;
+    esac
+done
+
+
+function build_en(){
+    cd "$Dir/view"
+    local args=(
+        ng extract-i18n
+    )
+
+    local exec="${args[@]}"
+    echo $exec
+    eval "$exec"
+}
+function build_lang(){
+    cd "$Dir/view"
+    local args=(
+        ng-xi18n update -s messages.xlf -l "$1"
+    )
+
+    local exec="${args[@]}"
+    echo $exec
+    eval "$exec"
+}
+function build_hans(){
+    cd "$Dir/view"
+    local args=(
+        opencc -i src/locale/zh-Hant.xlf -o src/locale/zh-Hans.xlf -c t2s.json
+    )
+
+    local exec="${args[@]}"
+    echo $exec
+    eval "$exec"
+}
+case "$i18n" in
+    none)
+    ;;
+    en)
+        build_en
+        exit $?
+    ;;
+    zh-Hant)
+        build_lang zh-Hant
+        exit $?
+    ;;
+    zh-Hans)
+        build_hans
+        exit $?
+    ;;
+    *)
+        echo Error: unknown i18n "$i18n" for "$Command"
+        echo "Run '$Command --help' for usage."
+        exit 1
+    ;;
+esac
+
+function build_static(){
+    cd "$Dir"
+    local args=(
+        cp 
+        view/dist/view/en/3rdpartylicenses.txt
+        static/public/3rdpartylicenses.txt
+    )
+    local exec="${args[@]}"
+    echo $exec
+    eval "$exec"
+
+    args=(
+        cp 
+        LICENSE
+        static/public/LICENSE.txt
+    )
+    exec="${args[@]}"
+    echo $exec
+    eval "$exec"
+    if [ ! -d "static/view" ];then
+        echo mkdir static/view
+        mkdir static/view
+    fi
+    
+    local items=(
+        zh-Hant
+        zh-Hans
+    )
+    for i in ${!items[@]};do
+        item=${items[i]}
+        local dst="static/view/$item"
+        if [ -d "$dst" ];then
+            rm "$dst" -rf
+        fi
+        local src="view/dist/view/$item"
+        echo cp "\"$src\"" "\"$dst\"" -r
+        cp "$src" "$dst" -r
+    done
+}
+
+if [[ $static == 1 ]];then
+    build_static
+    exit $?
+fi
+
+cd "$Dir/view"
+args=(
+ ng build 
+ --configuration production
+ --base-href /view/
+ --localize
+)
+exec="${args[@]}"
+echo $exec
+eval "$exec"

@@ -22,16 +22,15 @@ import { PasswordComponent } from './password/password.component';
 
 
 @NgModule({
-  declarations: [ListComponent, AddComponent, PasswordComponent],
-  imports: [
-    CommonModule, RouterModule, FormsModule,
-    SharedModule,
-    MatListModule, MatButtonModule, MatIconModule,
-    MatTooltipModule, MatFormFieldModule, MatInputModule,
-    MatCardModule, MatProgressSpinnerModule, MatDialogModule,
-    MatProgressBarModule,
-    UserRoutingModule
-  ],
-  entryComponents: [AddComponent, PasswordComponent],
+    declarations: [ListComponent, AddComponent, PasswordComponent],
+    imports: [
+        CommonModule, RouterModule, FormsModule,
+        SharedModule,
+        MatListModule, MatButtonModule, MatIconModule,
+        MatTooltipModule, MatFormFieldModule, MatInputModule,
+        MatCardModule, MatProgressSpinnerModule, MatDialogModule,
+        MatProgressBarModule,
+        UserRoutingModule
+    ]
 })
 export class UserModule { }

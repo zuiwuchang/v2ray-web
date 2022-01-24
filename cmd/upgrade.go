@@ -25,9 +25,9 @@ func init() {
 			upgraded, ver, e := upgrade.DefaultUpgrade().Do(yes)
 			if e == nil {
 				if upgraded {
-					fmt.Println(`upgrade success:`, version.Tag, `->`, ver)
+					fmt.Println(`upgrade success:`, version.Version, `->`, ver)
 				} else {
-					fmt.Println(`already the latest version:`, version.Tag)
+					fmt.Println(`already the latest version:`, version.Version)
 				}
 			} else {
 				log.Fatalln(e)

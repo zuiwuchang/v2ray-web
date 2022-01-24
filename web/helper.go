@@ -178,6 +178,11 @@ func (h Helper) Compression() gin.HandlerFunc {
 	return _compression
 }
 
+// Compression .
+func Compression() gin.HandlerFunc {
+	return _compression
+}
+
 // Upgrade .
 func (h Helper) Upgrade(w http.ResponseWriter, r *http.Request, responseHeader http.Header) (*websocket.Conn, error) {
 	return upgrader.Upgrade(w, r, responseHeader)

@@ -5,8 +5,8 @@ import (
 )
 
 // V2rayTemplate v2ray 默認設定模板
-const V2rayTemplate = `{
-"_tag":"` + version.Tag + `",
+var V2rayTemplate = `{
+"_tag":"` + version.Version + `",
 "_date":"` + version.Date + `",
 "_commit":"` + version.Commit + `",
 "log": {

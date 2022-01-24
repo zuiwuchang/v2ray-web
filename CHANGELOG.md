@@ -1,3 +1,12 @@
+# v1.5.0
+
+* 升級 golang 到 1.17
+* 升級 v2ray-core 到 4.44.0
+* 使用 go:embed 取代 statik
+* 升級 gin 到 1.7.7
+* 升級 網頁前端到 angular 13
+* 重寫編譯自動化腳本 build.sh
+
 # v1.4.0
 * 升級網頁前端到 angular 12
 * 升級 v2ray-core 到 4.43.0

@@ -38,39 +38,36 @@ import { QrcodeComponent } from './app/dialog/qrcode/qrcode.component';
 import { HeaderInterceptor } from './app/service/header.interceptor';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    HomeComponent,
-    ViewComponent,
-    ViewPanelComponent,
-    AddComponent,
-    EditComponent,
-    TopComponent,
-    SettingsComponent,
-    QrcodeComponent,
-  ],
-  imports: [
-    BrowserModule,
-    BrowserAnimationsModule, HttpClientModule, FormsModule,
-
-    MatProgressBarModule, MatIconModule, MatButtonModule,
-    MatListModule, MatExpansionModule, MatTooltipModule,
-    MatDialogModule, MatProgressSpinnerModule, MatFormFieldModule,
-    MatInputModule, MatAutocompleteModule, MatMenuModule,
-    MatDividerModule, MatCardModule, MatCheckboxModule,
-    MatSlideToggleModule,
-
-    SharedModule,
-    AppRoutingModule,
-    ToasterModule.forRoot(),
-  ],
-  providers: [{
-    provide: HTTP_INTERCEPTORS,
-    useClass: HeaderInterceptor,
-    multi: true,
-  },
-    ToasterService],
-  entryComponents: [AddComponent, EditComponent, QrcodeComponent],
-  bootstrap: [AppComponent]
+    declarations: [
+        AppComponent,
+        HomeComponent,
+        ViewComponent,
+        ViewPanelComponent,
+        AddComponent,
+        EditComponent,
+        TopComponent,
+        SettingsComponent,
+        QrcodeComponent,
+    ],
+    imports: [
+        BrowserModule,
+        BrowserAnimationsModule, HttpClientModule, FormsModule,
+        MatProgressBarModule, MatIconModule, MatButtonModule,
+        MatListModule, MatExpansionModule, MatTooltipModule,
+        MatDialogModule, MatProgressSpinnerModule, MatFormFieldModule,
+        MatInputModule, MatAutocompleteModule, MatMenuModule,
+        MatDividerModule, MatCardModule, MatCheckboxModule,
+        MatSlideToggleModule,
+        SharedModule,
+        AppRoutingModule,
+        ToasterModule.forRoot(),
+    ],
+    providers: [{
+            provide: HTTP_INTERCEPTORS,
+            useClass: HeaderInterceptor,
+            multi: true,
+        },
+        ToasterService],
+    bootstrap: [AppComponent]
 })
 export class AppModule { }

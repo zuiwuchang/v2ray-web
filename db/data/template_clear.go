@@ -2,7 +2,7 @@ package data
 
 import "gitlab.com/king011/v2ray-web/version"
 
-const iptablesClear = `# tag =` + version.Tag + `
+var iptablesClear = `# tag =` + version.Version + `
 # date ` + version.Date + `
 # commit ` + version.Commit + `
 

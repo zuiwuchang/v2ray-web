@@ -118,7 +118,6 @@ func (s *Server) setIPTables(iptables *data.IPTables, element *data.Element) {
 		}
 		return
 	}
-	return
 }
 
 // Serve .

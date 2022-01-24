@@ -53,7 +53,7 @@ export class LoginComponent implements OnInit, OnDestroy {
       const password = sha512(this.password).toString()
       this._disabled = true
       await this.sessionService.login(this.name, password, this.remember)
-    } catch (e) {
+    } catch (e: any) {
       console.warn(e)
       this.toasterService.pop('error',
         this.i18nService.get('error'),

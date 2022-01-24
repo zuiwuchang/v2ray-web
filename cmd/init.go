@@ -22,7 +22,7 @@ var rootCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		if v {
 			fmt.Println(runtime.GOOS, runtime.GOARCH, runtime.Version())
-			fmt.Println(version.Tag)
+			fmt.Println(version.Version)
 			fmt.Println(version.Commit)
 			fmt.Println(version.Date)
 			version := core.VersionStatement()
@@ -32,7 +32,7 @@ var rootCmd = &cobra.Command{
 		} else {
 			fmt.Println(App)
 			fmt.Println(runtime.GOOS, runtime.GOARCH, runtime.Version())
-			fmt.Println(version.Tag)
+			fmt.Println(version.Version)
 			fmt.Println(version.Commit)
 			fmt.Println(version.Date)
 			version := core.VersionStatement()

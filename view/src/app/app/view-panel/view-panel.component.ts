@@ -543,7 +543,7 @@ export class ViewPanelComponent implements OnInit, OnDestroy, AfterViewInit {
       const str = element.toShare()
       this._btnClipboard.nativeElement.setAttribute("data-clipboard-text", str)
       this._btnClipboard.nativeElement.click()
-    } catch (e) {
+    } catch (e: any) {
       console.warn(e)
       this.toasterService.pop('error',
         this.i18nService.get('error'),
@@ -557,7 +557,7 @@ export class ViewPanelComponent implements OnInit, OnDestroy, AfterViewInit {
       this.matDialog.open(QrcodeComponent, {
         data: str,
       })
-    } catch (e) {
+    } catch (e: any) {
       console.warn(e)
       this.toasterService.pop('error',
         this.i18nService.get('error'),

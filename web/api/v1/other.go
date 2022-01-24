@@ -38,7 +38,7 @@ func (h Other) version(c *gin.Context) {
 
 	h.NegotiateFile(c, `version`, startAt, gin.H{
 		`platform`: fmt.Sprintf(`%s %s %s gin%s`, runtime.GOOS, runtime.GOARCH, runtime.Version(), gv),
-		"tag":      version.Tag,
+		"tag":      version.Version,
 		"commit":   version.Commit,
 		"date":     version.Date,
 		"v2ray":    core.Version(),

@@ -74,7 +74,7 @@ export class EditComponent implements OnInit, OnDestroy {
   onClickImport() {
     try {
       Outbound.fromURL(this.url).cloneTo(this.outbound)
-    } catch (e) {
+    } catch (e: any) {
       console.warn(e)
       this.toasterService.pop('error',
         this.i18nService.get('error'),

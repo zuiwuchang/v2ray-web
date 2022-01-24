@@ -2,62 +2,44 @@ package view
 
 import (
 	"net/http"
-	"os"
 	"strings"
 
-	"go.uber.org/zap"
-
 	"github.com/gin-gonic/gin"
-	"github.com/rakyll/statik/fs"
-	"gitlab.com/king011/v2ray-web/logger"
+	"gitlab.com/king011/v2ray-web/static"
 	"gitlab.com/king011/v2ray-web/web"
 )
 
 // BaseURL request base url
-const BaseURL = `/view`
+const BaseURL = `view`
 
 // Helper path of /app
 type Helper struct {
 	web.Helper
 }
 
-var zhHant http.FileSystem
-var zhHans http.FileSystem
+var zhHant = static.ZhHant()
+var zhHans = static.ZhHans()
 
 // Register impl IHelper
 func (h Helper) Register(router *gin.RouterGroup) {
-	var e error
-	zhHant, e = fs.NewWithNamespace(`zh-Hant`)
-	if e != nil {
-		if ce := logger.Logger.Check(zap.FatalLevel, `New FileSystem error`); ce != nil {
-			ce.Write(
-				zap.Error(e),
-				zap.String(`namespace`, `zh-Hant`),
-			)
-		}
-		os.Exit(1)
-	}
-	zhHans, e = fs.NewWithNamespace(`zh-Hans`)
-	if e != nil {
-		if ce := logger.Logger.Check(zap.FatalLevel, `New FileSystem error`); ce != nil {
-			ce.Write(
-				zap.Error(e),
-				zap.String(`namespace`, `zh-Hans`),
-			)
-		}
-		os.Exit(1)
-	}
-
-	router.GET(`/`, h.redirect)
-	router.GET(`/index`, h.redirect)
-	router.GET(`/index.html`, h.redirect)
-	router.GET(`/view`, h.redirect)
-	router.GET(`/view/`, h.redirect)
+	router.GET(``, h.redirect)
+	router.HEAD(``, h.redirect)
+	router.GET(`index`, h.redirect)
+	router.HEAD(`index`, h.redirect)
+	router.GET(`index.html`, h.redirect)
+	router.HEAD(`index.html`, h.redirect)
+	router.GET(`view`, h.redirect)
+	router.HEAD(`view`, h.redirect)
+	router.GET(`view/`, h.redirect)
+	router.HEAD(`view/`, h.redirect)
 
 	r := router.Group(BaseURL)
 	r.Use(h.Compression())
-	r.GET(`/:locale`, h.viewOrRedirect)
-	r.GET(`/:locale/*path`, h.view)
+
+	r.GET(`:locale`, h.viewOrRedirect)
+	r.HEAD(`:locale`, h.viewOrRedirect)
+	r.GET(`:locale/*path`, h.view)
+	r.HEAD(`:locale/*path`, h.view)
 }
 func (h Helper) redirect(c *gin.Context) {
 	request := c.Request
@@ -67,7 +49,7 @@ func (h Helper) redirect(c *gin.Context) {
 	strs = strings.Split(str, `,`)
 	str = strings.TrimSpace(strs[0])
 	if strings.HasPrefix(str, `zh-`) {
-		if strings.Index(str, `cn`) != -1 || strings.Index(str, `hans`) != -1 {
+		if strings.Contains(str, `cn`) || strings.Contains(str, `hans`) {
 			c.Redirect(http.StatusFound, `/view/zh-Hans/`)
 			return
 		}

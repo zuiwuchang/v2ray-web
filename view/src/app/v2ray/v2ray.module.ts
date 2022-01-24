@@ -24,19 +24,18 @@ import { PreviewComponent } from './dialog/preview/preview.component';
 
 
 @NgModule({
-  declarations: [SettingsComponent, SubscriptionComponent, SubscriptionAddComponent,
-    SubscriptionEditComponent,
-    PreviewComponent,
-  ],
-  entryComponents: [SubscriptionAddComponent, SubscriptionEditComponent, PreviewComponent],
-  imports: [
-    CommonModule, FormsModule,
-    V2rayRoutingModule,
-    SharedModule,
-    MatProgressBarModule, MatIconModule, MatButtonModule,
-    MatListModule, MatDialogModule, MatFormFieldModule,
-    MatInputModule, MatProgressSpinnerModule, MatTooltipModule,
-    MatCardModule,
-  ]
+    declarations: [SettingsComponent, SubscriptionComponent, SubscriptionAddComponent,
+        SubscriptionEditComponent,
+        PreviewComponent,
+    ],
+    imports: [
+        CommonModule, FormsModule,
+        V2rayRoutingModule,
+        SharedModule,
+        MatProgressBarModule, MatIconModule, MatButtonModule,
+        MatListModule, MatDialogModule, MatFormFieldModule,
+        MatInputModule, MatProgressSpinnerModule, MatTooltipModule,
+        MatCardModule,
+    ]
 })
 export class V2rayModule { }

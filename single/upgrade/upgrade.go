@@ -26,7 +26,7 @@ import (
 
 var hashMatch = regexp.MustCompile(`[0-9a-f]{64}`)
 var defaultUpgrade = &Upgrade{
-	version: ParseVersion(version.Tag),
+	version: ParseVersion(version.Version),
 	// upgraded:   true,
 	// newversion: `testv`,
 	modtime: time.Now(),
@@ -113,7 +113,7 @@ func (u *Upgrade) Do(yes bool) (upgraded bool, newversion string, e error) {
 
 	newversion = ver.String()
 	if !yes {
-		fmt.Println(`this version:`, version.Tag)
+		fmt.Println(`this version:`, version.Version)
 		fmt.Println(`find new version:`, newversion)
 		fmt.Print(`are you sure upgrade [y/n]: `)
 		var cmd string
@@ -125,7 +125,7 @@ func (u *Upgrade) Do(yes bool) (upgraded bool, newversion string, e error) {
 	}
 	if ce := logger.Logger.Check(zap.InfoLevel, `begin upgrade`); ce != nil {
 		ce.Write(
-			zap.String(`version`, version.Tag),
+			zap.String(`version`, version.Version),
 			zap.String(`new version`, newversion),
 		)
 	}
@@ -134,7 +134,7 @@ func (u *Upgrade) Do(yes bool) (upgraded bool, newversion string, e error) {
 		if ce := logger.Logger.Check(zap.WarnLevel, `find version download url`); ce != nil {
 			ce.Write(
 				zap.Error(e),
-				zap.String(`version`, version.Tag),
+				zap.String(`version`, version.Version),
 				zap.String(`new version`, newversion),
 			)
 		}
@@ -142,7 +142,7 @@ func (u *Upgrade) Do(yes bool) (upgraded bool, newversion string, e error) {
 	}
 	if ce := logger.Logger.Check(zap.DebugLevel, `new version hash`); ce != nil {
 		ce.Write(
-			zap.String(`version`, version.Tag),
+			zap.String(`version`, version.Version),
 			zap.String(`new version`, newversion),
 			zap.String(`hash`, hash),
 		)
@@ -160,7 +160,7 @@ func (u *Upgrade) Do(yes bool) (upgraded bool, newversion string, e error) {
 		if ce := logger.Logger.Check(zap.WarnLevel, `download new version error`); ce != nil {
 			ce.Write(
 				zap.Error(e),
-				zap.String(`version`, version.Tag),
+				zap.String(`version`, version.Version),
 				zap.String(`new version`, newversion),
 				zap.String(`filename`, filename),
 			)
@@ -169,7 +169,7 @@ func (u *Upgrade) Do(yes bool) (upgraded bool, newversion string, e error) {
 	}
 	if ce := logger.Logger.Check(zap.DebugLevel, `download new version success`); ce != nil {
 		ce.Write(
-			zap.String(`version`, version.Tag),
+			zap.String(`version`, version.Version),
 			zap.String(`new version`, newversion),
 			zap.String(`filename`, filename),
 		)
@@ -179,7 +179,7 @@ func (u *Upgrade) Do(yes bool) (upgraded bool, newversion string, e error) {
 		if ce := logger.Logger.Check(zap.WarnLevel, `upgrade error`); ce != nil {
 			ce.Write(
 				zap.Error(e),
-				zap.String(`version`, version.Tag),
+				zap.String(`version`, version.Version),
 				zap.String(`new version`, newversion),
 				zap.String(`filename`, filename),
 			)
@@ -188,7 +188,7 @@ func (u *Upgrade) Do(yes bool) (upgraded bool, newversion string, e error) {
 	}
 	if ce := logger.Logger.Check(zap.DebugLevel, `upgrade success`); ce != nil {
 		ce.Write(
-			zap.String(`version`, version.Tag),
+			zap.String(`version`, version.Version),
 			zap.String(`new version`, newversion),
 			zap.String(`filename`, filename),
 		)

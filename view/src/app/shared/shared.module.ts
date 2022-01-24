@@ -23,22 +23,18 @@ import { UrlValidatorDirective } from './validator/url-validator.directive';
 
 
 @NgModule({
-  declarations: [NavigationBarComponent, LoginComponent, ConfirmComponent, UrlValidatorDirective],
-  imports: [
-    CommonModule, RouterModule, FormsModule,
-    MatIconModule, MatToolbarModule, MatButtonModule,
-    MatTooltipModule, MatProgressSpinnerModule, MatDialogModule,
-    MatProgressBarModule, MatFormFieldModule, MatSlideToggleModule,
-    MatInputModule, MatMenuModule, MatDividerModule,
-  ],
-  exports: [
-    NavigationBarComponent,
-    ConfirmComponent,
-    UrlValidatorDirective,
-  ],
-  entryComponents: [
-    LoginComponent,
-    ConfirmComponent,
-  ],
+    declarations: [NavigationBarComponent, LoginComponent, ConfirmComponent, UrlValidatorDirective],
+    imports: [
+        CommonModule, RouterModule, FormsModule,
+        MatIconModule, MatToolbarModule, MatButtonModule,
+        MatTooltipModule, MatProgressSpinnerModule, MatDialogModule,
+        MatProgressBarModule, MatFormFieldModule, MatSlideToggleModule,
+        MatInputModule, MatMenuModule, MatDividerModule,
+    ],
+    exports: [
+        NavigationBarComponent,
+        ConfirmComponent,
+        UrlValidatorDirective,
+    ]
 })
 export class SharedModule { }
