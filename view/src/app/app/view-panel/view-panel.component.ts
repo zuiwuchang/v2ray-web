@@ -538,6 +538,33 @@ export class ViewPanelComponent implements OnInit, OnDestroy, AfterViewInit {
       this._disabled = false
     })
   }
+  onClickCopySource(items: Array<Element>) {
+    try {
+      const str = items.map((v) => v.toShare()).join("\n")
+      this._btnClipboard.nativeElement.setAttribute("data-clipboard-text", str)
+      this._btnClipboard.nativeElement.click()
+    } catch (e: any) {
+      console.warn(e)
+      this.toasterService.pop('error',
+        this.i18nService.get('error'),
+        e,
+      )
+    }
+  }
+  onClickShareSource(items: Array<Element>) {
+    try {
+      const str = items.map((v) => v.toShare()).join("\n")
+      this.matDialog.open(QrcodeComponent, {
+        data: str,
+      })
+    } catch (e: any) {
+      console.warn(e)
+      this.toasterService.pop('error',
+        this.i18nService.get('error'),
+        e,
+      )
+    }
+  }
   onClickCopy(element: Element) {
     try {
       const str = element.toShare()

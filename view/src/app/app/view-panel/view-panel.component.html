@@ -31,7 +31,14 @@
         [disabled]="disabled || !panel.source.length">
         <mat-icon>clear</mat-icon>
     </button>
-    
+    <button mat-icon-button i18n-matTooltip matTooltip="Share QR Code" (click)="onClickShareSource(panel.source)"
+        [disabled]="disabled || !panel.source.length">
+        <mat-icon>share</mat-icon>
+    </button>
+    <button mat-icon-button i18n-matTooltip matTooltip="Copy Link" (click)="onClickCopySource(panel.source)"
+        [disabled]="disabled || !panel.source.length">
+        <mat-icon>file_copy</mat-icon>
+    </button>
     <button mat-icon-button *ngIf="panel.id!=0" i18n-matTooltip matTooltip="update subscription"
         (click)="onClickUpdate()" [disabled]="disabled">
         <mat-icon>update</mat-icon>
