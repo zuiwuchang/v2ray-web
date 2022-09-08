@@ -297,7 +297,7 @@ export class Outbound {
         outbound.host = params.get('host') ?? ''
         outbound.tls = params.get('security') ?? ''
         outbound.net = params.get('type') ?? ''
-        outbound.path = params.get('path') ?? '/'
+        outbound.path = decodeURIComponent(params.get('path') ?? '/')
         // outbound.alterID = obj.aid
         // outbound.security = obj.type
         outbound.level = params.get('level') ?? '0'
@@ -386,7 +386,7 @@ export class Outbound {
                 host: this.host,
                 security: this.tls,
                 type: this.net,
-                path: this.path,
+                path: encodeURIComponent(this.path),
                 level: this.level,
             },
         })

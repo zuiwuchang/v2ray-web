@@ -16,6 +16,7 @@ func analyzeVless(str string) (result *Outbound) {
 	if u.User != nil {
 		userID = u.User.Username()
 	}
+	path, _ := url.PathUnescape(query.Get(`path`))
 	result = &Outbound{
 		Add:    u.Hostname(),
 		Port:   u.Port(),
@@ -25,8 +26,9 @@ func analyzeVless(str string) (result *Outbound) {
 		Host:  query.Get(`host`),
 		TLS:   query.Get(`security`),
 		Net:   query.Get(`type`),
-		Path:  query.Get(`path`),
+		Path:  path,
 		Level: query.Get(`level`),
 	}
+
 	return
 }
