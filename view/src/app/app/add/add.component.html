@@ -65,6 +65,7 @@
                     <mat-autocomplete #tls="matAutocomplete">
                         <mat-option [value]="'none'">none</mat-option>
                         <mat-option [value]="'tls'">tls</mat-option>
+                        <mat-option [value]="'xtls'">xtls</mat-option>
                     </mat-autocomplete>
                 </mat-form-field>
             </div>
@@ -96,7 +97,7 @@
                     <input matInput [disabled]="disabled || isDisabledSecurity" [(ngModel)]="outbound.security"
                         [matAutocomplete]="security" name="security">
                     <mat-autocomplete #security="matAutocomplete">
-                        <ng-container [ngSwitch]="outbound?.protocol">
+                        <ng-container [ngSwitch]="outbound.protocol">
                             <ng-template [ngSwitchCase]="'vmess'">
                                 <mat-option [value]="'auto'">auto</mat-option>
                                 <mat-option [value]="'none'">none</mat-option>

@@ -5,7 +5,7 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { ToasterService } from 'angular2-toaster';
 import { I18nService } from 'src/app/core/i18n/i18n.service';
 import { sha512 } from 'js-sha512';
-var Value: any
+
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -21,11 +21,11 @@ export class LoginComponent implements OnInit, OnDestroy {
   get ready(): boolean {
     return this._ready
   }
-  private _session: Session = Value
-  get session(): Session {
+  private _session?: Session
+  get session(): Session | undefined {
     return this._session
   }
-  private _subscription: Subscription = Value
+  private _subscription?: Subscription
   private _disabled: boolean = false
   get disabled(): boolean {
     return this._disabled
@@ -43,7 +43,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     })
   }
   ngOnDestroy(): void {
-    this._subscription.unsubscribe()
+    this._subscription?.unsubscribe()
   }
   onClose() {
     this.matDialogRef.close()
