@@ -31,17 +31,14 @@ func (h Other) Register(router *gin.RouterGroup) {
 	router.GET(`logs/websocket`, h.CheckSession, h.logs)
 }
 func (h Other) version(c *gin.Context) {
-	gv := gin.Version
-	if strings.HasPrefix(gv, "v") {
-		gv = gv[1:]
-	}
+	gv := strings.TrimPrefix(gin.Version, "v")
 
 	h.NegotiateFile(c, `version`, startAt, gin.H{
 		`platform`: fmt.Sprintf(`%s %s %s gin%s`, runtime.GOOS, runtime.GOARCH, runtime.Version(), gv),
 		"tag":      version.Version,
 		"commit":   version.Commit,
 		"date":     version.Date,
-		"v2ray":    core.Version(),
+		"v2ray":    `xray ` + core.Version(),
 	})
 }
 func (h Other) logs(c *gin.Context) {
