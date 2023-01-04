@@ -5,7 +5,7 @@ import (
 	"sync"
 	"text/template"
 
-	core "github.com/v2fly/v2ray-core/v4"
+	"github.com/xtls/xray-core/core"
 	"gitlab.com/king011/v2ray-web/db/data"
 	"gitlab.com/king011/v2ray-web/db/manipulator"
 )
@@ -71,7 +71,7 @@ func (s *_Service) Start(element *data.Element) (e error) {
 		return
 	}
 	// v2ray
-	cnf, e := core.LoadConfig(`json`, `test.json`, &buffer)
+	cnf, e := core.LoadConfig(`json`, &buffer)
 	if e != nil {
 		return
 	}

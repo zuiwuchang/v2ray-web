@@ -6,7 +6,7 @@ import (
 	"text/template"
 
 	"github.com/gin-gonic/gin"
-	core "github.com/v2fly/v2ray-core/v4"
+	"github.com/xtls/xray-core/core"
 	"gitlab.com/king011/v2ray-web/db/data"
 	"gitlab.com/king011/v2ray-web/db/manipulator"
 	"gitlab.com/king011/v2ray-web/internal/net"
@@ -100,7 +100,7 @@ func (h V2ray) test(c *gin.Context) {
 		return
 	}
 	// v2ray
-	cnf, e := core.LoadConfig(`json`, `test.json`, &buffer)
+	cnf, e := core.LoadConfig(`json`,  &buffer)
 	if e != nil {
 		h.NegotiateError(c, http.StatusInternalServerError, e)
 		return
@@ -159,7 +159,7 @@ func (h V2ray) preview(c *gin.Context) {
 	}
 	// v2ray
 	text := buffer.String()
-	cnf, e := core.LoadConfig(`json`, `test.json`, &buffer)
+	cnf, e := core.LoadConfig(`json`, &buffer)
 	if e != nil {
 		h.NegotiateData(c, http.StatusOK, gin.H{
 			"text":  text,

@@ -10,7 +10,7 @@ import (
 	"text/template"
 	"time"
 
-	core "github.com/v2fly/v2ray-core/v4"
+	"github.com/xtls/xray-core/core"
 	"gitlab.com/king011/v2ray-web/db/data"
 	"golang.org/x/net/proxy"
 )
@@ -59,7 +59,7 @@ func testOne(outbound *data.Outbound, port int, url string) (duration time.Durat
 		return
 	}
 	// v2ray
-	cnf, e := core.LoadConfig(`json`, `test.json`, &buffer)
+	cnf, e := core.LoadConfig(`json`, &buffer)
 	if e != nil {
 		return
 	}

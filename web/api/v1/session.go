@@ -42,9 +42,6 @@ func (s *_SessionLock) Lock(key string) (e error) {
 		e = errSessionLock
 	}
 	s.mutex.Unlock()
-	if e == nil {
-		time.Sleep(time.Second)
-	}
 	return
 }
 func (s *_SessionLock) Unlock(key string) {

@@ -3,7 +3,8 @@ package main
 import (
 	"log"
 
-	_ "github.com/v2fly/v2ray-core/v4/main/distro/all"
+	_ "github.com/xtls/xray-core/main/distro/all"
+
 	"gitlab.com/king011/v2ray-web/cmd"
 )
 

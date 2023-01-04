@@ -7,7 +7,7 @@ import (
 	"syscall"
 
 	"github.com/spf13/cobra"
-	core "github.com/v2fly/v2ray-core/v4"
+	"github.com/xtls/xray-core/core"
 	"gitlab.com/king011/v2ray-web/single/upgrade"
 )
 
@@ -22,7 +22,7 @@ func init() {
 			if e != nil {
 				log.Fatalln(e)
 			}
-			cnf, e := core.LoadConfig(`json`, filename, f)
+			cnf, e := core.LoadConfig(`json`, f)
 			f.Close()
 			if e != nil {
 				log.Fatalln(e)
@@ -42,7 +42,7 @@ func init() {
 			if !noupgrade {
 				go upgrade.DefaultUpgrade().Serve()
 			}
-			
+
 			{
 				osSignals := make(chan os.Signal, 1)
 				signal.Notify(osSignals, os.Interrupt, syscall.SIGTERM)
