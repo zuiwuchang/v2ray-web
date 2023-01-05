@@ -1,14 +1,15 @@
 package speed
 
 import (
-	"bytes"
 	"fmt"
 	"io"
 	"net"
 	"net/http"
+	"strings"
 	"sync"
-	"text/template"
 	"time"
+
+	"gitlab.com/king011/v2ray-web/template"
 
 	"github.com/xtls/xray-core/core"
 	"gitlab.com/king011/v2ray-web/db/data"
@@ -44,22 +45,12 @@ func testOne(outbound *data.Outbound, port int, url string) (duration time.Durat
 		e = fmt.Errorf("not found idle port")
 		return
 	}
-	ctx, e := outbound.ToContext()
-	if e != nil {
-		return
-	}
-	t := template.New("v2ray")
-	t, e = t.Parse(fmt.Sprintf(templateText, target))
-	if e != nil {
-		return
-	}
-	var buffer bytes.Buffer
-	e = t.Execute(&buffer, ctx)
+	text, e := outbound.Render(template.Proxy)
 	if e != nil {
 		return
 	}
 	// v2ray
-	cnf, e := core.LoadConfig(`json`, &buffer)
+	cnf, e := core.LoadConfig(`json`, strings.NewReader(text))
 	if e != nil {
 		return
 	}

@@ -8,6 +8,7 @@ import { ContextText } from '../../core/text';
 import { SessionService } from 'src/app/core/session/session.service';
 import { MatDialog } from '@angular/material/dialog';
 import { PreviewComponent } from '../dialog/preview/preview.component';
+import { fromEvent } from 'rxjs';
 interface Response {
   text: string
 }
@@ -47,6 +48,26 @@ export class SettingsComponent implements OnInit, OnDestroy {
   }
   ngOnDestroy() {
     this._closed = true
+  }
+  onKeyDownEvent(evt: KeyboardEvent) {
+    if (evt.key == 'Tab') {
+      evt.preventDefault()
+      try {
+        // 這個函數已經被遺棄，但目前沒找到更好的方法
+        document.execCommand("insertText", false, '\t');
+      } catch (err) {
+        console.log(err)
+        // setRangeText 或其它設置 value 都會使用 undo 失去作用
+        const textarea = evt.target as any
+        textarea.setRangeText(
+          '  ',
+          textarea.selectionStart,
+          textarea.selectionEnd,
+          'end'
+        )
+
+      }
+    }
   }
   load() {
     this.err = null

@@ -1,6 +1,6 @@
 Target="v2ray-web"
 Dir=$(cd "$(dirname $BASH_SOURCE)/.." && pwd)
-Version="v1.5.2"
+Version="v1.6.0"
 View=1
 Platforms=(
     darwin/amd64

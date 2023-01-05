@@ -80,7 +80,7 @@ else
 fi
 cd "$Dir/bin"
 args=(
-    ./"$Target" web -d --no-upgrade
+    ./"$Target" web -d --no-upgrade -a :9000
 )
 exec="${args[@]}"
 echo $exec

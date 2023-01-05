@@ -27,7 +27,8 @@
             <mat-form-field class="full-width">
                 <mat-label>template</mat-label>
                 <textarea matInput [disabled]="disabled" rows="15" spellcheck="false" autocapitalize="off"
-                    autocomplete="off" autocorrect="off" [(ngModel)]="text"></textarea>
+                    autocomplete="off" autocorrect="off" [(ngModel)]="text"
+                    (keydown)="onKeyDownEvent($event)"></textarea>
             </mat-form-field>
             <mat-form-field class="full-width">
                 <mat-label i18n>Proxy URL</mat-label>

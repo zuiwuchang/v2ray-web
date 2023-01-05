@@ -29,7 +29,7 @@ func init() {
 
 // Settings 系統設定
 type Settings struct {
-	URL      string `json:"url,omitempty" json:"xml,omitempty" json:"yaml,omitempty"`
+	URL      string `json:"url,omitempty" xml:"xml,omitempty" yaml:"yaml,omitempty"`
 	V2ray    bool   `json:"v2ray,omitempty" xml:"v2ray,omitempty" yaml:"v2ray,omitempty"`
 	IPTables bool   `json:"iptables,omitempty" xml:"iptables,omitempty" yaml:"iptables,omitempty"`
 }

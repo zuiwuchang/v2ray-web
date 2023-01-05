@@ -4,8 +4,9 @@ import (
 	"bytes"
 	"fmt"
 	"net"
-	"text/template"
+	text_template "text/template"
 
+	"gitlab.com/king011/v2ray-web/template"
 	"go.uber.org/zap"
 
 	"gitlab.com/king011/v2ray-web/logger"
@@ -50,7 +51,7 @@ type Outbound struct {
 
 // ToTemplate .
 func (o *Outbound) ToTemplate(name, text string) (result string, e error) {
-	t := template.New(name)
+	t := text_template.New(name)
 	t, e = t.Parse(text)
 	if e != nil {
 		return
@@ -89,6 +90,13 @@ func (o *Outbound) ToContext() (context *OutboundContext, e error) {
 		BasePath: utils.BasePath(),
 	}
 	return
+}
+func (o *Outbound) Render(text string) (string, error) {
+	ctx, e := o.ToContext()
+	if e != nil {
+		return ``, e
+	}
+	return template.Render(text, ctx)
 }
 
 // OutboundContext 模板 環境

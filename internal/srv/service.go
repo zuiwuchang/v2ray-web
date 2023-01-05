@@ -1,9 +1,8 @@
 package srv
 
 import (
-	"bytes"
+	"strings"
 	"sync"
-	"text/template"
 
 	"github.com/xtls/xray-core/core"
 	"gitlab.com/king011/v2ray-web/db/data"
@@ -56,22 +55,12 @@ func (s *_Service) Start(element *data.Element) (e error) {
 	if e != nil {
 		return
 	}
-	ctx, e := element.Outbound.ToContext()
-	if e != nil {
-		return
-	}
-	t := template.New("v2ray")
-	t, e = t.Parse(str)
-	if e != nil {
-		return
-	}
-	var buffer bytes.Buffer
-	e = t.Execute(&buffer, ctx)
+	text, e := element.Outbound.Render(str)
 	if e != nil {
 		return
 	}
 	// v2ray
-	cnf, e := core.LoadConfig(`json`, &buffer)
+	cnf, e := core.LoadConfig(`json`, strings.NewReader(text))
 	if e != nil {
 		return
 	}

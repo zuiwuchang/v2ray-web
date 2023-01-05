@@ -14,7 +14,7 @@ import (
 )
 
 func init() {
-	var filename string
+	var filename, addr string
 	var noupgrade, debug bool
 	basePath := utils.BasePath()
 	cmd := &cobra.Command{
@@ -30,6 +30,9 @@ func init() {
 			e = cnf.Format(basePath)
 			if e != nil {
 				log.Fatalln(e)
+			}
+			if addr != `` {
+				cnf.HTTP.Addr = addr
 			}
 
 			// init logger
@@ -66,9 +69,14 @@ func init() {
 		false,
 		"Run as debug",
 	)
+	flags.StringVarP(&addr,
+		"addr", "a",
+		"",
+		"Web listen address",
+	)
 	flags.BoolVar(&noupgrade, `no-upgrade`,
 		false,
-		`disable automatic upgrades`,
+		`Disable automatic upgrades`,
 	)
 	rootCmd.AddCommand(cmd)
 }

@@ -1,15 +1,15 @@
 package v1
 
 import (
-	"bytes"
 	"net/http"
-	"text/template"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/xtls/xray-core/core"
 	"gitlab.com/king011/v2ray-web/db/data"
 	"gitlab.com/king011/v2ray-web/db/manipulator"
 	"gitlab.com/king011/v2ray-web/internal/net"
+	"gitlab.com/king011/v2ray-web/template"
 	"gitlab.com/king011/v2ray-web/web"
 )
 
@@ -82,25 +82,13 @@ func (h V2ray) test(c *gin.Context) {
 		Level:    result.Level,
 		Protocol: protocol,
 	}
-	t := template.New("v2ray")
-	t, e = t.Parse(obj.Text)
-	if e != nil {
-		h.NegotiateError(c, http.StatusInternalServerError, e)
-		return
-	}
-	ctx, e := outbound.ToContext()
-	if e != nil {
-		h.NegotiateError(c, http.StatusInternalServerError, e)
-		return
-	}
-	var buffer bytes.Buffer
-	e = t.Execute(&buffer, ctx)
+	text, e := outbound.Render(obj.Text)
 	if e != nil {
 		h.NegotiateError(c, http.StatusInternalServerError, e)
 		return
 	}
 	// v2ray
-	cnf, e := core.LoadConfig(`json`,  &buffer)
+	cnf, e := core.LoadConfig(`json`, strings.NewReader(text))
 	if e != nil {
 		h.NegotiateError(c, http.StatusInternalServerError, e)
 		return
@@ -140,26 +128,14 @@ func (h V2ray) preview(c *gin.Context) {
 		Level:    result.Level,
 		Protocol: protocol,
 	}
-	t := template.New("v2ray")
-	t, e = t.Parse(obj.Text)
-	if e != nil {
-		h.NegotiateError(c, http.StatusInternalServerError, e)
-		return
-	}
-	ctx, e := outbound.ToContext()
-	if e != nil {
-		h.NegotiateError(c, http.StatusInternalServerError, e)
-		return
-	}
-	var buffer bytes.Buffer
-	e = t.Execute(&buffer, ctx)
+
+	text, e := outbound.Render(obj.Text)
 	if e != nil {
 		h.NegotiateError(c, http.StatusInternalServerError, e)
 		return
 	}
 	// v2ray
-	text := buffer.String()
-	cnf, e := core.LoadConfig(`json`, &buffer)
+	cnf, e := core.LoadConfig(`json`, strings.NewReader(text))
 	if e != nil {
 		h.NegotiateData(c, http.StatusOK, gin.H{
 			"text":  text,
@@ -182,6 +158,6 @@ func (h V2ray) preview(c *gin.Context) {
 }
 func (h V2ray) def(c *gin.Context) {
 	h.NegotiateData(c, http.StatusOK, gin.H{
-		"text": data.V2rayTemplate,
+		"text": template.Default,
 	})
 }
