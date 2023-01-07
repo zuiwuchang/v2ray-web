@@ -9,8 +9,6 @@ import (
 	"sync"
 	"time"
 
-	"gitlab.com/king011/v2ray-web/template"
-
 	"github.com/xtls/xray-core/core"
 	"gitlab.com/king011/v2ray-web/db/data"
 	"golang.org/x/net/proxy"
@@ -45,10 +43,11 @@ func testOne(outbound *data.Outbound, port int, url string) (duration time.Durat
 		e = fmt.Errorf("not found idle port")
 		return
 	}
-	text, e := outbound.Render(template.Proxy)
+	text, e := outbound.RenderTarget(target)
 	if e != nil {
 		return
 	}
+	fmt.Println(text)
 	// v2ray
 	cnf, e := core.LoadConfig(`json`, strings.NewReader(text))
 	if e != nil {

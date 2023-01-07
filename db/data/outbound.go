@@ -98,6 +98,16 @@ func (o *Outbound) Render(text string) (string, error) {
 	}
 	return template.Render(text, ctx)
 }
+func (o *Outbound) RenderTarget(port int) (string, error) {
+	ctx, e := o.ToContext()
+	if e != nil {
+		return ``, e
+	}
+	return template.Render(template.Proxy, map[string]interface{}{
+		`ctx`:  ctx,
+		`port`: port,
+	})
+}
 
 // OutboundContext 模板 環境
 type OutboundContext struct {

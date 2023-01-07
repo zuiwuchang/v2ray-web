@@ -40,7 +40,7 @@ func updateVersion(tx *bolt.Tx) (oldVersion int, e error) {
 	}
 	// 設置新版本
 	if oldVersion > Version {
-		e = errors.New(`The local database version is greater than the current version`)
+		e = errors.New(`the local database version is greater than the current version`)
 		return
 	} else if Version > oldVersion {
 		b = make([]byte, 4)

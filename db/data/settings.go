@@ -3,6 +3,8 @@ package data
 import (
 	"bytes"
 	"encoding/gob"
+
+	"gitlab.com/king011/v2ray-web/template"
 )
 
 const (
@@ -92,6 +94,6 @@ func (iptables *IPTables) Encoder() (b []byte, e error) {
 func (iptables *IPTables) resetDefaultLinux() {
 	iptables.Shell = "bash"
 	iptables.View = "iptables-save"
-	iptables.Clear = iptablesClear
-	iptables.Init = iptablesInit
+	iptables.Clear = template.IPTablesClear
+	iptables.Init = template.IPTablesInit
 }

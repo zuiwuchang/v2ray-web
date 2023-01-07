@@ -15,7 +15,7 @@ function render(ctx) {
 function renderLog(ctx) {
     return {
         // "debug" | "info" | "warning" | "error" | "none"
-        loglevel: "warning",
+        loglevel: "debug",
     }
 }
 function renderDNS(ctx) {
@@ -23,33 +23,25 @@ function renderDNS(ctx) {
     const hosts = {}
     hosts[ctx.Outbound.Add] = ctx.AddIP
     return {
-        disableCache: false,
-        tag: "dns",
         hosts: hosts,
         servers: [
-            // 非朝鮮域名使用 goolge 解析
+            // 解析 西朝 域名
             {
-                address: "8.8.8.8",
+                address: "119.29.29.29",
                 port: 53,
-                domains: [
-                    "geosite:google",
-                    "geosite:facebook",
-                    "geosite:geolocation-!cn"
-                ]
+                domains: ["geosite:cn"],
+                expectIPs: ["geoip:cn"]
             },
-            // 朝鮮域名使用 朝鮮 dns 服務器 解析
             {
-                address: "114.114.114.114",
+                address: "223.5.5.5",
                 port: 53,
-                domains: [
-                    "geosite:cn",
-                    "geosite:speedtest",
-                    "domain:cn"
-                ]
+                domains: ["geosite:cn"],
+                expectIPs: ["geoip:cn"]
             },
+            // 解析 非西朝 域名
             "8.8.8.8",
-            "8.8.4.4",
-            "localhost"
+            "1.1.1.1",
+            "https+local://doh.dns.sb/dns-query"
         ],
     }
 }
@@ -60,7 +52,7 @@ function renderInbounds(ctx) {
             tag: "socks",
             listen: "127.0.0.1",
             protocol: "socks",
-            port: 1080,
+            port: 10800,
             settings: {
                 auth: "noauth",
                 accounts: [ // auth 爲 "password" 有效，配置 socks5 用戶名和密碼
@@ -78,7 +70,7 @@ function renderInbounds(ctx) {
             tag: "http",
             listen: "127.0.0.1",
             protocol: "http",
-            port: 8118,
+            port: 81180,
             timeout: 300, // 超時時間爲 300 秒
             allowTransparent: false, // 爲 true 不止代理也轉發所有 http 請求
             accounts: [ // 非空則要求代理設置 Basic Authentication
@@ -93,12 +85,13 @@ function renderInbounds(ctx) {
         },
         // 透明代理
         {
-            tag: "redir",
+            tag: "all-in",
             protocol: "dokodemo-door",
-            port: 10090,
-            network: "tcp,udp",
-            timeout: 300, // 空閒 300 秒中斷連接
-            followRedirect: true,
+            port: 12345,
+            settings: {
+                network: "tcp,udp",
+                followRedirect: true
+            },
             sniffing: {
                 enabled: true,
                 destOverride: [
@@ -106,6 +99,11 @@ function renderInbounds(ctx) {
                     "tls",
                 ],
             },
+            streamSettings: {
+                sockopt: {
+                    tproxy: "tproxy"
+                }
+            }
         },
     ]
 }
@@ -124,7 +122,7 @@ function intValue(val, def) {
 }
 function tlsSettings(ctx) {
     return {
-        serverName: ctx.Outbound.Host == '' ? ctx.Outbound.Addr : ctx.Outbound.Host,
+        serverName: ctx.Outbound.Host == '' ? ctx.Outbound.Add : ctx.Outbound.Host,
         rejectUnknownSni: false,
         alpn: ["h2", "http/1.1"],
         // allowInsecure: true,//允許不安全的證書
@@ -157,7 +155,7 @@ function wsSettings(ctx) {
     return {
         path: ctx.Outbound.Path == "" ? "/" : ctx.Outbound.Path,
         headers: {
-            Host: ctx.Outbound.Host == '' ? ctx.Outbound.Addr : ctx.Outbound.Host,
+            Host: ctx.Outbound.Host == '' ? ctx.Outbound.Add : ctx.Outbound.Host,
         },
     }
 }
@@ -166,7 +164,7 @@ function httpSettings(ctx) {
         path: ctx.Outbound.Path == "" ? "/" : ctx.Outbound.Path,
         method: "PUT",
         headers: {
-            Host: ctx.Outbound.Host == '' ? ctx.Outbound.Addr : ctx.Outbound.Host,
+            Host: ctx.Outbound.Host == '' ? ctx.Outbound.Add : ctx.Outbound.Host,
         },
     }
 }
@@ -188,9 +186,7 @@ function quicSettings(ctx) {
 }
 function sockopt(ctx) {
     return {
-        mark: 255,
-        tcpFastOpen: true,
-        tproxy: "tproxy",
+        mark: 2,
     }
 }
 function renderOutbounds(ctx) {
@@ -214,19 +210,38 @@ function renderOutbounds(ctx) {
     proxy.tag = "proxy"
     proxy.protocol = ctx.Outbound.Protocol
     return [
-        // 代理服務器
-        proxy,
         // 直接 訪問
         {
-            tag: "freedom",
+            tag: "direct",
             protocol: "freedom",
-            settings: {}
+            streamSettings: {
+                sockopt: {
+                    mark: 2,
+                },
+            },
         },
+        // 代理服務器
+        proxy,
         // 拒絕 訪問
         {
-            tag: "blackhole",
+            tag: "block",
             protocol: "blackhole",
             settings: {}
+        },
+        {
+            tag: "dns-out",
+            protocol: "dns",
+            settings: {
+                address: "8.8.8.8"
+            },
+            proxySettings: {
+                tag: "proxy"
+            },
+            streamSettings: {
+                sockopt: {
+                    mark: 2,
+                },
+            },
         },
     ]
 }
@@ -244,7 +259,9 @@ function outboundsShadowsocks(ctx) {
                 },
             ],
         },
-        sockopt: sockopt(ctx),
+        streamSettings: {
+            sockopt: sockopt(ctx),
+        },
     }
 }
 function outboundsTrojan(ctx) {
@@ -266,8 +283,8 @@ function outboundsTrojan(ctx) {
             security: xtls ? "xtls" : "tls",
             tlsSettings: xtls ? undefined : tlsSettings(ctx),
             xtlsSettings: xtls ? tlsSettings(ctx) : undefined,
+            sockopt: sockopt(ctx),
         },
-        sockopt: sockopt(ctx),
     }
 }
 function outboundsVless(ctx) {
@@ -280,6 +297,7 @@ function outboundsVless(ctx) {
                     users: [
                         {
                             id: ctx.Outbound.UserID,
+                            flow: ctx.Outbound.TLS == "xtls" ? "xtls-rprx-direct" : undefined,
                             encryption: "none",
                             level: intValue(ctx.Outbound.Level, 0),
                         },
@@ -298,8 +316,8 @@ function outboundsVless(ctx) {
             httpSettings: ctx.Outbound.Net == "http" ? httpSettings(ctx) : undefined,
             dsSettings: ctx.Outbound.Net == "domainsocket" ? dsSettings(ctx) : undefined,
             quicSettings: ctx.Outbound.Net == "quic" ? quicSettings(ctx) : undefined,
+            sockopt: sockopt(ctx),
         },
-        sockopt: sockopt(ctx),
     }
 }
 function outboundsVmess(ctx) {
@@ -331,7 +349,62 @@ function outboundsVmess(ctx) {
             httpSettings: ctx.Outbound.Net == "http" ? httpSettings(ctx) : undefined,
             dsSettings: ctx.Outbound.Net == "domainsocket" ? dsSettings(ctx) : undefined,
             quicSettings: ctx.Outbound.Net == "quic" ? quicSettings(ctx) : undefined,
+            sockopt: sockopt(ctx),
         },
-        sockopt: sockopt(ctx),
+    }
+}
+
+function renderRouting(ctx) {
+    return {
+        domainStrategy: "IPIfNonMatch",
+        rules: [
+            // 攔截域名解析
+            {
+                type: "field",
+                inboundTag: ["all-in"],
+                port: 53,
+                outboundTag: "dns-out"
+            },
+            {
+                type: "field",
+                ip: ["8.8.8.8", "1.1.1.1"],
+                outboundTag: "proxy"
+            },
+            // 屏蔽廣告
+            {
+                type: "field",
+                domain: ["geosite:category-ads-all"],
+                // domain: ["geosite:category-ads"],
+                outboundTag: "block"
+            },
+            // 代理 非西朝 域名
+            {
+                type: "field",
+                domain: ["geosite:geolocation-!cn"],
+                outboundTag: "proxy"
+            },
+            {
+                type: "field",
+                ip: ["geoip:telegram"],
+                outboundTag: "proxy"
+            },
+            // 不代理 bt 下載
+            {
+                type: "field",
+                protocol: ["bittorrent"],
+                outboundTag: "direct"
+            },
+            // 不代理 西朝
+            {
+                type: "field",
+                ip: ["geoip:private", "geoip:cn"],
+                outboundTag: "direct"
+            },
+            {
+                type: "field",
+                domain: ["geosite:cn"],
+                outboundTag: "direct"
+            },
+        ],
     }
 }

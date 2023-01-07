@@ -6,6 +6,7 @@ import (
 
 	"github.com/boltdb/bolt"
 	"gitlab.com/king011/v2ray-web/db/data"
+	"gitlab.com/king011/v2ray-web/template"
 	"gitlab.com/king011/v2ray-web/utils"
 )
 
@@ -22,7 +23,7 @@ func (m Settings) Init(tx *bolt.Tx, version int) (e error) {
 	key := []byte(data.SettingsV2ray)
 	val := bucket.Get(key)
 	if val == nil {
-		e = bucket.Put(key, []byte(data.V2rayTemplate))
+		e = bucket.Put(key, []byte(template.Default))
 		if e != nil {
 			return
 		}
@@ -67,7 +68,7 @@ func (m Settings) Upgrade(tx *bolt.Tx, oldVersion, newVersion int) (e error) {
 		bucket := tx.Bucket([]byte(data.SettingsBucket))
 		if bucket != nil {
 			key := []byte(data.SettingsV2ray)
-			e = bucket.Put(key, []byte(data.V2rayTemplate))
+			e = bucket.Put(key, []byte(template.Default))
 			if e != nil {
 				return
 			}
