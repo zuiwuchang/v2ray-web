@@ -52,7 +52,7 @@ function renderInbounds(ctx) {
             tag: "socks",
             listen: "127.0.0.1",
             protocol: "socks",
-            port: 10800,
+            port: 1080,
             settings: {
                 auth: "noauth",
                 accounts: [ // auth 爲 "password" 有效，配置 socks5 用戶名和密碼
@@ -70,7 +70,7 @@ function renderInbounds(ctx) {
             tag: "http",
             listen: "127.0.0.1",
             protocol: "http",
-            port: 81180,
+            port: 8118,
             timeout: 300, // 超時時間爲 300 秒
             allowTransparent: false, // 爲 true 不止代理也轉發所有 http 請求
             accounts: [ // 非空則要求代理設置 Basic Authentication
