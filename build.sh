@@ -19,6 +19,7 @@ function help(){
     echo "  help              help for $0"
     echo "  clear             clear output"
     echo "  go                go build helper"
+    echo "  docker            go docker helper"
     if [[ $View == 1 ]];then
         echo "  view              view build helper"
     fi
@@ -47,6 +48,11 @@ case "$1" in
         shift
         export Command="$0 go"
         "$BashDir/script/go.sh" "$@"
+    ;;
+    docker)
+        shift
+        export Command="$0 docker"
+        "$BashDir/script/docker.sh" "$@"
     ;;
     view)
         if [[ $View == 1 ]];then

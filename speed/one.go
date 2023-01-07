@@ -47,7 +47,7 @@ func testOne(outbound *data.Outbound, port int, url string) (duration time.Durat
 	if e != nil {
 		return
 	}
-	fmt.Println(text)
+	// fmt.Println(text)
 	// v2ray
 	cnf, e := core.LoadConfig(`json`, strings.NewReader(text))
 	if e != nil {

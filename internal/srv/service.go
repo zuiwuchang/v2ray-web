@@ -1,7 +1,6 @@
 package srv
 
 import (
-	"fmt"
 	"strings"
 	"sync"
 
@@ -60,7 +59,7 @@ func (s *_Service) Start(element *data.Element) (e error) {
 	if e != nil {
 		return
 	}
-	fmt.Println(text)
+	// fmt.Println(text)
 	// v2ray
 	cnf, e := core.LoadConfig(`json`, strings.NewReader(text))
 	if e != nil {
