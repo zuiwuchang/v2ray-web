@@ -18,7 +18,7 @@ func init() {
 	var name, password string
 	cmd := &cobra.Command{
 		Use:   `password`,
-		Short: `change web user password`,
+		Short: `Change web user password`,
 		Run: func(cmd *cobra.Command, args []string) {
 			db, e := bolt.Open(filename, 0600, nil)
 			if e != nil {

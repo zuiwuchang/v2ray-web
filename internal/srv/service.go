@@ -45,7 +45,6 @@ func (s *_Service) RemoveListener(id int64) {
 	s.Lock()
 	delete(s.listeners, id)
 	s.Unlock()
-	return
 }
 func (s *_Service) Start(element *data.Element) (e error) {
 	s.Lock()

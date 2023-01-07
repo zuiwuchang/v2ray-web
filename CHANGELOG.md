@@ -1,7 +1,8 @@
 # v1.6.0
 * 升級 golang 到 1.19.4
-* 使用 xray 1.7.0 替代 v2ray 以支持 xtls
+* 使用 xray 1.7.1 替代 v2ray 以支持 xtls
 * 支持用 es5 腳本配置 v2ray
+* 升級 angular 到 14
 
 
 # v1.5.0

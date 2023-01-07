@@ -19,7 +19,7 @@ func init() {
 
 	cmd := &cobra.Command{
 		Use:   `upgrade`,
-		Short: `upgrade to the latest version`,
+		Short: `Upgrade to the latest version`,
 		Run: func(cmd *cobra.Command, args []string) {
 			logger.InitConsole(strings.ToLower(strings.TrimSpace(loglv)))
 			upgraded, ver, e := upgrade.DefaultUpgrade().Do(yes)

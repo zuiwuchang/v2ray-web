@@ -4,7 +4,8 @@ import (
 	"fmt"
 	"runtime"
 
-	 "github.com/xtls/xray-core/core"
+	"github.com/gin-gonic/gin"
+	"github.com/xtls/xray-core/core"
 	"gitlab.com/king011/v2ray-web/version"
 
 	"github.com/spf13/cobra"
@@ -22,6 +23,7 @@ var rootCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		if v {
 			fmt.Println(runtime.GOOS, runtime.GOARCH, runtime.Version())
+			fmt.Println(`gin`, gin.Version)
 			fmt.Println(version.Version)
 			fmt.Println(version.Commit)
 			fmt.Println(version.Date)
@@ -32,6 +34,7 @@ var rootCmd = &cobra.Command{
 		} else {
 			fmt.Println(App)
 			fmt.Println(runtime.GOOS, runtime.GOARCH, runtime.Version())
+			fmt.Println(`gin`, gin.Version)
 			fmt.Println(version.Version)
 			fmt.Println(version.Commit)
 			fmt.Println(version.Date)
