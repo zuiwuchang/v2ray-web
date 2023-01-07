@@ -15,7 +15,7 @@ function render(ctx) {
 function renderLog(ctx) {
     return {
         // "debug" | "info" | "warning" | "error" | "none"
-        loglevel: "debug",
+        loglevel: "warning",
     }
 }
 function renderDNS(ctx) {
