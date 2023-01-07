@@ -101,7 +101,7 @@ func (s *Context) response(result *Result) (ok bool) {
 	return
 }
 func (s *Context) do(element *Element, port int) (result *Result, e error) {
-	duration, e := testOne(&element.Outbound, port, s.url)
+	duration, _, e := testOne(&element.Outbound, port, s.url)
 	if e != nil {
 		return
 	}

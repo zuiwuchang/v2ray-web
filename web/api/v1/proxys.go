@@ -1,6 +1,7 @@
 package v1
 
 import (
+	"errors"
 	"io"
 	"net/http"
 	"strings"
@@ -41,6 +42,7 @@ func (h Proxys) Register(router *gin.RouterGroup) {
 	r.DELETE(`clear`, h.clear)
 	r.POST(`update`, h.update)
 	r.POST(`test`, h.testOne)
+	r.POST(`testOne`, h.testOneEx)
 }
 
 func (h Proxys) status(c *gin.Context) {
@@ -138,7 +140,7 @@ func (h Proxys) start(c *gin.Context) {
 	if e != nil {
 		return
 	}
-	e = srv.Start(&obj)
+	text, e := srv.StartText(&obj)
 	if e != nil {
 		h.NegotiateError(c, http.StatusInternalServerError, e)
 		return
@@ -152,7 +154,7 @@ func (h Proxys) start(c *gin.Context) {
 			)
 		}
 	}
-	c.Status(http.StatusNoContent)
+	h.NegotiateData(c, http.StatusOK, text)
 }
 func (h Proxys) stop(c *gin.Context) {
 	srv.Stop()
@@ -253,6 +255,24 @@ func (h Proxys) testOne(c *gin.Context) {
 		return
 	}
 	h.NegotiateData(c, http.StatusOK, duration.Milliseconds())
+}
+func (h Proxys) testOneEx(c *gin.Context) {
+	var obj data.Outbound
+	e := c.Bind(&obj)
+	if e != nil {
+		return
+	}
+	duration, text, e := speed.TestOneEx(&obj, h.getURL())
+	if e != nil {
+		h.NegotiateError(c, http.StatusInternalServerError, errors.New(
+			e.Error()+"\n"+text,
+		))
+		return
+	}
+	h.NegotiateData(c, http.StatusOK, map[string]interface{}{
+		`duration`: duration.Milliseconds(),
+		`text`:     text,
+	})
 }
 func (h Proxys) getURL() (url string) {
 	var mSettings manipulator.Settings

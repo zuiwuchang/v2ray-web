@@ -19,14 +19,19 @@ const DefaultURL = `https://www.youtube.com/`
 
 var mutex sync.Mutex
 
-// TestOne .
-func TestOne(outbound *data.Outbound, url string) (duration time.Duration, e error) {
+func TestOneEx(outbound *data.Outbound, url string) (duration time.Duration, text string, e error) {
 	mutex.Lock()
-	duration, e = testOne(outbound, 10000-1989, url)
+	duration, text, e = testOne(outbound, 10000-1989, url)
 	mutex.Unlock()
 	return
 }
-func testOne(outbound *data.Outbound, port int, url string) (duration time.Duration, e error) {
+func TestOne(outbound *data.Outbound, url string) (duration time.Duration, e error) {
+	mutex.Lock()
+	duration, _, e = testOne(outbound, 10000-1989, url)
+	mutex.Unlock()
+	return
+}
+func testOne(outbound *data.Outbound, port int, url string) (duration time.Duration, text string, e error) {
 	// 查詢可用 tcp 端口
 	var target int
 	for i := 0; i < 2000; i++ {
@@ -43,11 +48,10 @@ func testOne(outbound *data.Outbound, port int, url string) (duration time.Durat
 		e = fmt.Errorf("not found idle port")
 		return
 	}
-	text, e := outbound.RenderTarget(target)
+	text, e = outbound.RenderTarget(target)
 	if e != nil {
 		return
 	}
-	// fmt.Println(text)
 	// v2ray
 	cnf, e := core.LoadConfig(`json`, strings.NewReader(text))
 	if e != nil {

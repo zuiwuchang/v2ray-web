@@ -47,7 +47,7 @@ func (h IPTables) renderCommand(c *gin.Context, shell, text string) {
 		return
 	}
 	h.NegotiateData(c, http.StatusOK, bufferOut.String())
-	return
+
 }
 
 func (h IPTables) view(c *gin.Context) {

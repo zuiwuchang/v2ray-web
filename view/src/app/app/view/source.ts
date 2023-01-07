@@ -399,10 +399,14 @@ export class Outbound {
         return `${str}@${this.add}:${this.port}#${encodeURIComponent(this.name)}`
     }
     toTrojan(): string {
-        const obj: any = {
-            security: this.tls == '' ? undefined : this.tls,
-            host: this.host == '' ? undefined : this.host,
+        const obj: Record<string, string> = {
             level: this.level,
+        }
+        if (this.tls != '') {
+            obj.security = this.tls
+        }
+        if (this.host != '') {
+            obj.host = this.host
         }
         const params = new HttpParams({
             fromObject: obj,

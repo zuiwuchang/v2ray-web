@@ -359,10 +359,11 @@ export class ViewPanelComponent implements OnInit, OnDestroy, AfterViewInit {
   }
   onClickStart(element: Element) {
     this._disabled = true
-    ServerAPI.v1.proxys.postOne(this.httpClient, 'start', element).then(() => {
+    ServerAPI.v1.proxys.postOne(this.httpClient, 'start', element).then((resp) => {
       if (this._closed) {
         return
       }
+      console.log('run with:', resp)
       this.toasterService.pop('success',
         this.i18nService.get('success'),
         this.i18nService.get('proxy element has been started'),
@@ -408,13 +409,15 @@ export class ViewPanelComponent implements OnInit, OnDestroy, AfterViewInit {
     element.request = true
     element.error = undefined
     element.duration = undefined
-    ServerAPI.v1.proxys.postOne<number>(this.httpClient,
-      'test',
+    ServerAPI.v1.proxys.postOne<{ duration: number, text: string }>(this.httpClient,
+      'testOne',
       element.outbound,
-    ).then((data) => {
+    ).then((resp) => {
       if (this._closed) {
         return
       }
+      const data = resp.duration
+      console.log("test with:", resp.text)
       if (isNumber(data)) {
         element.duration = data
       }

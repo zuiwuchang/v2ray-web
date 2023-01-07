@@ -46,7 +46,14 @@ func (s *_Service) RemoveListener(id int64) {
 	delete(s.listeners, id)
 	s.Unlock()
 }
+func (s *_Service) StartText(element *data.Element) (string, error) {
+	return s.start(element)
+}
 func (s *_Service) Start(element *data.Element) (e error) {
+	_, e = s.start(element)
+	return
+}
+func (s *_Service) start(element *data.Element) (text string, e error) {
 	s.Lock()
 	defer s.Unlock()
 	var mSettings manipulator.Settings
@@ -54,7 +61,7 @@ func (s *_Service) Start(element *data.Element) (e error) {
 	if e != nil {
 		return
 	}
-	text, e := element.Outbound.Render(str)
+	text, e = element.Outbound.Render(str)
 	if e != nil {
 		return
 	}
@@ -131,6 +138,9 @@ func RemoveListener(id int64) {
 // Start .
 func Start(element *data.Element) (e error) {
 	return single.Start(element)
+}
+func StartText(element *data.Element) (text string, e error) {
+	return single.StartText(element)
 }
 
 // Stop .
