@@ -21,6 +21,7 @@ RUN set -eux; \
 Copy docker-entrypoint.sh /usr/local/bin/
 
 ENTRYPOINT ["docker-entrypoint.sh"]
+VOLUME /data
 EXPOSE 1080
 EXPOSE 8118
 EXPOSE 80
