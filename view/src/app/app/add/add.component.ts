@@ -84,10 +84,10 @@ export class AddComponent implements OnInit, OnDestroy {
     return this.outbound.protocol == "shadowsocks" || this.outbound.protocol == "trojan"
   }
   get isDisabledTLS(): boolean {
-    return this.outbound.protocol == "shadowsocks" || this.outbound.protocol == "trojan"
+    return this.outbound.protocol == "shadowsocks"
   }
   get isDisabledHost(): boolean {
-    return this.outbound.protocol == "shadowsocks" || this.outbound.protocol == "trojan"
+    return this.outbound.protocol == "shadowsocks"
   }
   get isDisabledPath(): boolean {
     return this.outbound.protocol == "shadowsocks" || this.outbound.protocol == "trojan"

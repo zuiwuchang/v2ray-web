@@ -27,6 +27,8 @@ func (a *analyzeTrojan) do(str string) (result *Outbound) {
 		Level:  query.Get(`level`),
 		Name:   name,
 		UserID: userID,
+		TLS:    query.Get(`security`),
+		Host:   query.Get(`host`),
 	}
 	return
 }

@@ -1,6 +1,6 @@
 import { isNumber, isObject, isString } from 'king-node/dist/core'
 import { Base64 } from 'js-base64';
-import { HttpParams, HttpUrlEncodingCodec } from '@angular/common/http';
+import { HttpParams } from '@angular/common/http';
 export class Source {
     private _items = new Array<Panel>()
     private _keys = new Map<number, Panel>()
@@ -334,6 +334,8 @@ export class Outbound {
         })
         const name = params.get("name")
         const level = params.get("level")
+        outbound.host = params.get('host') ?? ''
+        outbound.tls = params.get('security') ?? ''
         if (typeof name === "string" && name != "") {
             outbound.name = name
         } else if (typeof url.hash === "string" && url.hash.startsWith("#")) {
@@ -386,7 +388,7 @@ export class Outbound {
                 host: this.host,
                 security: this.tls,
                 type: this.net,
-                path: encodeURIComponent(this.path),
+                path: this.path,
                 level: this.level,
             },
         })
@@ -397,6 +399,14 @@ export class Outbound {
         return `${str}@${this.add}:${this.port}#${encodeURIComponent(this.name)}`
     }
     toTrojan(): string {
-        return `${encodeURIComponent(this.userID)}@${this.add}:${this.port}?level=${this.level}#${encodeURIComponent(this.name)}`
+        const obj: any = {
+            security: this.tls == '' ? undefined : this.tls,
+            host: this.host == '' ? undefined : this.host,
+            level: this.level,
+        }
+        const params = new HttpParams({
+            fromObject: obj,
+        })
+        return `${encodeURIComponent(this.userID)}@${this.add}:${this.port}?${params.toString()}#${encodeURIComponent(this.name)}`
     }
 }
