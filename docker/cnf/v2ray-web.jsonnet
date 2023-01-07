@@ -16,7 +16,7 @@ local Day = 24 * Hour;
 	},
 	Database: {
 		// 數據源 位置
-		Source: "v2ray-web.db",
+		Source: "/data/v2ray-web.db",
 	},
 	Logger: {
 		// zap http
