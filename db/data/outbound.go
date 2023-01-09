@@ -47,6 +47,8 @@ type Outbound struct {
 
 	// 協議 名稱
 	Protocol string `json:"protocol,omitempty" xml:"protocol,omitempty" yaml:"protocol,omitempty"`
+	// xtls 流控
+	Flow string `json:"flow,omitempty" xml:"flow,omitempty" yaml:"flow,omitempty"`	
 }
 
 // ToTemplate .

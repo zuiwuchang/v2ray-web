@@ -97,6 +97,9 @@ export class EditComponent implements OnInit, OnDestroy {
   get isDisabledAlterID(): boolean {
     return this.outbound.protocol == "shadowsocks" || this.outbound.protocol == "vless" || this.outbound.protocol == "trojan"
   }
+  get isDisabledFlow(): boolean {
+    return this.outbound.protocol != "vless" && this.outbound.protocol != "trojan"
+  }
   get isDisabledLevel(): boolean {
     return this.outbound.protocol == "shadowsocks"
   }

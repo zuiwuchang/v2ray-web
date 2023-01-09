@@ -81,6 +81,7 @@ func (h V2ray) test(c *gin.Context) {
 		Security: result.Security,
 		Level:    result.Level,
 		Protocol: protocol,
+		Flow:     result.Flow,
 	}
 	text, e := outbound.Render(obj.Text)
 	if e != nil {
@@ -127,6 +128,7 @@ func (h V2ray) preview(c *gin.Context) {
 		Security: result.Security,
 		Level:    result.Level,
 		Protocol: protocol,
+		Flow:     result.Flow,
 	}
 
 	text, e := outbound.Render(obj.Text)

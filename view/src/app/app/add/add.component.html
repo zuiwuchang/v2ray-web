@@ -7,7 +7,7 @@
 
 <form #viewForm="ngForm">
     <div mat-dialog-content class="dialog-form-view">
-        <div style="width: 100%;min-width: 380px;">
+        <div style="width: 100%;min-width: 510px;">
             <div class="row">
                 <mat-form-field style="flex: 1 1 auto;">
                     <mat-label i18n>URL Import</mat-label>
@@ -43,8 +43,6 @@
                     <mat-label i18n>Outbound Port</mat-label>
                     <input matInput type="number" [disabled]="disabled" [(ngModel)]="outbound.port" name="port">
                 </mat-form-field>
-            </div>
-            <div class="row">
                 <mat-form-field>
                     <mat-label i18n>Outbound Net</mat-label>
                     <input matInput [disabled]="disabled || isDisabledNet" [(ngModel)]="outbound.net" name="net"
@@ -57,6 +55,17 @@
                         <mat-option [value]="'http'">http</mat-option>
                         <mat-option [value]="'domainsocket'">domainsocket</mat-option>
                     </mat-autocomplete>
+                </mat-form-field>
+            </div>
+            <div class="row">
+                <mat-form-field>
+                    <mat-label i18n>Outbound Host</mat-label>
+                    <input matInput [disabled]="disabled || isDisabledHost" cdkFocusInitial [(ngModel)]="outbound.host"
+                        name="host">
+                </mat-form-field>
+                <mat-form-field>
+                    <mat-label i18n>Outbound Path</mat-label>
+                    <input matInput [disabled]="disabled || isDisabledPath" [(ngModel)]="outbound.path" name="path">
                 </mat-form-field>
                 <mat-form-field>
                     <mat-label i18n>Outbound TLS</mat-label>
@@ -71,17 +80,6 @@
             </div>
             <div class="row">
                 <mat-form-field>
-                    <mat-label i18n>Outbound Host</mat-label>
-                    <input matInput [disabled]="disabled || isDisabledHost" cdkFocusInitial [(ngModel)]="outbound.host"
-                        name="host">
-                </mat-form-field>
-                <mat-form-field>
-                    <mat-label i18n>Outbound Path</mat-label>
-                    <input matInput [disabled]="disabled || isDisabledPath" [(ngModel)]="outbound.path" name="path">
-                </mat-form-field>
-            </div>
-            <div class="row">
-                <mat-form-field>
                     <mat-label i18n>Outbound User UUID</mat-label>
                     <input matInput [disabled]="disabled" [(ngModel)]="outbound.userID" name="userID">
                 </mat-form-field>
@@ -90,8 +88,6 @@
                     <input matInput type="number" [disabled]="disabled || isDisabledAlterID"
                         [(ngModel)]="outbound.alterID" name="alterID">
                 </mat-form-field>
-            </div>
-            <div class="row">
                 <mat-form-field>
                     <mat-label i18n>Outbound Security</mat-label>
                     <input matInput [disabled]="disabled || isDisabledSecurity" [(ngModel)]="outbound.security"
@@ -101,6 +97,7 @@
                             <ng-template [ngSwitchCase]="'vmess'">
                                 <mat-option [value]="'auto'">auto</mat-option>
                                 <mat-option [value]="'none'">none</mat-option>
+                                <mat-option [value]="'zero'">zero</mat-option>
                                 <mat-option [value]="'aes-128-gcm'">aes-128-gcm</mat-option>
                                 <mat-option [value]="'chacha20-poly1305'">chacha20-poly1305</mat-option>
                             </ng-template>
@@ -111,9 +108,43 @@
                                 <mat-option [value]="'aes-128-gcm'">aes-128-gcm</mat-option>
                                 <mat-option [value]="'chacha20-poly1305'">chacha20-poly1305</mat-option>
                                 <mat-option [value]="'chacha20-ietf-poly1305'">chacha20-ietf-poly1305</mat-option>
+                                <mat-option [value]="'2022-blake3-aes-128-gcm'">2022-blake3-aes-128-gcm</mat-option>
+                                <mat-option [value]="'2022-blake3-aes-256-gcm'">2022-blake3-aes-256-gcm</mat-option>
+                                <mat-option [value]="'2022-blake3-chacha20-poly1305'">2022-blake3-chacha20-poly1305
+                                </mat-option>
                             </ng-template>
                         </ng-container>
                     </mat-autocomplete>
+                </mat-form-field>
+            </div>
+            <div class="row">
+                <mat-form-field>
+                    <mat-label i18n>Outbound Flow</mat-label>
+                    <input matInput [disabled]="disabled || isDisabledFlow" [(ngModel)]="outbound.flow" name="flow"
+                        [matAutocomplete]="flow">
+                    <mat-autocomplete #flow="matAutocomplete">
+                        <ng-container [ngSwitch]="outbound.protocol">
+                            <ng-template [ngSwitchCase]="'trojan'">
+                                <mat-option [value]="'xtls-rprx-origin'">xtls-rprx-origin</mat-option>
+                                <mat-option [value]="'xtls-rprx-origin-udp443'">xtls-rprx-origin-udp443</mat-option>
+                                <mat-option [value]="'xtls-rprx-direct'">xtls-rprx-direct</mat-option>
+                                <mat-option [value]="'xtls-rprx-direct-udp443'">xtls-rprx-direct-udp443</mat-option>
+                                <mat-option [value]="'xtls-rprx-splice'">xtls-rprx-splice</mat-option>
+                                <mat-option [value]="'xtls-rprx-splice-udp443'">xtls-rprx-splice-udp443</mat-option>
+                            </ng-template>
+                            <ng-template [ngSwitchCase]="'vless'">
+                                <mat-option [value]="'xtls-rprx-vision'">xtls-rprx-vision</mat-option>
+                                <mat-option [value]="'xtls-rprx-vision-udp443'">xtls-rprx-vision-udp443</mat-option>
+                                <mat-option [value]="'xtls-rprx-origin'">xtls-rprx-origin</mat-option>
+                                <mat-option [value]="'xtls-rprx-origin-udp443'">xtls-rprx-origin-udp443</mat-option>
+                                <mat-option [value]="'xtls-rprx-direct'">xtls-rprx-direct</mat-option>
+                                <mat-option [value]="'xtls-rprx-direct-udp443'">xtls-rprx-direct-udp443</mat-option>
+                                <mat-option [value]="'xtls-rprx-splice'">xtls-rprx-splice</mat-option>
+                                <mat-option [value]="'xtls-rprx-splice-udp443'">xtls-rprx-splice-udp443</mat-option>
+                            </ng-template>
+                        </ng-container>
+                    </mat-autocomplete>
+
                 </mat-form-field>
                 <mat-form-field>
                     <mat-label i18n>Outbound Level</mat-label>

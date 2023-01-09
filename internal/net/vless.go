@@ -28,6 +28,7 @@ func analyzeVless(str string) (result *Outbound) {
 		Net:   query.Get(`type`),
 		Path:  path,
 		Level: query.Get(`level`),
+		Flow:  query.Get(`flow`),
 	}
 
 	return

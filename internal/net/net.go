@@ -47,6 +47,8 @@ type Outbound struct {
 	Security string `json:"type,omitempty"`
 	// 用戶等級
 	Level string `json:"v,omitempty"`
+	// xtls 流控
+	Flow string `json:"flow,omitempty"`
 }
 
 // RequestSubscription .
@@ -96,6 +98,7 @@ func RequestSubscription(url string) (result []*data.Outbound, e error) {
 				Security: node.Security,
 				Level:    node.Level,
 				Protocol: protocol,
+				Flow:     node.Flow,
 			})
 		}
 	}

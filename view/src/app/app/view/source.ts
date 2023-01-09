@@ -170,7 +170,9 @@ export class Outbound {
     level: string = '0'
 
     // 協議名稱
-    protocol: string = 'vmess'
+    protocol: string = 'vless'
+    // 流控
+    flow = ''
     constructor(net?: any/* Outbound*/) {
         if (isObject(net)) {
             if (isString(net.name)) {
@@ -209,10 +211,13 @@ export class Outbound {
             if (isString(net.protocol)) {
                 this.protocol = net.protocol
             }
+            if (isString(net.flow)) {
+                this.flow = net.flow
+            }
         }
     }
     toString(): string {
-        if (this.protocol == "vmess" || this.protocol == "vless") {
+        if (this.protocol == "vmess" || this.protocol == "vless" || this.protocol == "trojan") {
             return `${this.protocol} -> ${this.net} ${this.tls} ${this.add}:${this.port}`
         }
         return `${this.protocol} -> ${this.add}:${this.port}`
@@ -241,6 +246,7 @@ export class Outbound {
         other.security = this.security
         other.level = this.level
         other.protocol = this.protocol
+        other.flow = this.flow
     }
     equal(other: Outbound): boolean {
         return other.name == this.name &&
@@ -254,7 +260,8 @@ export class Outbound {
             other.alterID == this.alterID &&
             other.security == this.security &&
             other.level == this.level &&
-            other.protocol == this.protocol
+            other.protocol == this.protocol &&
+            other.flow == this.flow
     }
 
     static fromV2ray(protocol: string, str: string): Outbound {
@@ -275,6 +282,7 @@ export class Outbound {
         outbound.security = obj.type
         outbound.level = obj.v
         outbound.protocol = protocol
+        outbound.flow = typeof obj.flow == "string" ? obj.flow : ''
         return outbound
     }
     static fromVless(rawStr: string): Outbound {
@@ -301,6 +309,7 @@ export class Outbound {
         // outbound.alterID = obj.aid
         // outbound.security = obj.type
         outbound.level = params.get('level') ?? '0'
+        outbound.flow = params.get('flow') ?? ''
         return outbound
     }
     static fromShadowsocks(str: string): Outbound {
@@ -344,6 +353,7 @@ export class Outbound {
         if (typeof level === "string") {
             outbound.level = level
         }
+        outbound.flow = params.get('flow') ?? ''
         return outbound
     }
     static fromURL(str: string): Outbound {
@@ -383,14 +393,18 @@ export class Outbound {
         return Base64.encode(str)
     }
     toVless(): string {
+        const obj: Record<string, string> = {
+            host: this.host,
+            security: this.tls,
+            type: this.net,
+            path: this.path,
+            level: this.level,
+        }
+        if (this.flow != '') {
+            obj.flow = this.flow
+        }
         const params = new HttpParams({
-            fromObject: {
-                host: this.host,
-                security: this.tls,
-                type: this.net,
-                path: this.path,
-                level: this.level,
-            },
+            fromObject: obj,
         })
         return `${encodeURIComponent(this.userID)}@${this.add}:${this.port}?${params.toString()}#${encodeURIComponent(this.name)}`
     }
@@ -407,6 +421,9 @@ export class Outbound {
         }
         if (this.host != '') {
             obj.host = this.host
+        }
+        if (this.flow != '') {
+            obj.flow = this.flow
         }
         const params = new HttpParams({
             fromObject: obj,

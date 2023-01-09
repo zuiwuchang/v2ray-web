@@ -1,9 +1,12 @@
 .row{
     display:table-row;
 }
-.row .mat-form-field:first-child{
-padding-right: 5px;
+.mat-form-field:not(first-child){
+    margin-left: 10px;
+}
+.row>button{
+    margin-left: 10px;
 }
 .dialog-form-view{
     padding-bottom: 25px;
-  }
+}

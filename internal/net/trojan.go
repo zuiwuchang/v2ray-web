@@ -29,6 +29,7 @@ func (a *analyzeTrojan) do(str string) (result *Outbound) {
 		UserID: userID,
 		TLS:    query.Get(`security`),
 		Host:   query.Get(`host`),
+		Flow:   query.Get(`flow`),
 	}
 	return
 }

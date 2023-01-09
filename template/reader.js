@@ -120,6 +120,18 @@ function intValue(val, def) {
     }
     return def
 }
+
+function xtlsFlow(ctx) {
+    if (ctx.Outbound.TLS != "xtls") {
+        return
+    } else if (ctx.Outbound.Protocol != "vless" && ctx.Outbound.Protocol != "trojan") {
+        return
+    }
+    const flow = ctx.Outbound.Flow
+    if (typeof flow === "string" && flow != "") {
+        return flow
+    }
+}
 function tlsSettings(ctx) {
     return {
         serverName: ctx.Outbound.Host == '' ? ctx.Outbound.Add : ctx.Outbound.Host,
@@ -273,7 +285,7 @@ function outboundsTrojan(ctx) {
                     address: ctx.AddIP,
                     port: intValue(ctx.Outbound.Port),
                     password: ctx.Outbound.UserID,
-                    flow: xtls ? "xtls-rprx-direct" : undefined,
+                    flow: xtlsFlow(ctx),
                     level: intValue(ctx.Outbound.Level, 0),
                 },
             ],
@@ -297,7 +309,7 @@ function outboundsVless(ctx) {
                     users: [
                         {
                             id: ctx.Outbound.UserID,
-                            flow: ctx.Outbound.TLS == "xtls" ? "xtls-rprx-direct" : undefined,
+                            flow: xtlsFlow(ctx),
                             encryption: "none",
                             level: intValue(ctx.Outbound.Level, 0),
                         },
@@ -370,13 +382,13 @@ function renderRouting(ctx) {
                 ip: ["8.8.8.8", "1.1.1.1"],
                 outboundTag: "proxy"
             },
-            // 屏蔽廣告
+            /* 屏蔽廣告 *
             {
                 type: "field",
                 domain: ["geosite:category-ads-all"],
                 // domain: ["geosite:category-ads"],
                 outboundTag: "block"
-            },
+            },/* */
             // 代理 非西朝 域名
             {
                 type: "field",

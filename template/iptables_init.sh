@@ -5,15 +5,15 @@ PROXY_PORT=12345
 
 Whitelist=(
     # 私有地址
-	0.0.0.0/8
-	127.0.0.0/8
-	10.0.0.0/8
+    0.0.0.0/8
+    127.0.0.0/8
+    10.0.0.0/8
     172.0.0.0/8
-	169.0.0.0/8
-	192.0.0.0/8
+    169.0.0.0/8
+    192.0.0.0/8
     # 廣播地址
-	224.0.0.0/4
-	240.0.0.0/4
+    224.0.0.0/4
+    240.0.0.0/4
 )
 
 # 添加路由表 100
@@ -38,8 +38,8 @@ iptables -t mangle -N XRAY_DIVERT
 # 放行私有地址與廣播地址
 for whitelist in "${Whitelist[@]}"
 do
-        iptables -t mangle -A XRAY -d "$whitelist" -j RETURN
-        iptables -t mangle -A XRAY_SELF -d "$whitelist" -j RETURN
+    iptables -t mangle -A XRAY -d "$whitelist" -j RETURN
+    iptables -t mangle -A XRAY_SELF -d "$whitelist" -j RETURN
 done
 
 # 可選的配置避免已有連接的包二次通過 tproxy 從而提升一些性能

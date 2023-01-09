@@ -409,13 +409,27 @@ export class ViewPanelComponent implements OnInit, OnDestroy, AfterViewInit {
     element.request = true
     element.error = undefined
     element.duration = undefined
-    ServerAPI.v1.proxys.postOne<{ duration: number, text: string }>(this.httpClient,
+    ServerAPI.v1.proxys.postOne<{
+      duration: number,
+      text: string,
+      error?: string,
+    }>(this.httpClient,
       'testOne',
       element.outbound,
     ).then((resp) => {
       if (this._closed) {
         return
+      } else if (resp.error) {
+        const e = resp.error
+        console.log("test with:", resp.text)
+        this.toasterService.pop('error',
+          this.i18nService.get('error'),
+          e,
+        )
+        element.error = e
+        return
       }
+
       const data = resp.duration
       console.log("test with:", resp.text)
       if (isNumber(data)) {
