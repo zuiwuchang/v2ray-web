@@ -48,7 +48,7 @@ type Outbound struct {
 	// 協議 名稱
 	Protocol string `json:"protocol,omitempty" xml:"protocol,omitempty" yaml:"protocol,omitempty"`
 	// xtls 流控
-	Flow string `json:"flow,omitempty" xml:"flow,omitempty" yaml:"flow,omitempty"`	
+	Flow string `json:"flow,omitempty" xml:"flow,omitempty" yaml:"flow,omitempty"`
 }
 
 // ToTemplate .
@@ -110,10 +110,19 @@ func (o *Outbound) RenderTarget(port int) (string, error) {
 		`port`: port,
 	})
 }
+func (o *Outbound) RenderStrategy(text string, strategy *Strategy) (string, error) {
+	ctx, e := o.ToContext()
+	ctx.Strategy = strategy
+	if e != nil {
+		return ``, e
+	}
+	return template.Render(text, ctx)
+}
 
 // OutboundContext 模板 環境
 type OutboundContext struct {
 	Outbound *Outbound
 	AddIP    string
 	BasePath string
+	Strategy *Strategy
 }

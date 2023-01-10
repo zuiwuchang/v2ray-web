@@ -56,8 +56,9 @@ func (h V2ray) put(c *gin.Context) {
 }
 func (h V2ray) test(c *gin.Context) {
 	var obj struct {
-		Text string `form:"text" json:"text" xml:"text" yaml:"text" binding:"required"`
-		URL  string `form:"url" json:"url" xml:"url" yaml:"url" binding:"required"`
+		Text     string `form:"text" json:"text" xml:"text" yaml:"text" binding:"required"`
+		URL      string `form:"url" json:"url" xml:"url" yaml:"url" binding:"required"`
+		Strategy string `form:"strategy" json:"strategy" xml:"strategy" yaml:"strategy"`
 	}
 	e := h.Bind(c, &obj)
 	if e != nil {
@@ -68,6 +69,13 @@ func (h V2ray) test(c *gin.Context) {
 		h.NegotiateErrorString(c, http.StatusBadRequest, `not support proxy url`)
 		return
 	}
+	var mStrategy manipulator.Strategy
+	strategy, e := mStrategy.Value(obj.Strategy)
+	if e != nil {
+		h.NegotiateError(c, http.StatusInternalServerError, e)
+		return
+	}
+
 	outbound := &data.Outbound{
 		Name:     result.Name,
 		Add:      result.Add,
@@ -83,7 +91,7 @@ func (h V2ray) test(c *gin.Context) {
 		Protocol: protocol,
 		Flow:     result.Flow,
 	}
-	text, e := outbound.Render(obj.Text)
+	text, e := outbound.RenderStrategy(obj.Text, strategy)
 	if e != nil {
 		h.NegotiateError(c, http.StatusInternalServerError, e)
 		return
@@ -103,8 +111,9 @@ func (h V2ray) test(c *gin.Context) {
 }
 func (h V2ray) preview(c *gin.Context) {
 	var obj struct {
-		Text string `form:"text" json:"text" xml:"text" yaml:"text" binding:"required"`
-		URL  string `form:"url" json:"url" xml:"url" yaml:"url" binding:"required"`
+		Text     string `form:"text" json:"text" xml:"text" yaml:"text" binding:"required"`
+		URL      string `form:"url" json:"url" xml:"url" yaml:"url" binding:"required"`
+		Strategy string `form:"strategy" json:"strategy" xml:"strategy" yaml:"strategy"`
 	}
 	e := h.Bind(c, &obj)
 	if e != nil {
@@ -131,7 +140,13 @@ func (h V2ray) preview(c *gin.Context) {
 		Flow:     result.Flow,
 	}
 
-	text, e := outbound.Render(obj.Text)
+	var mStrategy manipulator.Strategy
+	strategy, e := mStrategy.Value(obj.Strategy)
+	if e != nil {
+		h.NegotiateError(c, http.StatusInternalServerError, e)
+		return
+	}
+	text, e := outbound.RenderStrategy(obj.Text, strategy)
 	if e != nil {
 		h.NegotiateError(c, http.StatusInternalServerError, e)
 		return

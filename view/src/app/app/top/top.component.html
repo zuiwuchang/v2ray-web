@@ -9,6 +9,9 @@
                 <mat-icon mat-icon-button i18n-matTooltip matTooltip="stop" (click)="onClickStop($event)">stop
                 </mat-icon>
                 {{status.name}}
+                <mat-icon>flag</mat-icon>
+
+                {{status.strategy}}
             </ng-template>
             <ng-template #stopedView>
                 <mat-icon>bug_report</mat-icon>

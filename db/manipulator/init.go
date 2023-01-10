@@ -48,6 +48,7 @@ func Init(cnf *configure.Database) (e error) {
 			Settings{},
 			Subscription{},
 			Element{},
+			Strategy{},
 		}
 		if oldVersion == 0 {
 			for i := 0; i < len(buckets); i++ {
@@ -64,6 +65,8 @@ func Init(cnf *configure.Database) (e error) {
 				}
 			}
 		}
+		var m Strategy
+		e = m.Upgrade(tx, oldVersion, Version)
 		return
 	})
 	if e != nil {

@@ -85,5 +85,5 @@ func (h Other) logs(c *gin.Context) {
 		}
 	}
 	logs.RemoveListener(id)
-	return
+
 }

@@ -31,9 +31,11 @@ func init() {
 
 // Settings 系統設定
 type Settings struct {
-	URL      string `json:"url,omitempty" xml:"xml,omitempty" yaml:"yaml,omitempty"`
+	URL      string `json:"url,omitempty" xml:"url,omitempty" yaml:"url,omitempty"`
 	V2ray    bool   `json:"v2ray,omitempty" xml:"v2ray,omitempty" yaml:"v2ray,omitempty"`
 	IPTables bool   `json:"iptables,omitempty" xml:"iptables,omitempty" yaml:"iptables,omitempty"`
+	// 使用的策略 空字符串 使用默認
+	Strategy string `json:"strategy,omitempty" xml:"strategy,omitempty" yaml:"strategy,omitempty"`
 }
 
 // Decode 由 []byte 解碼

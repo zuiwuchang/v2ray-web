@@ -7,9 +7,9 @@
 
 <form #viewForm="ngForm">
     <div mat-dialog-content class="dialog-form-view">
-        <div style="width: 100%;min-width: 510px;">
+        <div style="min-width: 600px;">
             <div class="row">
-                <mat-form-field style="flex: 1 1 auto;">
+                <mat-form-field style="width: 370px;">
                     <mat-label i18n>URL Import</mat-label>
                     <input matInput [disabled]="disabled" cdkFocusInitial [(ngModel)]="url" name="url">
                 </mat-form-field>

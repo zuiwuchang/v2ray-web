@@ -20,6 +20,7 @@ type ListenerStatus struct {
 	ID           uint64 `json:"id,omitempty"`
 	Subscription uint64 `json:"subscription,omitempty"`
 	Name         string `json:"name,omitempty"`
+	Strategy     string `json:"strategy,omitempty"`
 }
 
 // ListenerFunc .
@@ -49,24 +50,25 @@ func (s *_Service) RemoveListener(id int64) {
 func (s *_Service) StartText(element *data.Element) (string, error) {
 	return s.start(element)
 }
-func (s *_Service) Start(element *data.Element) (e error) {
-	_, e = s.start(element)
-	return
-}
-func (s *_Service) start(element *data.Element) (text string, e error) {
+func (s *_Service) StartStrategy(element *data.Element, strategyName string) (text string, e error) {
 	s.Lock()
 	defer s.Unlock()
+
+	var mStrategy manipulator.Strategy
+	strategy, e := mStrategy.Value(strategyName)
+	if e != nil {
+		return
+	}
 	var mSettings manipulator.Settings
 	str, e := mSettings.GetV2ray()
 	if e != nil {
 		return
 	}
-	text, e = element.Outbound.Render(str)
+	text, e = element.Outbound.RenderStrategy(str, strategy)
 	if e != nil {
 		return
 	}
-	// fmt.Println(text)
-	// v2ray
+
 	cnf, e := core.LoadConfig(`json`, strings.NewReader(text))
 	if e != nil {
 		return
@@ -90,6 +92,7 @@ func (s *_Service) start(element *data.Element) (text string, e error) {
 			ID:           element.ID,
 			Name:         element.Outbound.Name,
 			Subscription: element.Subscription,
+			Strategy:     strategy.Name,
 		})
 	} else {
 		if closed {
@@ -97,6 +100,15 @@ func (s *_Service) start(element *data.Element) (text string, e error) {
 		}
 	}
 	return
+}
+
+func (s *_Service) Start(element *data.Element) (e error) {
+	_, e = s.start(element)
+	return
+}
+
+func (s *_Service) start(element *data.Element) (text string, e error) {
+	return s.StartStrategy(element, ``)
 }
 func (s *_Service) Stop() {
 	s.Lock()
@@ -141,6 +153,9 @@ func Start(element *data.Element) (e error) {
 }
 func StartText(element *data.Element) (text string, e error) {
 	return single.StartText(element)
+}
+func StartStrategy(element *data.Element, strategy string) (text string, e error) {
+	return single.StartStrategy(element, strategy)
 }
 
 // Stop .

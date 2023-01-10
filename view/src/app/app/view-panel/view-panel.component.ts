@@ -414,14 +414,14 @@ export class ViewPanelComponent implements OnInit, OnDestroy, AfterViewInit {
       text: string,
       error?: string,
     }>(this.httpClient,
-      'testOne',
+      'testError',
       element.outbound,
     ).then((resp) => {
       if (this._closed) {
         return
       } else if (resp.error) {
         const e = resp.error
-        console.log("test with:", resp.text)
+        console.warn("test with:", resp.text)
         this.toasterService.pop('error',
           this.i18nService.get('error'),
           e,

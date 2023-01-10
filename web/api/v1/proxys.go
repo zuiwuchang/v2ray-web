@@ -43,6 +43,7 @@ func (h Proxys) Register(router *gin.RouterGroup) {
 	r.POST(`update`, h.update)
 	r.POST(`test`, h.testOne)
 	r.POST(`testOne`, h.testOneEx)
+	r.POST(`testError`, h.testOneError)
 }
 
 func (h Proxys) status(c *gin.Context) {
@@ -135,18 +136,22 @@ func (h Proxys) remove(c *gin.Context) {
 	c.Status(http.StatusNoContent)
 }
 func (h Proxys) start(c *gin.Context) {
-	var obj data.Element
+	var obj struct {
+		data.Element
+		Strategy string `json:"strategy,omitempty" xml:"strategy,omitempty" yaml:"strategy,omitempty"`
+	}
 	e := c.Bind(&obj)
 	if e != nil {
 		return
 	}
-	text, e := srv.StartText(&obj)
+
+	text, e := srv.StartStrategy(&obj.Element, obj.Strategy)
 	if e != nil {
 		h.NegotiateError(c, http.StatusInternalServerError, e)
 		return
 	}
 	var mSettings manipulator.Settings
-	e0 := mSettings.PutLast(&obj)
+	e0 := mSettings.PutLast(&obj.Element)
 	if e0 != nil {
 		if ce := logger.Logger.Check(zap.WarnLevel, "save last status error"); ce != nil {
 			ce.Write(
@@ -256,6 +261,33 @@ func (h Proxys) testOne(c *gin.Context) {
 	}
 	h.NegotiateData(c, http.StatusOK, duration.Milliseconds())
 }
+func (h Proxys) testOneError(c *gin.Context) {
+	var obj data.Outbound
+	e := c.Bind(&obj)
+	if e != nil {
+		return
+	}
+	duration, text, e := speed.TestOneEx(&obj, h.getURL())
+	if e != nil {
+		if text == `` {
+			h.NegotiateData(c, http.StatusOK, map[string]interface{}{
+				`duration`: duration.Milliseconds(),
+				`text`:     text,
+			})
+		} else {
+			h.NegotiateData(c, http.StatusOK, map[string]interface{}{
+				`duration`: duration.Milliseconds(),
+				`text`:     text,
+				`error`:    e.Error(),
+			})
+		}
+		return
+	}
+	h.NegotiateData(c, http.StatusOK, map[string]interface{}{
+		`duration`: duration.Milliseconds(),
+		`text`:     text,
+	})
+}
 func (h Proxys) testOneEx(c *gin.Context) {
 	var obj data.Outbound
 	e := c.Bind(&obj)
@@ -362,5 +394,5 @@ func (h Proxys) test(c *gin.Context) {
 			break
 		}
 	}
-	e = ws.WriteMessage(websocket.TextMessage, []byte(`close`))
+	ws.WriteMessage(websocket.TextMessage, []byte(`close`))
 }

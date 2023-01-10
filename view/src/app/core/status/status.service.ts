@@ -9,6 +9,7 @@ export interface Status {
   id?: number
   subscription?: number
   name?: string
+  strategy?: string
 }
 @Injectable({
   providedIn: 'root'
@@ -115,7 +116,8 @@ export class StatusService {
       if (last.run &&
         status.id == last.id &&
         status.subscription == last.subscription &&
-        status.name == last.name) {
+        status.name == last.name &&
+        status.strategy == last.strategy) {
         return
       }
     } else if (!last.run) {
@@ -134,6 +136,7 @@ export class StatusService {
       id: status.id,
       subscription: status.subscription,
       name: status.name,
+      strategy: status.strategy,
     })
   }
 }
