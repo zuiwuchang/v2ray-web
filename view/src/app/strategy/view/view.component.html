@@ -1,0 +1,47 @@
+<ng-container *ngIf="ready;then readyView;else notReadyView"></ng-container>
+<ng-template #notReadyView>
+    <div>
+        <p>
+            <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+        </p>
+        <p>
+            <ng-container i18n>connecting to server, please wait...</ng-container>
+        </p>
+    </div>
+</ng-template>
+<ng-template #readyView>
+    <ng-container *ngIf="err;then errView;else okView"></ng-container>
+</ng-template>
+<ng-template #errView>
+    <p>
+        {{err}}
+    </p>
+    <button mat-stroked-button color="primary" i18n (click)="load()">Refresh</button>
+
+</ng-template>
+<ng-template #okView>
+    <mat-card>
+        <mat-card-title i18n>Strategy Management</mat-card-title>
+        <mat-card-content>
+            <mat-list>
+                <mat-list-item *ngFor="let node of source">
+                    <mat-icon matListIcon>flag</mat-icon>
+                    <h3 matLine>{{node.name}} - {{node.value}}</h3>
+                    <button mat-icon-button i18n-matTooltip matTooltip="edit" (click)="onClickEdit(node)"
+                        [disabled]="disabled">
+                        <mat-icon>create</mat-icon>
+                    </button>
+                    <button mat-icon-button i18n-matTooltip matTooltip="delete" (click)="onClickDelete(node)"
+                        [disabled]="disabled">
+                        <mat-icon>delete</mat-icon>
+                    </button>
+                </mat-list-item>
+            </mat-list>
+        </mat-card-content>
+        <mat-card-actions>
+            <button mat-icon-button i18n-matTooltip matTooltip="add" (click)="onClickAdd()" [disabled]="disabled">
+                <mat-icon>add</mat-icon>
+            </button>
+        </mat-card-actions>
+    </mat-card>
+</ng-template>

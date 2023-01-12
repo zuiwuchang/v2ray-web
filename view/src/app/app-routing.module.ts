@@ -27,6 +27,10 @@ const routes: Routes = [
     path: 'v2ray',
     loadChildren: () => import('./v2ray/v2ray.module').then(m => m.V2rayModule),
   },
+  {
+    path: 'strategy',
+    loadChildren: () => import('./strategy/strategy.module').then(m => m.StrategyModule),
+  }
 ];
 
 @NgModule({

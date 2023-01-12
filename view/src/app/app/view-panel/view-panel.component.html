@@ -76,6 +76,10 @@
                     <mat-icon>network_check</mat-icon>
                     <ng-container i18n>test speed</ng-container>
                 </button>
+                <button mat-menu-item (click)="onClickPreview(item)" [disabled]="disabled">
+                    <mat-icon>preview</mat-icon>
+                    <ng-container i18n>Preview</ng-container>
+                </button>
                 <button mat-menu-item (click)="onClickShare(item)" [disabled]="disabled">
                     <mat-icon>share</mat-icon>
                     <ng-container i18n>Share QR Code</ng-container>

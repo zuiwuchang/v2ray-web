@@ -33,15 +33,26 @@
                         <mat-error i18n>Test URL Invalid</mat-error>
                     </mat-form-field>
                 </div>
-                <mat-checkbox class="margin" [(ngModel)]="v2ray" name="v2ray">
+                <mat-checkbox class="margin" [disabled]="disabled" [(ngModel)]="v2ray" name="v2ray">
                     <ng-container i18n>run v2ray-core on start</ng-container>
                 </mat-checkbox>
 
-                <mat-checkbox class="margin" [(ngModel)]="iptables" name="iptables">
+                <mat-checkbox class="margin" [disabled]="disabled" [(ngModel)]="iptables" name="iptables">
                     <ng-container i18n>set iptables on start</ng-container>
                 </mat-checkbox>
 
+                <div>
+                    <mat-form-field class="full-width">
+                        <mat-label i18n>Strategy</mat-label>
+                        <input matInput [disabled]="disabled" [(ngModel)]="strategy" name="strategy"
+                            [matAutocomplete]="net">
+                        <mat-autocomplete #net="matAutocomplete">
+                            <mat-option [value]="item.name" *ngFor="let item of strategys">{{item.name}} -
+                                {{item.value}}</mat-option>
 
+                        </mat-autocomplete>
+                    </mat-form-field>
+                </div>
             </mat-card-content>
             <mat-card-actions>
                 <button type="button" mat-stroked-button i18n [disabled]="disabled || viewForm.invalid"

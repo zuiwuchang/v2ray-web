@@ -65,8 +65,6 @@ func Init(cnf *configure.Database) (e error) {
 				}
 			}
 		}
-		var m Strategy
-		e = m.Upgrade(tx, oldVersion, Version)
 		return
 	})
 	if e != nil {

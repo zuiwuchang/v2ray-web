@@ -15,6 +15,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 
 import { SettingsComponent } from './settings/settings.component';
 import { SubscriptionComponent } from './subscription/subscription.component';
@@ -35,7 +36,7 @@ import { PreviewComponent } from './dialog/preview/preview.component';
         MatProgressBarModule, MatIconModule, MatButtonModule,
         MatListModule, MatDialogModule, MatFormFieldModule,
         MatInputModule, MatProgressSpinnerModule, MatTooltipModule,
-        MatCardModule,
+        MatCardModule, MatAutocompleteModule,
     ]
 })
 export class V2rayModule { }

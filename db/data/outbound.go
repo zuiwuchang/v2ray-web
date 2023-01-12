@@ -110,7 +110,7 @@ func (o *Outbound) RenderTarget(port int) (string, error) {
 		`port`: port,
 	})
 }
-func (o *Outbound) RenderStrategy(text string, strategy *Strategy) (string, error) {
+func (o *Outbound) RenderStrategy(text string, strategy *StrategyValue) (string, error) {
 	ctx, e := o.ToContext()
 	ctx.Strategy = strategy
 	if e != nil {
@@ -124,5 +124,5 @@ type OutboundContext struct {
 	Outbound *Outbound
 	AddIP    string
 	BasePath string
-	Strategy *Strategy
+	Strategy *StrategyValue
 }

@@ -4,11 +4,21 @@ import { ToasterService } from 'angular2-toaster';
 import { I18nService } from 'src/app/core/i18n/i18n.service';
 import { SessionService } from 'src/app/core/session/session.service';
 import { ServerAPI } from 'src/app/core/core/api';
-import { isString } from 'king-node/dist/core';
+import { sortNameValue } from 'src/app/core/utils';
+
 interface Result {
-  url: string
-  v2ray: boolean
-  iptables: boolean
+  settings: {
+    url?: string
+    v2ray: boolean
+    iptables: boolean
+    strategy?: string
+  },
+  strategys: [
+    {
+      name: string,
+      value: number,
+    }
+  ]
 }
 @Component({
   selector: 'app-settings',
@@ -34,6 +44,11 @@ export class SettingsComponent implements OnInit {
   url: string = ''
   v2ray: boolean = false
   iptables: boolean = false
+  strategy = ''
+  strategys: Array<{
+    name: string,
+    value: number,
+  }> = []
   ngOnInit(): void {
     this.sessionService.ready.then(() => {
       if (this._closed) {
@@ -48,12 +63,15 @@ export class SettingsComponent implements OnInit {
   load() {
     this.err = null
     this._ready = false
-    ServerAPI.v1.settings.get<Result>(this.httpClient).then((data) => {
+    ServerAPI.v1.settings.get<Result>(this.httpClient, {
+      params: { strategy: "true", }
+    }).then((resp) => {
       if (this._closed) {
         return
       }
+      const data = resp.settings
       if (data) {
-        if (isString(data.url)) {
+        if (typeof data.url === "string") {
           this.url = data.url
         }
         if (data.iptables) {
@@ -61,6 +79,13 @@ export class SettingsComponent implements OnInit {
         }
         if (data.v2ray) {
           this.v2ray = true
+        }
+        if (typeof data.strategy === "string") {
+          this.strategy = data.strategy
+        }
+        if (Array.isArray(resp.strategys)) {
+          this.strategys.push(...resp.strategys)
+          this.strategys.sort(sortNameValue)
         }
       }
     }, (e) => {
@@ -79,6 +104,7 @@ export class SettingsComponent implements OnInit {
       url: this.url,
       v2ray: this.v2ray,
       iptables: this.iptables,
+      strategy: this.strategy,
     }).then(() => {
       if (this._closed) {
         return

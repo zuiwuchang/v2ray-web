@@ -36,6 +36,7 @@ import { TopComponent } from './app/top/top.component';
 import { SettingsComponent } from './app/settings/settings.component';
 import { QrcodeComponent } from './app/dialog/qrcode/qrcode.component';
 import { HeaderInterceptor } from './app/service/header.interceptor';
+import { PreviewComponent } from './app/dialog/preview/preview.component';
 
 @NgModule({
     declarations: [
@@ -48,6 +49,7 @@ import { HeaderInterceptor } from './app/service/header.interceptor';
         TopComponent,
         SettingsComponent,
         QrcodeComponent,
+        PreviewComponent,
     ],
     imports: [
         BrowserModule,

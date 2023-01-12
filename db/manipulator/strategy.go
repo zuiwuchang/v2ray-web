@@ -45,7 +45,7 @@ func (m Strategy) init(tx *bolt.Tx) (bucket *bolt.Bucket, e error) {
 			e = err
 			return
 		}
-		e = bucket.Put(key, val)
+		e = bucket.Put([]byte(s.Name), val)
 	}
 	return
 }
@@ -93,20 +93,20 @@ func (m Strategy) list(tx *bolt.Tx) (result []*data.Strategy, e error) {
 	return
 }
 
-func (m Strategy) Value(name string) (result *data.Strategy, e error) {
+func (m Strategy) Value(name string) (result *data.StrategyValue, e error) {
 	e = _db.View(func(tx *bolt.Tx) (e error) {
 		result, e = m.value(tx, name)
 		return
 	})
 	return
 }
-func (m Strategy) value(tx *bolt.Tx, name string) (result *data.Strategy, e error) {
+func (m Strategy) value(tx *bolt.Tx, name string) (result *data.StrategyValue, e error) {
 	bucket := tx.Bucket([]byte(data.StrategyBucket))
 	if bucket == nil {
 		e = fmt.Errorf("bucket not exist : %s", data.StrategyBucket)
 		return
 	}
-	def, e := m.get(bucket, []byte(data.StrategyDefault))
+	def, e := m.getValue(bucket, []byte(data.StrategyDefault))
 	if e != nil {
 		return
 	}
@@ -122,7 +122,7 @@ func (m Strategy) value(tx *bolt.Tx, name string) (result *data.Strategy, e erro
 		result = def
 		return
 	}
-	val, e := m.get(bucket, []byte(name))
+	val, e := m.getValue(bucket, []byte(name))
 	if e != nil {
 		return
 	}
@@ -196,6 +196,14 @@ func (m Strategy) get(bucket *bolt.Bucket, key []byte) (result *data.Strategy, e
 		return
 	}
 	result = &s
+	return
+}
+func (m Strategy) getValue(bucket *bolt.Bucket, key []byte) (result *data.StrategyValue, e error) {
+	v, e := m.get(bucket, key)
+	if e != nil {
+		return
+	}
+	result = v.ToValue()
 	return
 }
 func (m Strategy) Put(d *data.Strategy) error {

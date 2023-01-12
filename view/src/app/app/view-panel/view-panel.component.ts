@@ -14,6 +14,7 @@ import { Subscription } from 'rxjs';
 import * as ClipboardJS from 'clipboard'
 import { QrcodeComponent } from '../dialog/qrcode/qrcode.component';
 import { SessionService } from 'src/app/core/session/session.service';
+import { PreviewComponent } from '../dialog/preview/preview.component';
 // 正在運行
 const StatusRunning = 1
 // 錯誤
@@ -359,11 +360,19 @@ export class ViewPanelComponent implements OnInit, OnDestroy, AfterViewInit {
   }
   onClickStart(element: Element) {
     this._disabled = true
-    ServerAPI.v1.proxys.postOne(this.httpClient, 'start', element).then((resp) => {
+    ServerAPI.v1.proxys.postOne<{
+      text: string
+      error?: string,
+    }>(this.httpClient, 'start', element).then((resp) => {
       if (this._closed) {
         return
       }
-      console.log('run with:', resp)
+      if (resp.error) {
+        this.matDialog.open(PreviewComponent, {
+          data: resp,
+        })
+        return
+      }
       this.toasterService.pop('success',
         this.i18nService.get('success'),
         this.i18nService.get('proxy element has been started'),
@@ -409,31 +418,15 @@ export class ViewPanelComponent implements OnInit, OnDestroy, AfterViewInit {
     element.request = true
     element.error = undefined
     element.duration = undefined
-    ServerAPI.v1.proxys.postOne<{
-      duration: number,
-      text: string,
-      error?: string,
-    }>(this.httpClient,
-      'testError',
+    ServerAPI.v1.proxys.postOne<number>(this.httpClient,
+      'test',
       element.outbound,
     ).then((resp) => {
       if (this._closed) {
         return
-      } else if (resp.error) {
-        const e = resp.error
-        console.warn("test with:", resp.text)
-        this.toasterService.pop('error',
-          this.i18nService.get('error'),
-          e,
-        )
-        element.error = e
-        return
       }
-
-      const data = resp.duration
-      console.log("test with:", resp.text)
-      if (isNumber(data)) {
-        element.duration = data
+      if (isNumber(resp)) {
+        element.duration = resp
       }
       this.toasterService.pop('success',
         this.i18nService.get('test speed success'),
@@ -608,5 +601,35 @@ export class ViewPanelComponent implements OnInit, OnDestroy, AfterViewInit {
         e,
       )
     }
+  }
+  onClickPreview(element: Element) {
+    this._disabled = true
+    element.request = true
+    ServerAPI.v1.proxys.postOne(this.httpClient,
+      'preview',
+      element.outbound,
+    ).then((resp) => {
+      if (this._closed) {
+        return
+      }
+      this.matDialog.open(PreviewComponent, {
+        data: resp,
+      })
+    }, (e) => {
+      if (this._closed) {
+        return
+      }
+      console.warn(e)
+      this.toasterService.pop('error',
+        this.i18nService.get('error'),
+        e,
+      )
+    }).finally(() => {
+      element.request = undefined
+      if (this._closed) {
+        return
+      }
+      this._disabled = false
+    })
   }
 }

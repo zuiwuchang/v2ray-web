@@ -1,0 +1,13 @@
+<h1 mat-dialog-title>
+    <ng-container *ngIf="data.error;then errorView;else previewView"></ng-container>
+    <ng-template #previewView>
+        <ng-container i18n>Preview</ng-container>
+    </ng-template>
+    <ng-template #errorView>
+        <ng-container i18n>Error</ng-container>
+    </ng-template>
+</h1>
+<div mat-dialog-content class="dialog-form-view">
+    <div *ngIf="data.error" style="color: red;">{{data.error}}</div>
+    <pre>{{data.text}}</pre>
+</div>

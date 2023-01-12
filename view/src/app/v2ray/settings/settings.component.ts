@@ -8,7 +8,7 @@ import { ContextText } from '../../core/text';
 import { SessionService } from 'src/app/core/session/session.service';
 import { MatDialog } from '@angular/material/dialog';
 import { PreviewComponent } from '../dialog/preview/preview.component';
-import { fromEvent } from 'rxjs';
+import { sortNameValue } from 'src/app/core/utils';
 interface Response {
   text: string
 }
@@ -36,6 +36,11 @@ export class SettingsComponent implements OnInit, OnDestroy {
   err: any
   text: string = ''
   url: string = 'vmess://eyJwcyI6InRlc3QiLCJhZGQiOiJmdWNrY2NwLmNvbSIsInBvcnQiOiI0NDMiLCJob3N0IjoiZnVja2NjcC5jb20iLCJ0bHMiOiJ0bHMiLCJuZXQiOiJ3cyIsInBhdGgiOiIvZnVja2NjcC9GaWdodE9yZGllIiwiaWQiOiIxZWYxOTdmNi03NzA4LTQ3NDItYjA5Zi1lNTBjNWVkMTVmNWUiLCJhaWQiOiIwIiwidHlwZSI6ImF1dG8iLCJ2IjoiMCJ9'
+  strategy = ''
+  strategys: Array<{
+    name: string,
+    value: number,
+  }> = []
   contextText = ContextText
   private _text: string = ''
   ngOnInit(): void {
@@ -72,15 +77,30 @@ export class SettingsComponent implements OnInit, OnDestroy {
   load() {
     this.err = null
     this._ready = false
-    ServerAPI.v1.v2ray.get<string>(this.httpClient).then((text) => {
+    ServerAPI.v1.v2ray.get<{
+      text: string,
+      strategy: string,
+      strategys: [
+        {
+          name: string,
+          value: number,
+        }
+      ],
+    }>(this.httpClient, {
+      params: { strategy: "true" },
+    }).then((resp) => {
       if (this._closed) {
         return
       }
-      if (isString(text)) {
-        this.text = text.trim()
-      } else {
-        this.text = ''
+      const text = typeof resp.text === "string" ? resp.text.trim() : ''
+      if (Array.isArray(resp.strategys)) {
+        this.strategys.push(...resp.strategys)
+        this.strategys.sort(sortNameValue)
       }
+      if (typeof resp.strategy === "string") {
+        this.strategy = resp.strategy
+      }
+      this.text = text
       this._text = text
     }, (e) => {
       if (this._closed) {
@@ -134,6 +154,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
     ServerAPI.v1.v2ray.postOne(this.httpClient, "preview", {
       text: this.text,
       url: this.url,
+      strategy: this.strategy,
     }).then((obj) => {
       if (this._closed) {
         return
@@ -166,6 +187,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
     ServerAPI.v1.v2ray.postOne(this.httpClient, "test", {
       text: this.text,
       url: this.url,
+      strategy: this.strategy,
     }).then(() => {
       if (this._closed) {
         return

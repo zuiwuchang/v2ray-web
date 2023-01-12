@@ -1,7 +1,6 @@
 package v1
 
 import (
-	"errors"
 	"io"
 	"net/http"
 	"strings"
@@ -9,6 +8,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
+	"github.com/xtls/xray-core/core"
 	"gitlab.com/king011/v2ray-web/db/data"
 	"gitlab.com/king011/v2ray-web/db/manipulator"
 	"gitlab.com/king011/v2ray-web/internal/net"
@@ -42,8 +42,7 @@ func (h Proxys) Register(router *gin.RouterGroup) {
 	r.DELETE(`clear`, h.clear)
 	r.POST(`update`, h.update)
 	r.POST(`test`, h.testOne)
-	r.POST(`testOne`, h.testOneEx)
-	r.POST(`testError`, h.testOneError)
+	r.POST(`preview`, h.preview)
 }
 
 func (h Proxys) status(c *gin.Context) {
@@ -147,7 +146,14 @@ func (h Proxys) start(c *gin.Context) {
 
 	text, e := srv.StartStrategy(&obj.Element, obj.Strategy)
 	if e != nil {
-		h.NegotiateError(c, http.StatusInternalServerError, e)
+		if text == `` {
+			h.NegotiateError(c, http.StatusInternalServerError, e)
+		} else {
+			h.NegotiateData(c, http.StatusOK, gin.H{
+				"text":  text,
+				"error": e.Error(),
+			})
+		}
 		return
 	}
 	var mSettings manipulator.Settings
@@ -159,7 +165,7 @@ func (h Proxys) start(c *gin.Context) {
 			)
 		}
 	}
-	h.NegotiateData(c, http.StatusOK, text)
+	c.Status(http.StatusNoContent)
 }
 func (h Proxys) stop(c *gin.Context) {
 	srv.Stop()
@@ -261,49 +267,54 @@ func (h Proxys) testOne(c *gin.Context) {
 	}
 	h.NegotiateData(c, http.StatusOK, duration.Milliseconds())
 }
-func (h Proxys) testOneError(c *gin.Context) {
-	var obj data.Outbound
+func (h Proxys) preview(c *gin.Context) {
+	var obj struct {
+		data.Outbound
+		Strategy string `json:"strategy,omitempty" xml:"strategy,omitempty" yaml:"strategy,omitempty"`
+	}
 	e := c.Bind(&obj)
 	if e != nil {
 		return
 	}
-	duration, text, e := speed.TestOneEx(&obj, h.getURL())
+	var mSettings manipulator.Settings
+	text, e := mSettings.GetV2ray()
 	if e != nil {
-		if text == `` {
-			h.NegotiateData(c, http.StatusOK, map[string]interface{}{
-				`duration`: duration.Milliseconds(),
-				`text`:     text,
-			})
-		} else {
-			h.NegotiateData(c, http.StatusOK, map[string]interface{}{
-				`duration`: duration.Milliseconds(),
-				`text`:     text,
-				`error`:    e.Error(),
-			})
-		}
+		h.NegotiateError(c, http.StatusInternalServerError, e)
 		return
 	}
-	h.NegotiateData(c, http.StatusOK, map[string]interface{}{
-		`duration`: duration.Milliseconds(),
-		`text`:     text,
-	})
-}
-func (h Proxys) testOneEx(c *gin.Context) {
-	var obj data.Outbound
-	e := c.Bind(&obj)
+	var mStrategy manipulator.Strategy
+	strategy, e := mStrategy.Value(obj.Strategy)
 	if e != nil {
+		h.NegotiateError(c, http.StatusInternalServerError, e)
 		return
 	}
-	duration, text, e := speed.TestOneEx(&obj, h.getURL())
+
+	text, e = obj.RenderStrategy(text, strategy)
 	if e != nil {
-		h.NegotiateError(c, http.StatusInternalServerError, errors.New(
-			e.Error()+"\n"+text,
-		))
+		h.NegotiateError(c, http.StatusInternalServerError, e)
 		return
 	}
-	h.NegotiateData(c, http.StatusOK, map[string]interface{}{
-		`duration`: duration.Milliseconds(),
-		`text`:     text,
+
+	// v2ray
+	cnf, e := core.LoadConfig(`json`, strings.NewReader(text))
+	if e != nil {
+		h.NegotiateData(c, http.StatusOK, gin.H{
+			"text":  text,
+			"error": e.Error(),
+		})
+		return
+	}
+	server, e := core.New(cnf)
+	if e != nil {
+		h.NegotiateData(c, http.StatusOK, gin.H{
+			"text":  text,
+			"error": e.Error(),
+		})
+		return
+	}
+	server.Close()
+	h.NegotiateData(c, http.StatusOK, gin.H{
+		"text": text,
 	})
 }
 func (h Proxys) getURL() (url string) {

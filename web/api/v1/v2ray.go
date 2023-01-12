@@ -30,13 +30,39 @@ func (h V2ray) Register(router *gin.RouterGroup) {
 	r.GET(`default`, h.def)
 }
 func (h V2ray) get(c *gin.Context) {
+	var obj struct {
+		Strategy bool `form:"strategy"`
+	}
+	e := h.BindQuery(c, &obj)
+	if e != nil {
+		return
+	}
 	var mSettings manipulator.Settings
 	text, e := mSettings.GetV2ray()
 	if e != nil {
 		h.NegotiateError(c, http.StatusInternalServerError, e)
 		return
 	}
-	h.NegotiateData(c, http.StatusOK, text)
+	if !obj.Strategy {
+		h.NegotiateData(c, http.StatusOK, text)
+		return
+	}
+	var mStrategy manipulator.Strategy
+	strategys, e := mStrategy.List()
+	if e != nil {
+		h.NegotiateError(c, http.StatusInternalServerError, e)
+		return
+	}
+	settings, e := mSettings.Get()
+	if e != nil {
+		h.NegotiateError(c, http.StatusInternalServerError, e)
+		return
+	}
+	h.NegotiateData(c, http.StatusOK, map[string]any{
+		`text`:      text,
+		`strategys`: strategys,
+		`strategy`:  settings.Strategy,
+	})
 }
 func (h V2ray) put(c *gin.Context) {
 	var obj struct {
