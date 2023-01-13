@@ -1,39 +1,397 @@
 // es5 以註釋 es5 開頭表示使用 es5 而非 golang template 創建配置，推薦使用 es5 比 golang 模板好寫很多
 
+// 定義一個上下文，用於指導腳本如何工作，通常默認腳本就可以很好的工作了，你只需要修改這個上下文來自定義一些選項
+const Context = {
+    // 日誌 
+    log: {
+        // "debug" | "info" | "warning" | "error" | "none"
+        level: "warning"
+    },
+    // socks5 代理設置
+    socks5: {
+        listen: "127.0.0.1",  // 監聽地址
+        port: 11080,          // 監聽地址，不定義則不啓用
+        udp: true,            // 是否代理 udp
+        /** socks5 驗證用戶，爲空，則不驗證用戶*
+        accounts: [
+            {
+                user: "fuck ccp",
+                pass: "ccp go die",
+            },
+        ],/** */
+    },
+    // http 代理
+    http: {
+        listen: "127.0.0.1",  // 監聽地址
+        port: 18118,          // 監聽地址，不定義則不啓用
+        /** Basic Authentication，爲空，則不驗證用戶*
+        accounts: [
+            {
+                user: "fuck ccp",
+                pass: "ccp go die",
+            },
+        ],/** */
+    },
+    // tproxy 透明代理
+    proxy: {
+        // listen: "127.0.0.1",  // 監聽地址
+        port: 22345,        // 監聽地址，不定義則不啓用
+    },
+}
+
 // 這個函數將被系統調用
 // 它返回一個 Object 將被轉爲 v2ray 的 JSON 配置
-function render(ctx) {
+function render(opts) {
+    const reader = new Reader(opts, Context)
+    return reader.reader()
+}
+function getAnyObject(val) {
+    if (typeof val === "object") {
+        return val
+    }
+    return {}
+}
+function getAnyArray(val) {
+    if (Array.isArray(val)) {
+        return val
+    }
+    return []
+}
+
+function getAnyString(val) {
+    if (typeof val === "string") {
+        if (val == '') {
+            return undefined
+        }
+        return val
+    }
+    return undefined
+}
+function getAnyInt(val) {
+    if (typeof val === "number") {
+        return val
+    }
+    return undefined
+}
+function getAnyArray(val) {
+    if (Array.isArray(val)) {
+        return val
+    }
+    return []
+}
+function getAnyArray2(val) {
+    if (Array.isArray(val)) {
+        const result = []
+        for (let i = 0; i < val.length; i++) {
+            result.push(getAnyArray(val[i]))
+        }
+        return result
+    }
+    return []
+}
+class Outbound {
+    constructor(opts) {
+        this.name = getAnyString(opts.Name)
+        this.address = getAnyString(opts.Add)
+        this.port = getAnyString(opts.Port)
+        this.host = getAnyString(opts.Host)
+        this.tls = getAnyString(opts.TLS)
+        this.network = getAnyString(opts.Net)
+        this.path = getAnyString(opts.Path)
+        this.userID = getAnyString(opts.UserID)
+        this.alterID = getAnyString(opts.AlterID)
+        this.security = getAnyString(opts.Security)
+        this.level = getAnyString(opts.Level)
+        this.protocol = getAnyString(opts.Protocol)
+        this.flow = getAnyString(opts.Flow)
+    }
+    toString() {
+        return JSON.stringify(this, undefined, "\t")
+    }
+}
+class Strategy {
+    constructor(opts) {
+        this.name = getAnyString(opts.Name)
+        this.value = getAnyInt(opts.Value) ?? 900
+        if (!Number.isSafeInteger(this.value) || this.value == 0) {
+            this.value = 900
+        }
+        this.host = getAnyArray2(opts.Host)        // 靜態 ip 列表 [['baidu.com', '127.0.0.1'], ['dns.google', '8.8.8.8', '8.8.4.4']]
+        this.proxyIP = getAnyArray(opts.ProxyIP)      // 這些 ip 使用代理
+        this.proxyDomain = getAnyArray(opts.ProxyDomain)  // 這些 域名 使用代理
+        this.directIP = getAnyArray(opts.DirectIP)     // 這些 ip 直連
+        this.directDomain = getAnyArray(opts.DirectDomain) // 這些 域名 直連
+        this.blockIP = getAnyArray(opts.BlockIP)      // 這些 ip 阻止訪問
+        this.blockDomain = getAnyArray(opts.BlockDomain)  // 這些 域名 阻止訪問
+    }
+}
+class ReaderOptions {
+    constructor(opts) {
+        this.path = getAnyString(opts.BasePath)
+        this.ip = getAnyString(opts.AddIP)
+        this.outbound = new Outbound(getAnyObject(opts.Outbound))
+        this.strategy = new Strategy(getAnyObject(opts.Strategy))
+    }
+    toString() {
+        return JSON.stringify(this, undefined, "\t")
+    }
+}
+class ReaderContext {
+    constructor(opts) {
+        let obj = getAnyObject(opts.socks5)
+        this.socks5 = {
+            listen: getAnyString(obj.listen),
+            port: getAnyInt(obj.port),
+            udp: obj.udp ? true : false,
+            accounts: getAnyArray(obj.accounts),
+        }
+        obj = getAnyObject(opts.http)
+        this.http = {
+            listen: getAnyString(obj.listen),
+            port: getAnyInt(obj.port),
+            accounts: getAnyArray(obj.accounts),
+        }
+        obj = getAnyObject(opts.proxy)
+        this.proxy = {
+            listen: getAnyString(obj.listen),
+            port: getAnyInt(obj.port),
+        }
+        obj = getAnyObject(opts.log)
+        this.log = {
+            level: getAnyString(obj.level),
+        }
+    }
+    toString() {
+        return JSON.stringify(this, undefined, "\t")
+    }
+}
+class Rule {
+    domain = []
+    ip = []
+    _domain = new Set()
+    _ip = new Set()
+
+    pushDomain(a) {
+        this._push(a)
+        return this
+    }
+    pushIP(a) {
+        this._push(a, true)
+        return this
+    }
+    _push(a, ip) {
+        if (!Array.isArray(a) || a.length == 0) {
+            return
+        }
+        const keys = ip ? this._ip : this._domain
+        const vals = ip ? this.ip : this.domain
+        for (let i = 0; i < a.length; i++) {
+            if (typeof a[i] !== "string") {
+                continue
+            }
+            const val = a[i].trim()
+            if (keys.has(val)) {
+                continue
+            }
+            keys.add(val)
+            vals.push(val)
+        }
+    }
+}
+class Reader {
+    constructor(opts, ctx) {
+        this.opts = new ReaderOptions(getAnyObject(opts))
+        this.ctx = new ReaderContext(getAnyObject(ctx))
+    }
+    reader() {
+        return {
+            log: this.log(),
+            dns: this.dns(),
+            //     inbounds: renderInbounds(ctx),
+            //     outbounds: renderOutbounds(ctx),
+            //     routing: renderRouting(ctx),
+        }
+    }
+    log() {
+        const log = this.ctx.log
+        return {
+            // "debug" | "info" | "warning" | "error" | "none"
+            loglevel: log.level,
+        }
+    }
+    dns() {
+        const opts = this.opts
+        // 將代理服務器域名加入 靜態 dns
+        const hosts = {}
+        hosts[opts.outbound.address] = opts.ip
+        const strategy = opts.strategy
+        for (let i = 0; i < strategy.host.length; i++) {
+            const host = strategy.host[i]
+            if (host.length == 2) {
+                hosts[host[0]] = host[1]
+            } else {
+                hosts[host[0]] = host.slice(1)
+            }
+        }
+
+        if (strategy.value < 2) {// 全部代理
+            return {
+                hosts: hosts,
+                servers: [
+                    // 解析 非西朝 域名
+                    "8.8.8.8", // google
+                    "1.1.1.1", // cloudflare
+                    "https+local://doh.dns.sb/dns-query",
+                ],
+            }
+        }
+        else if (strategy.value >= 1000) { // 全部直接連接
+            return {
+                hosts: hosts,
+                servers: [
+                    // 解析 西朝 域名
+                    "119.29.29.29", // 騰訊 dns
+                    "223.5.5.5", // 阿里 dns
+                    "localhost",
+                ],
+            }
+        }
+        // 解析規則
+        const proxy = new Rule()
+            .pushDomain([
+                "geosite:apple",
+                "geosite:google",
+                "geosite:microsoft",
+                "geosite:facebook",
+                "geosite:twitter",
+                "geosite:telegram",
+                "geosite:geolocation-!cn",
+                "tld-!cn",
+            ])
+            .pushDomain(strategy.proxyDomain)
+            .pushIP(strategy.proxyIP)
+        const direct = new Rule()
+            .pushDomain([
+                "geosite:cn",
+            ])
+            .pushIP([
+                "geoip:cn",
+            ])
+            .pushDomain(strategy.directDomain)
+            .pushIP(strategy.directIP)
+
+        if (strategy.value < 900) { // 代理優先
+            return {
+                hosts: hosts,
+                servers: [
+                    // 解析 非西朝 域名
+                    {
+                        address: "8.8.8.8", // google
+                        port: 53,
+                        domains: proxy.domain,
+                        expectIPs: proxy.ip,
+                    },
+                    {
+                        address: "1.1.1.1", // cloudflare
+                        port: 53,
+                        domains: proxy.domain,
+                        expectIPs: proxy.ip,
+                    },
+                    // 解析 西朝 域名
+                    {
+                        address: "119.29.29.29", // 騰訊 dns
+                        port: 53,
+                        domains: direct.domain,
+                        expectIPs: direct.ip,
+                    },
+                    {
+                        address: "223.5.5.5", // 阿里 dns
+                        port: 53,
+                        domains: direct.domain,
+                        expectIPs: direct.ip,
+                    },
+                    // 未匹配的
+                    "8.8.8.8",
+                    "1.1.1.1",
+                    "https+local://doh.dns.sb/dns-query"
+                ],
+            }
+        }
+        // 直連優先
+        return {
+            hosts: hosts,
+            servers: [
+                // 解析 西朝 域名
+                {
+                    address: "119.29.29.29", // 騰訊 dns
+                    port: 53,
+                    domains: direct.domain,
+                    expectIPs: direct.ip,
+                },
+                {
+                    address: "223.5.5.5", // 阿里 dns
+                    port: 53,
+                    domains: direct.domain,
+                    expectIPs: direct.ip,
+                },
+                // 解析 非西朝 域名
+                {
+                    address: "8.8.8.8", // google
+                    port: 53,
+                    domains: proxy.domain,
+                    expectIPs: proxy.ip,
+                },
+                {
+                    address: "1.1.1.1", // cloudflare
+                    port: 53,
+                    domains: proxy.domain,
+                    expectIPs: proxy.ip,
+                },
+                // 未匹配的
+                "119.29.29.29", // 騰訊 dns
+                "223.5.5.5", // 阿里 dns
+                "localhost",
+            ],
+        }
+
+
+
+    }
+}
+function getStrategy(ctx) {
+    const strategy = ctx.Strategy
+    if (typeof strategy !== "object") {
+        return {
+            Value: 900,
+        }
+    }
+    let value = 900
+    if (typeof strategy.Value === "number" && strategy.value != 0) {
+        value = strategy.value
+    }
+
     return {
-        log: renderLog(ctx),
-        dns: renderDNS(ctx),
-        inbounds: renderInbounds(ctx),
-        outbounds: renderOutbounds(ctx),
-        routing: renderRouting(ctx),
+        Value: value,
     }
 }
 
-function renderLog(ctx) {
-    return {
-        // "debug" | "info" | "warning" | "error" | "none"
-        loglevel: "warning",
-    }
-}
 function renderDNS(ctx) {
     // 將代理服務器域名加入 靜態 dns
     const hosts = {}
     hosts[ctx.Outbound.Add] = ctx.AddIP
+
     return {
         hosts: hosts,
         servers: [
             // 解析 西朝 域名
             {
-                address: "119.29.29.29",
+                address: "119.29.29.29", // 騰訊 dns
                 port: 53,
                 domains: ["geosite:cn"],
                 expectIPs: ["geoip:cn"]
             },
             {
-                address: "223.5.5.5",
+                address: "223.5.5.5", // 阿里 dns
                 port: 53,
                 domains: ["geosite:cn"],
                 expectIPs: ["geoip:cn"]
@@ -45,49 +403,62 @@ function renderDNS(ctx) {
         ],
     }
 }
+function getListen(addr) {
+    if (typeof addr === "string") {
+        addr = addr.trim()
+        if (addr != "") {
+            return addr
+        }
+    }
+    return undefined
+}
+function isValidPort(p) {
+    return Number.isSafeInteger(p) && p > 0 && p <= 65535
+}
 function renderInbounds(ctx) {
-    return [
-        // 本地 socks5 代理
-        {
+    const result = []
+    const socks5 = Context.socks5
+    // 本地 socks5 代理
+    if (socks5 && isValidPort(socks5.port)) {
+        const accounts = socks5.accounts
+        const password = Array.isArray(accounts) && accounts.length > 0
+        result.push({
             tag: "socks",
-            listen: "127.0.0.1",
             protocol: "socks",
-            port: 1080,
+            listen: getListen(socks5.listen),
+            port: socks5.port,
             settings: {
-                auth: "noauth",
-                accounts: [ // auth 爲 "password" 有效，配置 socks5 用戶名和密碼
-                    {
-                        user: "fuck ccp",
-                        pass: "ccp go die",
-                    },
-                ],
-                udp: true,
+                auth: password ? "password" : "noauth",
+                accounts: password ? accounts : undefined,
+                udp: socks5.udp ? true : false,
                 userLevel: 0,
             }
-        },
-        // 本地 http 代理
-        {
+        })
+    }
+    // 本地 http 代理
+    const http = Context.http
+    if (http && isValidPort(http.port)) {
+        const accounts = http.accounts
+        const password = Array.isArray(accounts) && accounts.length > 0
+        result.push({
             tag: "http",
-            listen: "127.0.0.1",
             protocol: "http",
-            port: 8118,
+            listen: getListen(http.listen),
+            port: http.port,
             timeout: 300, // 超時時間爲 300 秒
             allowTransparent: false, // 爲 true 不止代理也轉發所有 http 請求
-            accounts: [ // 非空則要求代理設置 Basic Authentication
-                /**
-                {
-                    user: "fuck ccp",
-                    pass: "ccp go die",
-                },
-                /**/
-            ],
+            accounts: password ? accounts : undefined,
             userLevel: 0,
-        },
-        // 透明代理
-        {
+        })
+    }
+    // 透明代理
+    const proxy = Context.proxy
+    if (proxy && isValidPort(proxy.port)) {
+        result.push({
             tag: "all-in",
             protocol: "dokodemo-door",
-            port: 12345,
+            listen: getListen(proxy.listen),
+            port: proxy.port,
             settings: {
                 network: "tcp,udp",
                 followRedirect: true
@@ -104,8 +475,10 @@ function renderInbounds(ctx) {
                     tproxy: "tproxy"
                 }
             }
-        },
-    ]
+        })
+    }
+    return result
+
 }
 function intValue(val, def) {
     if (val == "") {

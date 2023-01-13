@@ -111,7 +111,7 @@ func (s *Strategy) spliteLine(str string) (result []string) {
 	}
 	return
 }
-func (s *Strategy) spliteHost(text string) (result []Host) {
+func (s *Strategy) spliteHost(text string) (result [][]string) {
 	strs := strings.Split(strings.TrimSpace(text), "\n")
 	for _, str := range strs {
 		str = strings.TrimSpace(str)
@@ -120,10 +120,7 @@ func (s *Strategy) spliteHost(text string) (result []Host) {
 		}
 		items := s.spliteLine(str)
 		if len(items) > 1 {
-			result = append(result, Host{
-				Host: items[0],
-				IP:   items[1:],
-			})
+			result = append(result, items)
 		}
 	}
 	return
@@ -150,7 +147,7 @@ type StrategyValue struct {
 	// 靜態 ip 列表
 	// baidu.com 127.0.0.1
 	// dns.google 8.8.8.8 8.8.4.4
-	Host []Host `json:"host"`
+	Host [][]string `json:"host"`
 
 	// 這些 ip 使用代理
 	ProxyIP []string `json:"proxyIP"`
@@ -166,8 +163,4 @@ type StrategyValue struct {
 	BlockIP []string `json:"blockIP"`
 	// 這些 域名 阻止訪問
 	BlockDomain []string `json:"blockDomain"`
-}
-type Host struct {
-	Host string   `json:"blockIP"`
-	IP   []string `json:"ip"`
 }

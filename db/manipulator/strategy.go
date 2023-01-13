@@ -137,30 +137,25 @@ func (m Strategy) value(tx *bolt.Tx, name string) (result *data.StrategyValue, e
 	result = val
 	return
 }
-func (m Strategy) copyHost(dst []data.Host, src []data.Host) []data.Host {
-	out := make([]data.Host, 0, len(dst)+len(src))
+func (m Strategy) copyHost(dst [][]string, src [][]string) [][]string {
+	out := make([][]string, 0, len(dst)+len(src))
 	keys := make(map[string]bool)
 	for i := len(dst) - 1; i >= 0; i-- {
 		h := dst[i]
-		if h.Host == `` {
+		if len(h) < 2 || h[0] == `` || keys[h[0]] {
 			continue
 		}
-		if len(h.IP) == 0 || keys[h.Host] {
-			continue
-		}
-		keys[h.Host] = true
+
+		keys[h[0]] = true
 		out = append(out, h)
 	}
 
 	for i := len(src) - 1; i >= 0; i-- {
 		h := src[i]
-		if h.Host == `` {
+		if len(h) < 2 || h[0] == `` || keys[h[0]] {
 			continue
 		}
-		if len(h.IP) == 0 || keys[h.Host] {
-			continue
-		}
-		keys[h.Host] = true
+		keys[h[0]] = true
 		out = append(out, h)
 	}
 	return out

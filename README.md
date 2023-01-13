@@ -22,7 +22,7 @@ v2ray-web 是 v2ray-core 的一個 web接口的 ui程序 爲桌面系統提供�
 
 使用策略你可以很容易在 代理優先 直連優先 全部代理訪問 之間進行切換，並且也可以修改 es5 腳本來適配完全符合自己需求的策略。
 
-
+Default 策略是預定義並且不可刪除，Default 策略中定義的 Host/Proxy/Direct/Block 規則將自動被其它策略繼承，所以你可以把通用的全局規則寫到 Default，然後再建立個性化的特定規則。
 
 # docker
 
