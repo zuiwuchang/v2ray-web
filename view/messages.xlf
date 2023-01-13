@@ -244,6 +244,13 @@
           <context context-type="linenumber">40</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="2178194934757769008" datatype="html">
+        <source>strategy has been saved</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.component.html</context>
+          <context context-type="linenumber">41</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="1440925245175762079" datatype="html">
         <source>Add Element</source>
         <context-group purpose="location">
@@ -435,6 +442,10 @@
           <context context-type="linenumber">58</context>
         </context-group>
         <context-group purpose="location">
+          <context context-type="sourcefile">src/app/strategy/dialog/edit/edit.component.html</context>
+          <context context-type="linenumber">58</context>
+        </context-group>
+        <context-group purpose="location">
           <context context-type="sourcefile">src/app/user/add/add.component.html</context>
           <context context-type="linenumber">28</context>
         </context-group>
@@ -471,6 +482,10 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/strategy/dialog/add/add.component.html</context>
+          <context context-type="linenumber">59</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/strategy/dialog/edit/edit.component.html</context>
           <context context-type="linenumber">59</context>
         </context-group>
         <context-group purpose="location">
@@ -926,6 +941,10 @@
           <context context-type="linenumber">13</context>
         </context-group>
         <context-group purpose="location">
+          <context context-type="sourcefile">src/app/strategy/dialog/edit/edit.component.html</context>
+          <context context-type="linenumber">13</context>
+        </context-group>
+        <context-group purpose="location">
           <context context-type="sourcefile">src/app/user/add/add.component.html</context>
           <context context-type="linenumber">13</context>
         </context-group>
@@ -953,6 +972,10 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/strategy/dialog/add/add.component.html</context>
+          <context context-type="linenumber">15</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/strategy/dialog/edit/edit.component.html</context>
           <context context-type="linenumber">15</context>
         </context-group>
         <context-group purpose="location">
@@ -1104,11 +1127,19 @@
           <context context-type="sourcefile">src/app/strategy/dialog/add/add.component.html</context>
           <context context-type="linenumber">2</context>
         </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/strategy/dialog/edit/edit.component.html</context>
+          <context context-type="linenumber">2</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="6756133403993660026" datatype="html">
         <source>Strategy Value</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/strategy/dialog/add/add.component.html</context>
+          <context context-type="linenumber">18</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/strategy/dialog/edit/edit.component.html</context>
           <context context-type="linenumber">18</context>
         </context-group>
       </trans-unit>
@@ -1118,11 +1149,19 @@
           <context context-type="sourcefile">src/app/strategy/dialog/add/add.component.html</context>
           <context context-type="linenumber">20</context>
         </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/strategy/dialog/edit/edit.component.html</context>
+          <context context-type="linenumber">20</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="7473105594310277251" datatype="html">
         <source>Host Description</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/strategy/dialog/add/add.component.html</context>
+          <context context-type="linenumber">34</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/strategy/dialog/edit/edit.component.html</context>
           <context context-type="linenumber">34</context>
         </context-group>
       </trans-unit>
@@ -1132,6 +1171,10 @@
           <context context-type="sourcefile">src/app/strategy/dialog/add/add.component.html</context>
           <context context-type="linenumber">43</context>
         </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/strategy/dialog/edit/edit.component.html</context>
+          <context context-type="linenumber">43</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="5825958343824661237" datatype="html">
         <source>Direct Description</source>
@@ -1139,11 +1182,19 @@
           <context context-type="sourcefile">src/app/strategy/dialog/add/add.component.html</context>
           <context context-type="linenumber">47</context>
         </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/strategy/dialog/edit/edit.component.html</context>
+          <context context-type="linenumber">47</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="2740183602204563279" datatype="html">
         <source>Block Description</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/strategy/dialog/add/add.component.html</context>
+          <context context-type="linenumber">51</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/strategy/dialog/edit/edit.component.html</context>
           <context context-type="linenumber">51</context>
         </context-group>
       </trans-unit>

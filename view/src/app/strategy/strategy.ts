@@ -67,6 +67,14 @@ export class StrategyValue {
         this.direct = opts?.direct ?? new StrategyElement()
         this.block = opts?.block ?? new StrategyElement()
     }
+    cloneTo(o: StrategyValue) {
+        o.name = this.name
+        o.value = this.value
+        o.host = this.host
+        this.proxy.cloneTo(o.proxy)
+        this.direct.cloneTo(o.direct)
+        this.block.cloneTo(o.block)
+    }
 }
 export class StrategyElement {
     ip: string
@@ -81,5 +89,9 @@ export class StrategyElement {
     set(ip: string, domain: string) {
         this.ip = ip
         this.domain = domain
+    }
+    cloneTo(o: StrategyElement) {
+        o.ip = this.ip
+        o.domain = this.domain
     }
 }
