@@ -6,7 +6,10 @@ import { ServerAPI } from 'src/app/core/core/api';
 import { I18nService } from 'src/app/core/i18n/i18n.service';
 import { SessionService } from 'src/app/core/session/session.service';
 import { sortNameValue } from 'src/app/core/utils';
-import { Strategy } from '../strategy';
+import { ConfirmComponent } from 'src/app/shared/dialog/confirm/confirm.component';
+import { AddComponent } from '../dialog/add/add.component';
+import { EditComponent } from '../dialog/edit/edit.component';
+import { Strategy, StrategyValue } from '../strategy';
 
 @Component({
   selector: 'app-view',
@@ -30,8 +33,8 @@ export class ViewComponent implements OnInit {
   get disabled(): boolean {
     return this._disabled
   }
-  private _source = new Array<Strategy>()
-  get source(): Array<Strategy> {
+  private _source = new Array<StrategyValue>()
+  get source(): Array<StrategyValue> {
     return this._source
   }
   ngOnInit(): void {
@@ -53,7 +56,7 @@ export class ViewComponent implements OnInit {
         return
       }
       if (data && data.length > 0) {
-        this._source.push(...data)
+        this._source.push(...data.map((v) => StrategyValue.fromStrategy(v)))
         this._source.sort(sortNameValue)
       }
     }, (e) => {
@@ -66,57 +69,57 @@ export class ViewComponent implements OnInit {
       this._ready = true
     })
   }
-  onClickEdit(node: Strategy) {
-    //   this.matDialog.open(PasswordComponent, {
-    //     data: node.name,
-    //     disableClose: true,
-    //   })
+  onClickEdit(node: StrategyValue) {
+    this.matDialog.open(EditComponent, {
+      data: node,
+      disableClose: true,
+    })
   }
-  onClickDelete(node: Strategy) {
-    //   this.matDialog.open(ConfirmComponent, {
-    //     data: {
-    //       title: this.i18nService.get("delete user title"),
-    //       content: `${this.i18nService.get("delete user")} : ${node.name}`,
-    //     },
-    //   }).afterClosed().toPromise().then((data) => {
-    //     if (this._closed || !data) {
-    //       return
-    //     }
-    //     this._delete(node)
-    //   })
+  onClickDelete(node: StrategyValue) {
+    this.matDialog.open(ConfirmComponent, {
+      data: {
+        title: this.i18nService.get("delete strategy title"),
+        content: `${this.i18nService.get("delete strategy")} : ${node.name}`,
+      },
+    }).afterClosed().toPromise().then((data) => {
+      if (this._closed || !data) {
+        return
+      }
+      this._delete(node)
+    })
   }
-  // private _delete(node: Strategy) {
-  //   this._disabled = true
-  //   ServerAPI.v1.users.delete(this.httpClient, {
-  //     params: {
-  //       name: node.name,
-  //     },
-  //   }).then(() => {
-  //     const index = this._source.indexOf(node)
-  //     this._source.splice(index, 1)
-  //     this.toasterService.pop('success',
-  //       this.i18nService.get('success'),
-  //       this.i18nService.get('user has been deleted'),
-  //     )
-  //   }, (e) => {
-  //     console.warn(e)
-  //     this.toasterService.pop('error',
-  //       this.i18nService.get('error'),
-  //       e,
-  //     )
-  //   }).finally(() => {
-  //     this._disabled = false
-  //   })
-  // }
+  private _delete(node: StrategyValue) {
+    this._disabled = true
+    ServerAPI.v1.strategys.delete(this.httpClient, {
+      params: {
+        name: node.name,
+      },
+    }).then(() => {
+      const index = this._source.indexOf(node)
+      this._source.splice(index, 1)
+      this.toasterService.pop('success',
+        this.i18nService.get('success'),
+        this.i18nService.get('strategy has been deleted'),
+      )
+    }, (e) => {
+      console.warn(e)
+      this.toasterService.pop('error',
+        this.i18nService.get('error'),
+        e,
+      )
+    }).finally(() => {
+      this._disabled = false
+    })
+  }
   onClickAdd() {
-    //   this.matDialog.open(AddComponent, {
-    //     disableClose: true,
-    //   }).afterClosed().toPromise().then((data) => {
-    //     if (this._closed || !data) {
-    //       return
-    //     }
-    //     this._source.push(data)
-    //     this._source.sort(User.compare)
-    //   })
+    this.matDialog.open(AddComponent, {
+      disableClose: true,
+    }).afterClosed().toPromise().then((data) => {
+      if (this._closed || !data) {
+        return
+      }
+      this._source.push(data)
+      this._source.sort(sortNameValue)
+    })
   }
 }

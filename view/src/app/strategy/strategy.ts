@@ -35,3 +35,51 @@ export interface Strategy {
     // 這些 域名 阻止訪問
     blockDomain: string
 }
+export class StrategyValue {
+    static fromStrategy(o: Strategy): StrategyValue {
+        const v = new StrategyValue()
+        v.name = o.name
+        v.value = o.value
+        v.host = o.host
+        v.proxy.set(o.proxyIP, o.proxyDomain)
+        v.direct.set(o.directIP, o.directDomain)
+        v.block.set(o.blockIP, o.blockDomain)
+        return v
+    }
+    name: string
+    value: number
+    host: string
+    proxy: StrategyElement
+    direct: StrategyElement
+    block: StrategyElement
+    constructor(opts?: {
+        name?: string
+        value?: number
+        host?: string
+        proxy?: StrategyElement
+        direct?: StrategyElement
+        block?: StrategyElement
+    }) {
+        this.name = opts?.name ?? ''
+        this.value = opts?.value ?? 0
+        this.host = opts?.host ?? ''
+        this.proxy = opts?.proxy ?? new StrategyElement()
+        this.direct = opts?.direct ?? new StrategyElement()
+        this.block = opts?.block ?? new StrategyElement()
+    }
+}
+export class StrategyElement {
+    ip: string
+    domain: string
+    constructor(opts?: {
+        ip?: string
+        domain?: string
+    }) {
+        this.ip = opts?.ip ?? ''
+        this.domain = opts?.domain ?? ''
+    }
+    set(ip: string, domain: string) {
+        this.ip = ip
+        this.domain = domain
+    }
+}

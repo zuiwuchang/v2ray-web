@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 import { StrategyRoutingModule } from './strategy-routing.module';
 import { ViewComponent } from './view/view.component';
@@ -14,13 +15,20 @@ import { MatCardModule } from '@angular/material/card';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatSelectModule } from '@angular/material/select';
+import { AddComponent } from './dialog/add/add.component';
+import { ValueComponent } from './value/value.component';
+import { EditComponent } from './dialog/edit/edit.component';
 
 @NgModule({
   declarations: [
-    ViewComponent
+    ViewComponent,
+    AddComponent,
+    ValueComponent,
+    EditComponent
   ],
   imports: [
-    CommonModule,
+    CommonModule, FormsModule,
     MatListModule,
     MatButtonModule,
     MatIconModule,
@@ -31,6 +39,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
     MatProgressSpinnerModule,
     MatDialogModule,
     MatProgressBarModule,
+    MatSelectModule,
     StrategyRoutingModule
   ]
 })

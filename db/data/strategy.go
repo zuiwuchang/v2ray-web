@@ -97,7 +97,7 @@ func (s *Strategy) splite(text string) (result []string) {
 func (s *Strategy) spliteLine(str string) (result []string) {
 	var val string
 	for str != "" {
-		i := strings.IndexAny(str, " \t,:;")
+		i := strings.IndexAny(str, " \t,;")
 		if i < 0 {
 			val = strings.TrimSpace(str)
 			str = ``

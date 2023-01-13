@@ -32,7 +32,7 @@
                         <mat-icon>create</mat-icon>
                     </button>
                     <button mat-icon-button i18n-matTooltip matTooltip="delete" (click)="onClickDelete(node)"
-                        [disabled]="disabled">
+                        [disabled]="disabled || node.name=='Default'">
                         <mat-icon>delete</mat-icon>
                     </button>
                 </mat-list-item>

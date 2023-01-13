@@ -5,6 +5,12 @@ export function sortString(l: string, r: string): number {
     return l < r ? -1 : 1
 }
 export function sortNameValue(l: { name: string, value: number }, r: { name: string, value: number }): number {
+    if (l.name == "Default") {
+        return -1
+    } else if (r.name == "Default") {
+        return 1
+    }
+
     if (l.value == r.value) {
         return sortString(l.name, r.name)
     }

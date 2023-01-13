@@ -246,6 +246,38 @@
           <context context-type="linenumber">36</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="2036278261584442019" datatype="html">
+        <source>strategy added successfully</source>
+        <target>添加策略成功</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.component.html</context>
+          <context context-type="linenumber">37</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="8729321909288221903" datatype="html">
+        <source>strategy has been deleted</source>
+        <target>策略已经被移除</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.component.html</context>
+          <context context-type="linenumber">38</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="6185250635343683327" datatype="html">
+        <source>delete strategy title</source>
+        <target>删除策略</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.component.html</context>
+          <context context-type="linenumber">39</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="7669836315794615042" datatype="html">
+        <source>delete strategy</source>
+        <target>删除策略</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.component.html</context>
+          <context context-type="linenumber">40</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="1440925245175762079" datatype="html">
         <source>Add Element</source>
         <target>增加节点</target>
@@ -450,6 +482,10 @@
           <context context-type="linenumber">50,51</context>
         </context-group>
         <context-group purpose="location">
+          <context context-type="sourcefile">src/app/strategy/dialog/add/add.component.html</context>
+          <context context-type="linenumber">58</context>
+        </context-group>
+        <context-group purpose="location">
           <context context-type="sourcefile">src/app/user/add/add.component.html</context>
           <context context-type="linenumber">28</context>
         </context-group>
@@ -486,6 +522,10 @@
           <context context-type="linenumber">51,52</context>
         </context-group>
         <context-group purpose="location">
+          <context context-type="sourcefile">src/app/strategy/dialog/add/add.component.html</context>
+          <context context-type="linenumber">59</context>
+        </context-group>
+        <context-group purpose="location">
           <context context-type="sourcefile">src/app/user/add/add.component.html</context>
           <context context-type="linenumber">29</context>
         </context-group>
@@ -511,7 +551,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app/view-panel/view-panel.component.html</context>
-          <context context-type="linenumber">81</context>
+          <context context-type="linenumber">95</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/v2ray/dialog/preview/preview.component.html</context>
@@ -670,8 +710,8 @@
           <context context-type="linenumber">46</context>
         </context-group>
         <context-group purpose="location">
-          <context context-type="sourcefile">src/app/shared/navigation-bar/navigation-bar.component.html</context>
-          <context context-type="linenumber">46</context>
+          <context context-type="sourcefile">src/app/app/view-panel/view-panel.component.html</context>
+          <context context-type="linenumber">49</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/v2ray/settings/settings.component.html</context>
@@ -711,7 +751,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app/view-panel/view-panel.component.html</context>
-          <context context-type="linenumber">57</context>
+          <context context-type="linenumber">71</context>
         </context-group>
       </trans-unit>
       <trans-unit id="4517286484473286325" datatype="html">
@@ -747,7 +787,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app/view-panel/view-panel.component.html</context>
-          <context context-type="linenumber">77</context>
+          <context context-type="linenumber">91</context>
         </context-group>
       </trans-unit>
       <trans-unit id="4566201598079129347" datatype="html">
@@ -775,7 +815,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app/view-panel/view-panel.component.html</context>
-          <context context-type="linenumber">85</context>
+          <context context-type="linenumber">99</context>
         </context-group>
       </trans-unit>
       <trans-unit id="2060259765918222839" datatype="html">
@@ -787,7 +827,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app/view-panel/view-panel.component.html</context>
-          <context context-type="linenumber">89</context>
+          <context context-type="linenumber">103</context>
         </context-group>
       </trans-unit>
       <trans-unit id="7431733953702663685" datatype="html">
@@ -803,7 +843,7 @@
         <target>开始</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app/view-panel/view-panel.component.html</context>
-          <context context-type="linenumber">63</context>
+          <context context-type="linenumber">77</context>
         </context-group>
       </trans-unit>
       <trans-unit id="1853940892491667646" datatype="html">
@@ -811,7 +851,7 @@
         <target>菜单</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app/view-panel/view-panel.component.html</context>
-          <context context-type="linenumber">70</context>
+          <context context-type="linenumber">84</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/shared/navigation-bar/navigation-bar.component.html</context>
@@ -823,7 +863,7 @@
         <target>设置防火墙</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app/view-panel/view-panel.component.html</context>
-          <context context-type="linenumber">94</context>
+          <context context-type="linenumber">108</context>
         </context-group>
       </trans-unit>
       <trans-unit id="4422497237791878054" datatype="html">
@@ -831,7 +871,7 @@
         <target>重置防火墙</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app/view-panel/view-panel.component.html</context>
-          <context context-type="linenumber">98</context>
+          <context context-type="linenumber">112</context>
         </context-group>
       </trans-unit>
       <trans-unit id="9095134843628689709" datatype="html">
@@ -839,7 +879,7 @@
         <target>编辑</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app/view-panel/view-panel.component.html</context>
-          <context context-type="linenumber">103</context>
+          <context context-type="linenumber">117</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/strategy/view/view.component.html</context>
@@ -859,7 +899,7 @@
         <target>删除</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app/view-panel/view-panel.component.html</context>
-          <context context-type="linenumber">107</context>
+          <context context-type="linenumber">121</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/strategy/view/view.component.html</context>
@@ -974,6 +1014,10 @@
           <context context-type="linenumber">25</context>
         </context-group>
         <context-group purpose="location">
+          <context context-type="sourcefile">src/app/strategy/dialog/add/add.component.html</context>
+          <context context-type="linenumber">13</context>
+        </context-group>
+        <context-group purpose="location">
           <context context-type="sourcefile">src/app/user/add/add.component.html</context>
           <context context-type="linenumber">13</context>
         </context-group>
@@ -1000,6 +1044,10 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/shared/login/login.component.html</context>
           <context context-type="linenumber">28</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/strategy/dialog/add/add.component.html</context>
+          <context context-type="linenumber">15</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/user/add/add.component.html</context>
@@ -1094,6 +1142,18 @@
           <context context-type="linenumber">18</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="259353196710098432" datatype="html">
+        <source>Strategy Management</source>
+        <target>策略管理</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/navigation-bar/navigation-bar.component.html</context>
+          <context context-type="linenumber">46</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/strategy/view/view.component.html</context>
+          <context context-type="linenumber">24</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="8374785474006127689" datatype="html">
         <source>V2ray Setting</source>
         <target>V2ray 设定模板</target>
@@ -1146,12 +1206,60 @@
           <context context-type="linenumber">90</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="259353196710098432" datatype="html">
-        <source>Strategy Management</source>
-        <target>策略管理</target>
+      <trans-unit id="2337157646792032483" datatype="html">
+        <source>Add Strategy</source>
+        <target>增加策略</target>
         <context-group purpose="location">
-          <context context-type="sourcefile">src/app/strategy/view/view.component.html</context>
-          <context context-type="linenumber">24</context>
+          <context context-type="sourcefile">src/app/strategy/dialog/add/add.component.html</context>
+          <context context-type="linenumber">2</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="6756133403993660026" datatype="html">
+        <source>Strategy Value</source>
+        <target>策略值</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/strategy/dialog/add/add.component.html</context>
+          <context context-type="linenumber">18</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="3891417243130624358" datatype="html">
+        <source>Strategy Value Invalid</source>
+        <target>策略值无效</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/strategy/dialog/add/add.component.html</context>
+          <context context-type="linenumber">20</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="7473105594310277251" datatype="html">
+        <source>Host Description</source>
+        <target>设置静态 IP，每行一个格式为 '域名分隔符IP分隔符IP...'， 分隔符可以是 '\t,;' 中任意字符或空格，如果行以 # 开始则忽略此行内容。</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/strategy/dialog/add/add.component.html</context>
+          <context context-type="linenumber">34</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="6668967208210053205" datatype="html">
+        <source>Proxy Description</source>
+        <target>这些 IP 和 域名 将被使用代理访问，多个值使用分隔符号分隔，分隔符可以是 '\n\t,;' 中任意字符或空格，如果行以 # 开始则忽略此行内容。</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/strategy/dialog/add/add.component.html</context>
+          <context context-type="linenumber">43</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="5825958343824661237" datatype="html">
+        <source>Direct Description</source>
+        <target>这些 IP 和 域名 将被直接访问，多个值使用分隔符号分隔，分隔符可以是 '\n\t,;' 中任意字符或空格，如果行以 # 开始则忽略此行内容。</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/strategy/dialog/add/add.component.html</context>
+          <context context-type="linenumber">47</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2740183602204563279" datatype="html">
+        <source>Block Description</source>
+        <target>这些 IP 和 域名 会被阻止访问，多个值使用分隔符号分隔，分隔符可以是 '\n\t,;' 中任意字符或空格，如果行以 # 开始则忽略此行内容。</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/strategy/dialog/add/add.component.html</context>
+          <context context-type="linenumber">51</context>
         </context-group>
       </trans-unit>
       <trans-unit id="1059784693423848532" datatype="html">

@@ -187,6 +187,12 @@ func (m Strategy) copy(dst []string, src []string) []string {
 func (m Strategy) get(bucket *bolt.Bucket, key []byte) (result *data.Strategy, e error) {
 	b := bucket.Get(key)
 	if len(b) == 0 {
+		if string(key) == data.StrategyDefault {
+			result = &data.Strategy{
+				Name: data.StrategyDefault,
+			}
+			return
+		}
 		e = fmt.Errorf("key not exist : %s.%v", data.StrategyBucket, key)
 		return
 	}
@@ -207,6 +213,10 @@ func (m Strategy) getValue(bucket *bolt.Bucket, key []byte) (result *data.Strate
 	return
 }
 func (m Strategy) Put(d *data.Strategy) error {
+	if d.Name == data.StrategyDefault && d.Value != 0 {
+		return fmt.Errorf("'%s.value' must be 0", data.StrategyDefault)
+	}
+
 	value, e := d.Encoder()
 	if e != nil {
 		return e
@@ -217,7 +227,51 @@ func (m Strategy) Put(d *data.Strategy) error {
 			e = fmt.Errorf("bucket not exist : %s", data.StrategyBucket)
 			return
 		}
+		b := bucket.Get([]byte(d.Name))
+		if len(b) == 0 {
+			e = fmt.Errorf("strategy not exist : %s", d.Name)
+			return
+		}
 		e = bucket.Put([]byte(d.Name), value)
+		return
+	})
+}
+func (m Strategy) Add(d *data.Strategy) error {
+	if d.Name == data.StrategyDefault && d.Value != 0 {
+		return fmt.Errorf("'%s.value' must be 0", data.StrategyDefault)
+	}
+
+	value, e := d.Encoder()
+	if e != nil {
+		return e
+	}
+	return _db.Update(func(tx *bolt.Tx) (e error) {
+		bucket := tx.Bucket([]byte(data.StrategyBucket))
+		if bucket == nil {
+			e = fmt.Errorf("bucket not exist : %s", data.StrategyBucket)
+			return
+		}
+		b := bucket.Get([]byte(d.Name))
+		if len(b) != 0 {
+			e = fmt.Errorf("strategy already exist : %s", d.Name)
+			return
+		}
+		e = bucket.Put([]byte(d.Name), value)
+		return
+	})
+}
+func (m Strategy) Remove(name string) error {
+	if name == data.StrategyDefault {
+		return fmt.Errorf("'%s' cannot be deleted", name)
+	}
+
+	return _db.Update(func(tx *bolt.Tx) (e error) {
+		bucket := tx.Bucket([]byte(data.StrategyBucket))
+		if bucket == nil {
+			e = fmt.Errorf("bucket not exist : %s", data.StrategyBucket)
+			return
+		}
+		e = bucket.Delete([]byte(name))
 		return
 	})
 }
