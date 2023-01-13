@@ -2,7 +2,8 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ServerAPI } from 'src/app/core/core/api';
 import { isArray } from 'king-node/dist/core';
-import { Source, Panel, Element } from './source';
+import { Source, Panel, Element, Strategy } from './source';
+import { sortNameValue } from 'src/app/core/utils';
 interface Response {
   subscription: [{
     id: number
@@ -10,7 +11,14 @@ interface Response {
     url: string
   }
   ]
-  element: Array<any>
+  element: Array<any>,
+  strategy: string,
+  strategys: [
+    {
+      name: string,
+      value: number,
+    }
+  ],
 }
 @Component({
   selector: 'app-view',
@@ -32,10 +40,9 @@ export class ViewComponent implements OnInit, OnDestroy {
   get source(): Source {
     return this._source
   }
-
+  private _strategy = new Strategy()
   ngOnInit(): void {
-
-    const panel = new Panel()
+    const panel = new Panel(this._strategy)
     panel.id = 0
     this.source.put(panel)
     this.load()
@@ -50,10 +57,18 @@ export class ViewComponent implements OnInit, OnDestroy {
       if (this._closed) {
         return
       }
+      const strategy = this._strategy
+      if (typeof response.strategy === "string") {
+        strategy.strategy = response.strategy
+      }
+      if (Array.isArray(response.strategys)) {
+        strategy.strategys.push(...response.strategys)
+        strategy.strategys.sort(sortNameValue)
+      }
       if (isArray(response.subscription)) {
         for (let i = 0; i < response.subscription.length; i++) {
           const element = response.subscription[i]
-          const panel = new Panel()
+          const panel = new Panel(strategy)
           panel.id = element.id
           panel.name = element.name
           this._source.put(panel)

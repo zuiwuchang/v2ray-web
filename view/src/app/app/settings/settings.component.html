@@ -45,8 +45,8 @@
                     <mat-form-field class="full-width">
                         <mat-label i18n>Strategy</mat-label>
                         <input matInput [disabled]="disabled" [(ngModel)]="strategy" name="strategy"
-                            [matAutocomplete]="net">
-                        <mat-autocomplete #net="matAutocomplete">
+                            [matAutocomplete]="autoStrategy">
+                        <mat-autocomplete #autoStrategy="matAutocomplete">
                             <mat-option [value]="item.name" *ngFor="let item of strategys">{{item.name}} -
                                 {{item.value}}</mat-option>
 

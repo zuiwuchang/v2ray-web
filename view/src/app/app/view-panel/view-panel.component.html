@@ -43,6 +43,20 @@
         (click)="onClickUpdate()" [disabled]="disabled">
         <mat-icon>update</mat-icon>
     </button>
+
+
+    <mat-form-field class="full-width">
+        <mat-label i18n>Strategy</mat-label>
+        <input matInput [disabled]="disabled" [(ngModel)]="panel.strategy.strategy" name="strategy"
+            [matAutocomplete]="autoStrategy">
+        <mat-autocomplete #autoStrategy="matAutocomplete">
+            <mat-option [value]="item.name" *ngFor="let item of panel.strategy.strategys">{{item.name}} -
+                {{item.value}}</mat-option>
+
+        </mat-autocomplete>
+    </mat-form-field>
+
+
     <mat-list>
         <mat-list-item *ngFor="let item of panel.source">
             <mat-icon matListIcon [color]="isCurrent(item)?'accent':''">{{getIcon(item)}}</mat-icon>

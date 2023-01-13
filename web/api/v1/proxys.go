@@ -108,13 +108,23 @@ func (h Proxys) list(c *gin.Context) {
 		h.NegotiateError(c, http.StatusInternalServerError, e)
 		return
 	}
-
-	h.NegotiateData(c, http.StatusOK, &struct {
-		Element      []*data.Element      `json:"element,omitempty" xml:"element,omitempty" yaml:"element,omitempty"`
-		Subscription []*data.Subscription `json:"subscription,omitempty" xml:"subscription,omitempty" yaml:"subscription,omitempty"`
-	}{
-		element,
-		subscription,
+	var mStrategy manipulator.Strategy
+	strategys, e := mStrategy.List()
+	if e != nil {
+		h.NegotiateError(c, http.StatusInternalServerError, e)
+		return
+	}
+	var mSettings manipulator.Settings
+	v, e := mSettings.Get()
+	if e != nil {
+		h.NegotiateError(c, http.StatusInternalServerError, e)
+		return
+	}
+	h.NegotiateData(c, http.StatusOK, map[string]interface{}{
+		`element`:      element,
+		`subscription`: subscription,
+		`strategys`:    strategys,
+		`strategy`:     v.Strategy,
 	})
 }
 func (h Proxys) remove(c *gin.Context) {

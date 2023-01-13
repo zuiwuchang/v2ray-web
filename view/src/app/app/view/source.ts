@@ -35,6 +35,9 @@ export class Source {
     }
 }
 export class Panel {
+    constructor(readonly strategy: Strategy) {
+
+    }
     id: number = 0
     name: string = ''
     source = new Array<Element>()
@@ -52,6 +55,14 @@ export class Panel {
         }
         return l.name > r.name ? 1 : -1
     }
+}
+
+export class Strategy {
+    strategy = ''
+    strategys: Array<{
+        name: string,
+        value: number,
+    }> = []
 }
 
 export class Element {

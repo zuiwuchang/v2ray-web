@@ -363,7 +363,12 @@ export class ViewPanelComponent implements OnInit, OnDestroy, AfterViewInit {
     ServerAPI.v1.proxys.postOne<{
       text: string
       error?: string,
-    }>(this.httpClient, 'start', element).then((resp) => {
+    }>(this.httpClient, 'start', {
+      id: element.id,
+      outbound: element.outbound,
+      subscription: element.subscription,
+      strategy: this.panel.strategy.strategy,
+    }).then((resp) => {
       if (this._closed) {
         return
       }
@@ -607,7 +612,9 @@ export class ViewPanelComponent implements OnInit, OnDestroy, AfterViewInit {
     element.request = true
     ServerAPI.v1.proxys.postOne(this.httpClient,
       'preview',
-      element.outbound,
+      Object.assign({
+        strategy:this.panel.strategy.strategy,
+      }, element.outbound),
     ).then((resp) => {
       if (this._closed) {
         return
