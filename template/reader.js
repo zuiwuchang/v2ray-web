@@ -7,6 +7,8 @@ const Context = {
         // "debug" | "info" | "warning" | "error" | "none"
         level: "warning"
     },
+    // 如何處理 bt, "direct" | "proxy" | undefined
+    bittorrent: "direct",
     // socks5 代理設置
     socks5: {
         listen: "127.0.0.1",  // 監聽地址
@@ -67,6 +69,19 @@ function getAnyString(val) {
     }
     return undefined
 }
+function toAnyInt(val) {
+    if (typeof val === "string") {
+        const v = parseInt(val)
+        if (Number.isSafeInteger(v)) {
+            return v
+        }
+        return undefined
+    }
+    if (typeof val === "number") {
+        return val
+    }
+    return undefined
+}
 function getAnyInt(val) {
     if (typeof val === "number") {
         return val
@@ -93,15 +108,15 @@ class Outbound {
     constructor(opts) {
         this.name = getAnyString(opts.Name)
         this.address = getAnyString(opts.Add)
-        this.port = getAnyString(opts.Port)
+        this.port = toAnyInt(opts.Port)
         this.host = getAnyString(opts.Host)
         this.tls = getAnyString(opts.TLS)
         this.network = getAnyString(opts.Net)
         this.path = getAnyString(opts.Path)
         this.userID = getAnyString(opts.UserID)
-        this.alterID = getAnyString(opts.AlterID)
+        this.alterID = toAnyInt(opts.AlterID)
         this.security = getAnyString(opts.Security)
-        this.level = getAnyString(opts.Level)
+        this.level = toAnyInt(opts.Level)
         this.protocol = getAnyString(opts.Protocol)
         this.flow = getAnyString(opts.Flow)
     }
@@ -124,6 +139,9 @@ class Strategy {
         this.blockIP = getAnyArray(opts.BlockIP)      // 這些 ip 阻止訪問
         this.blockDomain = getAnyArray(opts.BlockDomain)  // 這些 域名 阻止訪問
     }
+    toString() {
+        return JSON.stringify(this, undefined, "\t")
+    }
 }
 class ReaderOptions {
     constructor(opts) {
@@ -139,27 +157,35 @@ class ReaderOptions {
 class ReaderContext {
     constructor(opts) {
         let obj = getAnyObject(opts.socks5)
-        this.socks5 = {
+        let port = getAnyInt(obj.port) ?? 0
+        this.socks5 = port > 0 && port <= 65535 ? {
             listen: getAnyString(obj.listen),
-            port: getAnyInt(obj.port),
+            port: port,
             udp: obj.udp ? true : false,
             accounts: getAnyArray(obj.accounts),
-        }
+        } : undefined
+
         obj = getAnyObject(opts.http)
-        this.http = {
+        port = getAnyInt(obj.port) ?? 0
+        this.http = port > 0 && port <= 65535 ? {
             listen: getAnyString(obj.listen),
-            port: getAnyInt(obj.port),
+            port: port,
             accounts: getAnyArray(obj.accounts),
-        }
+        } : undefined
+
         obj = getAnyObject(opts.proxy)
-        this.proxy = {
+        port = getAnyInt(obj.port) ?? 0
+        this.proxy = port > 0 && port <= 65535 ? {
             listen: getAnyString(obj.listen),
             port: getAnyInt(obj.port),
-        }
+        } : undefined
+
         obj = getAnyObject(opts.log)
         this.log = {
             level: getAnyString(obj.level),
         }
+
+        this.bittorrent = getAnyString(opts.bittorrent)
     }
     toString() {
         return JSON.stringify(this, undefined, "\t")
@@ -197,6 +223,9 @@ class Rule {
             vals.push(val)
         }
     }
+    isValid() {
+        return this.domain.length != 0 || this.ip.length != 0
+    }
 }
 class Reader {
     constructor(opts, ctx) {
@@ -207,9 +236,9 @@ class Reader {
         return {
             log: this.log(),
             dns: this.dns(),
-            //     inbounds: renderInbounds(ctx),
-            //     outbounds: renderOutbounds(ctx),
-            //     routing: renderRouting(ctx),
+            inbounds: this.inbounds(),
+            outbounds: this.outbounds(),
+            routing: this.routing(),
         }
     }
     log() {
@@ -234,27 +263,33 @@ class Reader {
             }
         }
 
-        if (strategy.value < 2) {// 全部代理
-            return {
-                hosts: hosts,
-                servers: [
-                    // 解析 非西朝 域名
-                    "8.8.8.8", // google
-                    "1.1.1.1", // cloudflare
-                    "https+local://doh.dns.sb/dns-query",
-                ],
-            }
-        }
-        else if (strategy.value >= 1000) { // 全部直接連接
-            return {
-                hosts: hosts,
-                servers: [
-                    // 解析 西朝 域名
-                    "119.29.29.29", // 騰訊 dns
-                    "223.5.5.5", // 阿里 dns
-                    "localhost",
-                ],
-            }
+        if (strategy.value < 100) {// 全部代理
+            // 解析規則
+            const proxy = new Rule()
+                .pushDomain(strategy.proxyDomain)
+                .pushIP(strategy.proxyIP)
+            const direct = new Rule()
+                .pushDomain(strategy.directDomain)
+                .pushIP(strategy.directIP)
+            return this._dns(hosts, proxy, direct, false)
+        } else if (strategy.value < 200) { // 代理公有 ip
+            // 解析規則
+            const proxy = new Rule()
+                .pushDomain(strategy.proxyDomain)
+                .pushIP(strategy.proxyIP)
+            const direct = new Rule()
+                .pushDomain(strategy.directDomain)
+                .pushIP(strategy.directIP)
+            return this._dns(hosts, proxy, direct, false)
+        } else if (strategy.value >= 1000) { // 全部直接連接
+            // 解析規則
+            const proxy = new Rule()
+                .pushDomain(strategy.proxyDomain)
+                .pushIP(strategy.proxyIP)
+            const direct = new Rule()
+                .pushDomain(strategy.directDomain)
+                .pushIP(strategy.directIP)
+            return this._dns(hosts, proxy, direct, true)
         }
         // 解析規則
         const proxy = new Rule()
@@ -281,10 +316,34 @@ class Reader {
             .pushIP(strategy.directIP)
 
         if (strategy.value < 900) { // 代理優先
-            return {
-                hosts: hosts,
-                servers: [
-                    // 解析 非西朝 域名
+            return this._dns(hosts, proxy, direct, false)
+        }
+        // 直連優先
+        return this._dns(hosts, proxy, direct, true)
+    }
+    _dns(hosts, proxy, direct, usual) {
+        const servers = []
+        if (usual) {
+            // 解析 西朝 域名
+            if (direct.isValid()) {
+                servers.push(...[
+                    {
+                        address: "119.29.29.29", // 騰訊
+                        port: 53,
+                        domains: direct.domain,
+                        expectIPs: direct.ip,
+                    },
+                    {
+                        address: "223.5.5.5", // 阿里
+                        port: 53,
+                        domains: direct.domain,
+                        expectIPs: direct.ip,
+                    },
+                ])
+            }
+            // 解析 非西朝 域名
+            if (proxy.isValid()) {
+                servers.push(...[
                     {
                         address: "8.8.8.8", // google
                         port: 53,
@@ -297,452 +356,238 @@ class Reader {
                         domains: proxy.domain,
                         expectIPs: proxy.ip,
                     },
-                    // 解析 西朝 域名
-                    {
-                        address: "119.29.29.29", // 騰訊 dns
-                        port: 53,
-                        domains: direct.domain,
-                        expectIPs: direct.ip,
-                    },
-                    {
-                        address: "223.5.5.5", // 阿里 dns
-                        port: 53,
-                        domains: direct.domain,
-                        expectIPs: direct.ip,
-                    },
-                    // 未匹配的
-                    "8.8.8.8",
-                    "1.1.1.1",
-                    "https+local://doh.dns.sb/dns-query"
-                ],
+                ])
             }
+            // 未匹配的 使用西朝 dns
+            servers.push(...[
+                "119.29.29.29", // 騰訊
+                "223.5.5.5", // 阿里
+                "localhost",
+            ])
+        } else {
+            // 解析 非西朝 域名
+            if (proxy.isValid()) {
+                servers.push(...[
+                    {
+                        address: "8.8.8.8", // google
+                        port: 53,
+                        domains: proxy.domain,
+                        expectIPs: proxy.ip,
+                    },
+                    {
+                        address: "1.1.1.1", // cloudflare
+                        port: 53,
+                        domains: proxy.domain,
+                        expectIPs: proxy.ip,
+                    },
+                ])
+            }
+            // 解析 西朝 域名
+            if (direct.isValid()) {
+                servers.push(...[
+                    {
+                        address: "119.29.29.29", // 騰訊
+                        port: 53,
+                        domains: direct.domain,
+                        expectIPs: direct.ip,
+                    },
+                    {
+                        address: "223.5.5.5", // 阿里
+                        port: 53,
+                        domains: direct.domain,
+                        expectIPs: direct.ip,
+                    },
+                ])
+            }
+            // 未匹配的 使用非西朝 dns
+            servers.push(...[
+                "8.8.8.8", // google
+                "1.1.1.1", // cloudflare
+                "https+local://doh.dns.sb/dns-query"
+            ])
         }
-        // 直連優先
         return {
             hosts: hosts,
-            servers: [
-                // 解析 西朝 域名
-                {
-                    address: "119.29.29.29", // 騰訊 dns
-                    port: 53,
-                    domains: direct.domain,
-                    expectIPs: direct.ip,
-                },
-                {
-                    address: "223.5.5.5", // 阿里 dns
-                    port: 53,
-                    domains: direct.domain,
-                    expectIPs: direct.ip,
-                },
-                // 解析 非西朝 域名
-                {
-                    address: "8.8.8.8", // google
-                    port: 53,
-                    domains: proxy.domain,
-                    expectIPs: proxy.ip,
-                },
-                {
-                    address: "1.1.1.1", // cloudflare
-                    port: 53,
-                    domains: proxy.domain,
-                    expectIPs: proxy.ip,
-                },
-                // 未匹配的
-                "119.29.29.29", // 騰訊 dns
-                "223.5.5.5", // 阿里 dns
-                "localhost",
-            ],
-        }
-
-
-
-    }
-}
-function getStrategy(ctx) {
-    const strategy = ctx.Strategy
-    if (typeof strategy !== "object") {
-        return {
-            Value: 900,
+            servers: servers
         }
     }
-    let value = 900
-    if (typeof strategy.Value === "number" && strategy.value != 0) {
-        value = strategy.value
-    }
+    inbounds() {
+        const servers = []
+        const ctx = this.ctx
 
-    return {
-        Value: value,
-    }
-}
-
-function renderDNS(ctx) {
-    // 將代理服務器域名加入 靜態 dns
-    const hosts = {}
-    hosts[ctx.Outbound.Add] = ctx.AddIP
-
-    return {
-        hosts: hosts,
-        servers: [
-            // 解析 西朝 域名
-            {
-                address: "119.29.29.29", // 騰訊 dns
-                port: 53,
-                domains: ["geosite:cn"],
-                expectIPs: ["geoip:cn"]
-            },
-            {
-                address: "223.5.5.5", // 阿里 dns
-                port: 53,
-                domains: ["geosite:cn"],
-                expectIPs: ["geoip:cn"]
-            },
-            // 解析 非西朝 域名
-            "8.8.8.8",
-            "1.1.1.1",
-            "https+local://doh.dns.sb/dns-query"
-        ],
-    }
-}
-function getListen(addr) {
-    if (typeof addr === "string") {
-        addr = addr.trim()
-        if (addr != "") {
-            return addr
-        }
-    }
-    return undefined
-}
-function isValidPort(p) {
-    return Number.isSafeInteger(p) && p > 0 && p <= 65535
-}
-function renderInbounds(ctx) {
-    const result = []
-    const socks5 = Context.socks5
-    // 本地 socks5 代理
-    if (socks5 && isValidPort(socks5.port)) {
-        const accounts = socks5.accounts
-        const password = Array.isArray(accounts) && accounts.length > 0
-        result.push({
-            tag: "socks",
-            protocol: "socks",
-            listen: getListen(socks5.listen),
-            port: socks5.port,
-            settings: {
-                auth: password ? "password" : "noauth",
-                accounts: password ? accounts : undefined,
-                udp: socks5.udp ? true : false,
-                userLevel: 0,
-            }
-        })
-    }
-    // 本地 http 代理
-    const http = Context.http
-    if (http && isValidPort(http.port)) {
-        const accounts = http.accounts
-        const password = Array.isArray(accounts) && accounts.length > 0
-        result.push({
-            tag: "http",
-            protocol: "http",
-            listen: getListen(http.listen),
-            port: http.port,
-            timeout: 300, // 超時時間爲 300 秒
-            allowTransparent: false, // 爲 true 不止代理也轉發所有 http 請求
-            accounts: password ? accounts : undefined,
-            userLevel: 0,
-        })
-    }
-    // 透明代理
-    const proxy = Context.proxy
-    if (proxy && isValidPort(proxy.port)) {
-        result.push({
-            tag: "all-in",
-            protocol: "dokodemo-door",
-            listen: getListen(proxy.listen),
-            port: proxy.port,
-            settings: {
-                network: "tcp,udp",
-                followRedirect: true
-            },
-            sniffing: {
-                enabled: true,
-                destOverride: [
-                    "http",
-                    "tls",
-                ],
-            },
-            streamSettings: {
-                sockopt: {
-                    tproxy: "tproxy"
+        // 本地 socks5 代理
+        const socks5 = ctx.socks5
+        if (socks5) {
+            const accounts = socks5.accounts
+            servers.push({
+                tag: "socks",
+                protocol: "socks",
+                listen: socks5.listen,
+                port: socks5.port,
+                settings: {
+                    auth: accounts.length != 0 ? "password" : "noauth",
+                    accounts: accounts.length != 0 ? accounts : undefined,
+                    udp: socks5.udp,
+                    userLevel: 0,
                 }
-            }
-        })
-    }
-    return result
-
-}
-function intValue(val, def) {
-    if (val == "") {
-        return def
-    } else if (typeof val === "number") {
-        return val
-    } else if (typeof val === "string") {
-        const v = parseInt(val)
-        if (isFinite(val)) {
-            return v
+            })
         }
-    }
-    return def
-}
-
-function xtlsFlow(ctx) {
-    if (ctx.Outbound.TLS != "xtls") {
-        return
-    } else if (ctx.Outbound.Protocol != "vless" && ctx.Outbound.Protocol != "trojan") {
-        return
-    }
-    const flow = ctx.Outbound.Flow
-    if (typeof flow === "string" && flow != "") {
-        return flow
-    }
-}
-function tlsSettings(ctx) {
-    return {
-        serverName: ctx.Outbound.Host == '' ? ctx.Outbound.Add : ctx.Outbound.Host,
-        rejectUnknownSni: false,
-        alpn: ["h2", "http/1.1"],
-        // allowInsecure: true,//允許不安全的證書
-        // "" | "chrome" | "firefox" | "safari" | "randomized"
-        fingerprint: "firefox", // 模擬 tls 指紋
-    }
-}
-function tcpSettings(ctx) {
-    return {
-        header: {
-            type: "none",
-        },
-    }
-}
-function kcpSettings(ctx) {
-    return {
-        mtu: 1350,
-        tti: 20,
-        uplinkCapacity: 5,
-        downlinkCapacity: 20,
-        congestion: false,
-        readBufferSize: 1,
-        writeBufferSize: 1,
-        header: {
-            type: "none"
-        },
-    }
-}
-function wsSettings(ctx) {
-    return {
-        path: ctx.Outbound.Path == "" ? "/" : ctx.Outbound.Path,
-        headers: {
-            Host: ctx.Outbound.Host == '' ? ctx.Outbound.Add : ctx.Outbound.Host,
-        },
-    }
-}
-function httpSettings(ctx) {
-    return {
-        path: ctx.Outbound.Path == "" ? "/" : ctx.Outbound.Path,
-        method: "PUT",
-        headers: {
-            Host: ctx.Outbound.Host == '' ? ctx.Outbound.Add : ctx.Outbound.Host,
-        },
-    }
-}
-function dsSettings(ctx) {
-    return {
-        path: ctx.Outbound.Path == "" ? "/" : ctx.Outbound.Path,
-        abstract: false,
-        padding: false,
-    }
-}
-function quicSettings(ctx) {
-    return {
-        security: "none",
-        key: "",
-        header: {
-            type: "none"
+        // 本地 http 代理
+        const http = ctx.http
+        if (http) {
+            const accounts = http.accounts
+            servers.push({
+                tag: "http",
+                protocol: "http",
+                listen: http.listen,
+                port: http.port,
+                timeout: 300, // 超時時間爲 300 秒
+                allowTransparent: false, // 爲 true 不止代理也轉發所有 http 請求
+                accounts: accounts.length != 0 ? accounts : undefined,
+                userLevel: 0,
+            })
         }
+        // 透明代理
+        const proxy = ctx.proxy
+        if (proxy) {
+            servers.push({
+                tag: "all-in",
+                protocol: "dokodemo-door",
+                listen: proxy.listen,
+                port: proxy.port,
+                settings: {
+                    network: "tcp,udp",
+                    followRedirect: true
+                },
+                sniffing: {
+                    enabled: true,
+                    destOverride: [
+                        "http",
+                        "tls",
+                    ],
+                },
+                streamSettings: {
+                    sockopt: {
+                        tproxy: "tproxy"
+                    }
+                }
+            })
+        }
+        return servers
     }
-}
-function sockopt(ctx) {
-    return {
-        mark: 2,
-    }
-}
-function renderOutbounds(ctx) {
-    let proxy
-    switch (ctx.Outbound.Protocol) {
-        case "shadowsocks":
-            proxy = outboundsShadowsocks(ctx)
-            break;
-        case "trojan":
-            proxy = outboundsTrojan(ctx)
-            break
-        case "vless":
-            proxy = outboundsVless(ctx)
-            break
-        case "vmess":
-            proxy = outboundsVmess(ctx)
-            break
-        default:
-            throw "not support protocol: " + ctx.Outbound.Protocol
-    }
-    proxy.tag = "proxy"
-    proxy.protocol = ctx.Outbound.Protocol
-    return [
-        // 直接 訪問
-        {
+    outbounds() {
+        const opts = this.opts
+        const servers = []
+        const direct = {
             tag: "direct",
             protocol: "freedom",
             streamSettings: {
                 sockopt: {
-                    mark: 2,
-                },
+                    mark: 2
+                }
+            }
+        }
+        const proxy = new OutboundReader(this.opts).toV2ray()
+        if (opts.strategy.value < 900) {
+            servers.push(proxy, direct)
+        } else {
+            servers.push(direct, proxy)
+        }
+        servers.push(
+            {
+                tag: "block",
+                protocol: "blackhole",
+                settings: {}
             },
-        },
-        // 代理服務器
-        proxy,
-        // 拒絕 訪問
-        {
-            tag: "block",
-            protocol: "blackhole",
-            settings: {}
-        },
-        {
-            tag: "dns-out",
-            protocol: "dns",
-            settings: {
-                address: "8.8.8.8"
+            {
+                tag: "dns-out",
+                protocol: "dns",
+                settings: {
+                    address: "8.8.8.8"
+                },
+                proxySettings: {
+                    tag: "proxy"
+                },
+                streamSettings: {
+                    sockopt: {
+                        mark: 2
+                    }
+                }
             },
-            proxySettings: {
-                tag: "proxy"
-            },
-            streamSettings: {
-                sockopt: {
-                    mark: 2,
-                },
-            },
-        },
-    ]
-}
-function outboundsShadowsocks(ctx) {
-    return {
-        settings: {
-            servers: [
-                {
-                    address: ctx.AddIP,
-                    port: intValue(ctx.Outbound.Port),
-                    password: ctx.Outbound.UserID,
-                    method: ctx.Outbound.Security,
-                    uot: false,
-                    level: intValue(ctx.Outbound.Level, 0),
-                },
-            ],
-        },
-        streamSettings: {
-            sockopt: sockopt(ctx),
-        },
+        )
+        return servers
     }
-}
-function outboundsTrojan(ctx) {
-    const xtls = ctx.Outbound.TLS == "xtls"
-    return {
-        settings: {
-            servers: [
-                {
-                    address: ctx.AddIP,
-                    port: intValue(ctx.Outbound.Port),
-                    password: ctx.Outbound.UserID,
-                    flow: xtlsFlow(ctx),
-                    level: intValue(ctx.Outbound.Level, 0),
-                },
-            ],
-        },
-        streamSettings: {
-            network: "tcp",
-            security: xtls ? "xtls" : "tls",
-            tlsSettings: xtls ? undefined : tlsSettings(ctx),
-            xtlsSettings: xtls ? tlsSettings(ctx) : undefined,
-            sockopt: sockopt(ctx),
-        },
+    routing() {
+        return {
+            domainStrategy: "IPIfNonMatch",
+            rules: this._rules(),
+        }
     }
-}
-function outboundsVless(ctx) {
-    return {
-        settings: {
-            vnext: [
-                {
-                    address: ctx.AddIP,
-                    port: intValue(ctx.Outbound.Port),
-                    users: [
-                        {
-                            id: ctx.Outbound.UserID,
-                            flow: xtlsFlow(ctx),
-                            encryption: "none",
-                            level: intValue(ctx.Outbound.Level, 0),
-                        },
-                    ],
-                },
-            ],
-        },
-        streamSettings: {
-            network: ctx.Outbound.Net,
-            security: ctx.Outbound.TLS,
-            tlsSettings: ctx.Outbound.TLS == "tls" ? tlsSettings(ctx) : undefined,
-            xtlsSettings: ctx.Outbound.TLS == "xtls" ? tlsSettings(ctx) : undefined,
-            tcpSettings: ctx.Outbound.Net == "tcp" ? tcpSettings(ctx) : undefined,
-            kcpSettings: ctx.Outbound.Net == "kcp" ? kcpSettings(ctx) : undefined,
-            wsSettings: ctx.Outbound.Net == "ws" ? wsSettings(ctx) : undefined,
-            httpSettings: ctx.Outbound.Net == "http" ? httpSettings(ctx) : undefined,
-            dsSettings: ctx.Outbound.Net == "domainsocket" ? dsSettings(ctx) : undefined,
-            quicSettings: ctx.Outbound.Net == "quic" ? quicSettings(ctx) : undefined,
-            sockopt: sockopt(ctx),
-        },
+    _rules() {
+        const strategy = this.opts.strategy
+        if (strategy.value < 100) { // 全局代理
+            // 解析規則
+            const proxy = new Rule()
+                .pushDomain(strategy.proxyDomain)
+                .pushIP(strategy.proxyIP)
+            const direct = new Rule()
+                .pushDomain(strategy.directDomain)
+                .pushIP(strategy.directIP)
+            return this._createRules(proxy, direct, false)
+        } else if (strategy.value < 200) {// 代理公有 ip
+            // 解析規則
+            const proxy = new Rule()
+                .pushDomain(strategy.proxyDomain)
+                .pushIP(strategy.proxyIP)
+            const direct = new Rule()
+                .pushIP([
+                    "geoip:private",
+                ])
+                .pushDomain(strategy.directDomain)
+                .pushIP(strategy.directIP)
+            return this._createRules(proxy, direct, false)
+        } else if (strategy.value >= 1000) { // 全部直接連接
+            // 解析規則
+            const proxy = new Rule()
+                .pushDomain(strategy.proxyDomain)
+                .pushIP(strategy.proxyIP)
+            const direct = new Rule()
+                .pushDomain(strategy.directDomain)
+                .pushIP(strategy.directIP)
+            return this._createRules(proxy, direct, true)
+        }
+        // 解析規則
+        const proxy = new Rule()
+            .pushDomain([
+                "geosite:apple",
+                "geosite:google",
+                "geosite:microsoft",
+                "geosite:facebook",
+                "geosite:twitter",
+                "geosite:telegram",
+                "geosite:geolocation-!cn",
+                "tld-!cn",
+            ])
+            .pushDomain(strategy.proxyDomain)
+            .pushIP(strategy.proxyIP)
+        const direct = new Rule()
+            .pushDomain([
+                "geosite:cn",
+            ])
+            .pushIP([
+                "geoip:cn",
+                "geoip:private",
+            ])
+            .pushDomain(strategy.directDomain)
+            .pushIP(strategy.directIP)
+        if (strategy.value < 900) { // 代理優先
+            return this._createRules(proxy, direct, false)
+        }
+        // 直連優先
+        return this._createRules(proxy, direct, true)
     }
-}
-function outboundsVmess(ctx) {
-    return {
-        settings: {
-            vnext: [
-                {
-                    address: ctx.AddIP,
-                    port: intValue(ctx.Outbound.Port),
-                    users: [
-                        {
-                            id: ctx.Outbound.UserID,
-                            alterId: intValue(ctx.Outbound.AlterID, 0),
-                            security: ctx.Outbound.Security,
-                            level: intValue(ctx.Outbound.Level, 0),
-                        },
-                    ],
-                },
-            ],
-        },
-        streamSettings: {
-            network: ctx.Outbound.Net,
-            security: ctx.Outbound.TLS,
-            tlsSettings: ctx.Outbound.TLS == "tls" ? tlsSettings(ctx) : undefined,
-            xtlsSettings: ctx.Outbound.TLS == "xtls" ? tlsSettings(ctx) : undefined,
-            tcpSettings: ctx.Outbound.Net == "tcp" ? tcpSettings(ctx) : undefined,
-            kcpSettings: ctx.Outbound.Net == "kcp" ? kcpSettings(ctx) : undefined,
-            wsSettings: ctx.Outbound.Net == "ws" ? wsSettings(ctx) : undefined,
-            httpSettings: ctx.Outbound.Net == "http" ? httpSettings(ctx) : undefined,
-            dsSettings: ctx.Outbound.Net == "domainsocket" ? dsSettings(ctx) : undefined,
-            quicSettings: ctx.Outbound.Net == "quic" ? quicSettings(ctx) : undefined,
-            sockopt: sockopt(ctx),
-        },
-    }
-}
-
-function renderRouting(ctx) {
-    return {
-        domainStrategy: "IPIfNonMatch",
-        rules: [
+    _createRules(proxy, direct, ok) {
+        const rules = [
             // 攔截域名解析
             {
                 type: "field",
@@ -755,41 +600,348 @@ function renderRouting(ctx) {
                 ip: ["8.8.8.8", "1.1.1.1"],
                 outboundTag: "proxy"
             },
-            /* 屏蔽廣告 *
-            {
-                type: "field",
-                domain: ["geosite:category-ads-all"],
-                // domain: ["geosite:category-ads"],
-                outboundTag: "block"
-            },/* */
-            // 代理 非西朝 域名
-            {
-                type: "field",
-                domain: ["geosite:geolocation-!cn"],
-                outboundTag: "proxy"
-            },
-            {
-                type: "field",
-                ip: ["geoip:telegram"],
-                outboundTag: "proxy"
-            },
-            // 不代理 bt 下載
-            {
+        ]
+        // 處理 bt 協議
+        const bittorrent = this.ctx.bittorrent
+        if (bittorrent == "proxy" || bittorrent == "direct") {
+            rules.push({
                 type: "field",
                 protocol: ["bittorrent"],
-                outboundTag: "direct"
-            },
+                outboundTag: bittorrent
+            })
+        }
+
+        if (ok) {
             // 不代理 西朝
-            {
-                type: "field",
-                ip: ["geoip:private", "geoip:cn"],
-                outboundTag: "direct"
+            if (direct.domain.length != 0) {
+                rules.push({
+                    type: "field",
+                    domain: direct.domain,
+                    outboundTag: "direct"
+                })
+            }
+            if (direct.ip.length != 0) {
+                rules.push({
+                    type: "field",
+                    ip: direct.ip,
+                    outboundTag: "direct"
+                })
+            }
+            // 代理 非西朝 域名
+            if (proxy.domain.length != 0) {
+                rules.push({
+                    type: "field",
+                    domain: proxy.domain,
+                    outboundTag: "proxy"
+                })
+            }
+            if (proxy.ip.length != 0) {
+                rules.push({
+                    type: "field",
+                    ip: proxy.ip,
+                    outboundTag: "proxy"
+                })
+            }
+        } else {
+            // 代理 非西朝 域名
+            if (proxy.domain.length != 0) {
+                rules.push({
+                    type: "field",
+                    domain: proxy.domain,
+                    outboundTag: "proxy"
+                })
+            }
+            if (proxy.ip.length != 0) {
+                rules.push({
+                    type: "field",
+                    ip: proxy.ip,
+                    outboundTag: "proxy"
+                })
+            }
+            // 不代理 西朝
+            if (direct.domain.length != 0) {
+                rules.push({
+                    type: "field",
+                    domain: direct.domain,
+                    outboundTag: "direct"
+                })
+            }
+            if (direct.ip.length != 0) {
+                rules.push({
+                    type: "field",
+                    ip: direct.ip,
+                    outboundTag: "direct"
+                })
+            }
+        }
+        return rules
+    }
+}
+class OutboundReader {
+    constructor(opts) {
+        if (opts instanceof ReaderOptions) {
+            this.opts = opts
+        } else {
+            throw new Error("new OutboundReader(opts), must create from ReaderOptions")
+        }
+    }
+    toV2ray() {
+        const protocol = this.opts.outbound.protocol
+        switch (protocol) {
+            case "shadowsocks":
+                return this.shadowsocks()
+            case "trojan":
+                return this.trojan()
+            case "vless":
+                return this.vless()
+            case "vmess":
+                return this.vmess()
+            default:
+                throw "not support protocol: " + protocol
+        }
+    }
+    shadowsocks() {
+        const opts = this.opts
+        const outbound = opts.outbound
+        return {
+            tag: "proxy",
+            protocol: outbound.protocol,
+            settings: {
+                servers: [
+                    {
+                        address: opts.ip,
+                        port: outbound.port,
+                        password: outbound.userID,
+                        method: outbound.security,
+                        uot: false,
+                        level: outbound.level,
+                    },
+                ],
             },
-            {
-                type: "field",
-                domain: ["geosite:cn"],
-                outboundTag: "direct"
+            streamSettings: {
+                sockopt: this._sockopt(),
             },
-        ],
+        }
+    }
+    trojan() {
+        const opts = this.opts
+        const outbound = opts.outbound
+        const xtls = outbound.tls == "xtls"
+        return {
+            tag: "proxy",
+            protocol: outbound.protocol,
+            settings: {
+                servers: [
+                    {
+                        address: opts.ip,
+                        port: outbound.port,
+                        password: outbound.userID,
+                        flow: this._flow(),
+                        level: outbound.level,
+                    },
+                ],
+            },
+            streamSettings: {
+                network: "tcp",
+                security: xtls ? "xtls" : "tls",
+                tlsSettings: xtls ? undefined : this._tlsSettings(),
+                xtlsSettings: xtls ? this._tlsSettings() : undefined,
+                sockopt: this._sockopt(),
+            },
+        }
+    }
+    vless() {
+        const opts = this.opts
+        const outbound = opts.outbound
+        return {
+            tag: "proxy",
+            protocol: outbound.protocol,
+            settings: {
+                vnext: [
+                    {
+                        address: opts.ip,
+                        port: outbound.port,
+                        users: [
+                            {
+                                id: outbound.userID,
+                                flow: this._flow(),
+                                encryption: "none",
+                                level: outbound.level,
+                            },
+                        ],
+                    },
+                ],
+            },
+            streamSettings: {
+                network: outbound.network,
+                security: outbound.tls,
+                tlsSettings: outbound.tls == "tls" ? this._tlsSettings() : undefined,
+                xtlsSettings: outbound.tls == "xtls" ? this._tlsSettings() : undefined,
+                tcpSettings: this._tcpSettings(),
+                kcpSettings: this._kcpSettings(),
+                wsSettings: this._wsSettings(),
+                httpSettings: this._httpSettings(),
+                dsSettings: this._dsSettings(),
+                quicSettings: this._quicSettings(),
+                sockopt: this._sockopt(),
+            },
+        }
+    }
+    vmess() {
+        const opts = this.opts
+        const outbound = opts.outbound
+        return {
+            tag: "proxy",
+            protocol: outbound.protocol,
+            settings: {
+                vnext: [
+                    {
+                        address: opts.ip,
+                        port: outbound.port,
+                        users: [
+                            {
+                                id: outbound.userID,
+                                alterId: outbound.alterID,
+                                security: outbound.security,
+                                level: outbound.level,
+                            },
+                        ],
+                    },
+                ],
+            },
+            streamSettings: {
+                network: outbound.network,
+                security: outbound.tls,
+                tlsSettings: outbound.tls == "tls" ? this._tlsSettings() : undefined,
+                xtlsSettings: outbound.tls == "xtls" ? this._tlsSettings() : undefined,
+                tcpSettings: this._tcpSettings(),
+                kcpSettings: this._kcpSettings(),
+                wsSettings: this._wsSettings(),
+                httpSettings: this._httpSettings(),
+                dsSettings: this._dsSettings(),
+                quicSettings: this._quicSettings(),
+                sockopt: this._sockopt(),
+            },
+        }
+    }
+    _tlsSettings() {
+        const outbound = this.opts.outbound
+        const host = outbound.host ?? ''
+        const address = outbound.address
+        return {
+            serverName: host == '' ? address : host,
+            rejectUnknownSni: false,
+            alpn: ["h2", "http/1.1"],
+            // allowInsecure: true,//允許不安全的證書
+            // "" | "chrome" | "firefox" | "safari" | "randomized"
+            fingerprint: "firefox", // 模擬 tls 指紋
+        }
+    }
+    _flow() {
+        const outbound = this.opts.outbound
+        if (outbound.tls != "xtls") {
+            return
+        } else if (outbound.protocol != "vless" && outbound.protocol != "trojan") {
+            return
+        }
+        return outbound.flow
+    }
+    _sockopt() {
+        return {
+            mark: 2,
+        }
+    }
+
+
+    _tcpSettings() {
+        const opts = this.opts
+        const outbound = opts.outbound
+        if (outbound.network != "tcp") {
+            return
+        }
+        return {
+            header: {
+                type: "none",
+            },
+        }
+    }
+    _kcpSettings() {
+        const opts = this.opts
+        const outbound = opts.outbound
+        if (outbound.network != "kcp") {
+            return
+        }
+        return {
+            mtu: 1350,
+            tti: 20,
+            uplinkCapacity: 5,
+            downlinkCapacity: 20,
+            congestion: false,
+            readBufferSize: 1,
+            writeBufferSize: 1,
+            header: {
+                type: "none"
+            },
+        }
+    }
+    _wsSettings() {
+        const opts = this.opts
+        const outbound = opts.outbound
+        if (outbound.network != "ws") {
+            return
+        }
+        const path = outbound.path === "" ? "/" : outbound.path
+        const host = outbound.host ?? ''
+        const address = outbound.address
+        return {
+            path: path,
+            headers: {
+                Host: host == '' ? address : host,
+            },
+        }
+    }
+    _httpSettings() {
+        const opts = this.opts
+        const outbound = opts.outbound
+        if (outbound.network != "http") {
+            return
+        }
+        const path = outbound.path === "" ? "/" : outbound.path
+        const host = outbound.host ?? ''
+        const address = outbound.address
+        return {
+            path: path,
+            method: "PUT",
+            headers: {
+                Host: host == '' ? address : host,
+            },
+        }
+    }
+    _dsSettings() {
+        const opts = this.opts
+        const outbound = opts.outbound
+        if (outbound.network != "domainsocket") {
+            return
+        }
+        const path = outbound.path === "" ? "/" : outbound.path
+        return {
+            path: path,
+            abstract: false,
+            padding: false,
+        }
+    }
+    _quicSettings() {
+        const opts = this.opts
+        const outbound = opts.outbound
+        if (outbound.network != "quic") {
+            return
+        }
+        return {
+            security: "none",
+            key: "",
+            header: {
+                type: "none"
+            }
+        }
     }
 }

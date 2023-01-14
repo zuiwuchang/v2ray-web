@@ -19,7 +19,8 @@ func (a *analyzeSS) do(str string) (result *Outbound) {
 	}
 	var userID, security string
 	if u.User != nil {
-		b, e := base64.RawStdEncoding.DecodeString(u.User.Username())
+		user := strings.TrimRight(u.User.Username(), "=")
+		b, e := base64.RawStdEncoding.DecodeString(user)
 		if e != nil {
 			if ce := logger.Logger.Check(zap.WarnLevel, "decode base64 outbound error"); ce != nil {
 				ce.Write(
