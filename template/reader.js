@@ -12,7 +12,7 @@ const Context = {
     // socks5 代理設置
     socks5: {
         listen: "127.0.0.1",  // 監聽地址
-        port: 11080,          // 監聽地址，不定義則不啓用
+        port: 1080,          // 監聽地址，不定義則不啓用
         udp: true,            // 是否代理 udp
         /** socks5 驗證用戶，爲空，則不驗證用戶*
         accounts: [
@@ -25,7 +25,7 @@ const Context = {
     // http 代理
     http: {
         listen: "127.0.0.1",  // 監聽地址
-        port: 18118,          // 監聽地址，不定義則不啓用
+        port: 8118,          // 監聽地址，不定義則不啓用
         /** Basic Authentication，爲空，則不驗證用戶*
         accounts: [
             {
@@ -37,7 +37,7 @@ const Context = {
     // tproxy 透明代理
     proxy: {
         // listen: "127.0.0.1",  // 監聽地址
-        port: 22345,        // 監聽地址，不定義則不啓用
+        port: 12345,        // 監聽地址，不定義則不啓用
     },
 }
 
