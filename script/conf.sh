@@ -1,7 +1,7 @@
 Target="v2ray-web"
 Docker="king011/v2ray-web"
 Dir=$(cd "$(dirname $BASH_SOURCE)/.." && pwd)
-Version="v1.6.0"
+Version="v1.7.0"
 View=1
 Platforms=(
     darwin/amd64
