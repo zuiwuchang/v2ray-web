@@ -13,7 +13,7 @@ require (
 	github.com/inconshreveable/go-update v0.0.0-20160112193335-8152e7eb6ccf
 	github.com/json-iterator/go v1.1.12
 	github.com/spf13/cobra v1.6.1
-	github.com/xtls/xray-core v1.7.1
+	github.com/xtls/xray-core v1.7.2
 	gitlab.com/king011/king-go v0.0.10
 	go.uber.org/zap v1.17.0
 	golang.org/x/net v0.5.0
