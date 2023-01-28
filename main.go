@@ -4,7 +4,6 @@ import (
 	"log"
 
 	_ "github.com/xtls/xray-core/main/distro/all"
-
 	"gitlab.com/king011/v2ray-web/cmd"
 )
 
