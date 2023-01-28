@@ -60,9 +60,7 @@ function intValue(val, def) {
 }
 
 function xtlsFlow(ctx) {
-    if (ctx.Outbound.TLS != "xtls") {
-        return
-    } else if (ctx.Outbound.Protocol != "vless" && ctx.Outbound.Protocol != "trojan") {
+    if (ctx.Outbound.Protocol != "vless" && ctx.Outbound.Protocol != "trojan") {
         return
     }
     const flow = ctx.Outbound.Flow

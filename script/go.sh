@@ -105,6 +105,9 @@ fi
 if [[ "$os" == "windows" ]];then
     target="$target.exe"
 fi
+if [[ "$os" == "linux" ]];then
+    export CGO_ENABLED=0
+fi
 if [[ "$debug" == 1 ]];then
     args=(
         go build 

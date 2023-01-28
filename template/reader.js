@@ -839,9 +839,7 @@ class OutboundReader {
     }
     _flow() {
         const outbound = this.opts.outbound
-        if (outbound.tls != "xtls") {
-            return
-        } else if (outbound.protocol != "vless" && outbound.protocol != "trojan") {
+        if (outbound.protocol != "vless" && outbound.protocol != "trojan") {
             return
         }
         return outbound.flow
