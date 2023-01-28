@@ -68,7 +68,7 @@ func (s *Server) onStart() {
 	if iptables != nil {
 		s.clearIPTables(iptables)
 	}
-	e = srv.Start(element)
+	_, e = srv.StartStrategy(element, result.Strategy)
 	if e != nil {
 		if ce := logger.Logger.Check(zap.WarnLevel, "auto start v2ray-core error"); ce != nil {
 			ce.Write(
