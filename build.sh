@@ -61,6 +61,32 @@ function doexport
         -u temp/user.json \
         -p temp/proxy.json
 }
+function doimport
+{
+    cd "$BashDir/bin"
+    echo 'v2ray-web import \'
+    echo '    -s temp/settings.json \'
+    echo '    --strategy temp/strategy.json\' 
+    echo '    -v temp/v2ray.txt \'
+    echo '    --subscription temp/subscription.json \'
+    echo '    --iptables temp/iptables.json \'
+    echo '    --iptables-view temp/iptables-view.txt \'
+    echo '    --iptables-clear temp/iptables-clear.txt \'
+    echo '    --iptables-init temp/iptables-init.txt \'
+    echo '    -u temp/user.json \'
+    echo '    -p temp/proxy.json'
+    ./v2ray-web import \
+        -s temp/settings.json \
+        --strategy temp/strategy.json\
+        -v temp/v2ray.txt \
+        --subscription temp/subscription.json \
+        --iptables temp/iptables.json \
+        --iptables-view temp/iptables-view.txt \
+        --iptables-clear temp/iptables-clear.txt \
+        --iptables-init temp/iptables-init.txt \
+        -u temp/user.json \
+        -p temp/proxy.json
+}
 case "$1" in
     help|-h|--help)
         help
@@ -68,6 +94,11 @@ case "$1" in
     -e|--export)
         
         doexport
+        exit 0
+    ;;
+    -i|--import)
+        
+        doimport
         exit 0
     ;;
     clear)

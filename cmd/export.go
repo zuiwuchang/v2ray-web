@@ -199,13 +199,13 @@ func exportJSON(filepath string, v interface{}) {
 		log.Fatalln(e)
 	}
 
-	e = os.WriteFile(filepath, b, 0664)
+	e = os.WriteFile(filepath, b, 0666)
 	if e != nil {
 		log.Fatalln(e)
 	}
 }
 func exportText(filepath, text string) {
-	e := os.WriteFile(filepath, utils.StringToBytes(text), 0664)
+	e := os.WriteFile(filepath, utils.StringToBytes(text), 0666)
 	if e != nil {
 		log.Fatalln(e)
 	}

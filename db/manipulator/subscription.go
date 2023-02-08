@@ -179,3 +179,35 @@ func (m Subscription) Remove(id uint64) (e error) {
 	})
 	return
 }
+func (m Subscription) Import(vals []*data.Subscription) error {
+	return _db.Update(func(tx *bolt.Tx) (e error) {
+		bucket := tx.Bucket([]byte(data.SubscriptionBucket))
+		if bucket == nil {
+			e = fmt.Errorf("bucket not exist : %s", data.StrategyBucket)
+			return
+		}
+		c := bucket.Cursor()
+		for k, _ := c.First(); k != nil; k, _ = c.Next() {
+			if e = bucket.Delete(k); e != nil {
+				return e
+			}
+		}
+
+		var b, key []byte
+		for _, val := range vals {
+			b, e = val.Encoder()
+			if e != nil {
+				return
+			}
+			key, e = data.EncodeID(val.ID)
+			if e != nil {
+				return
+			}
+			e = bucket.Put(key, b)
+			if e != nil {
+				return
+			}
+		}
+		return
+	})
+}

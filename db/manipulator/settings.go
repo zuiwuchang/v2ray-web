@@ -238,12 +238,12 @@ func (m Settings) GetLast() (result *data.Element, e error) {
 }
 
 // PutLast 保存 最後啓動 v2ray-core
-func (m Settings) PutLast(val *data.Element) (e error) {
+func (m Settings) PutLast(val *data.Element) error {
 	b, e := val.Encoder()
 	if e != nil {
-		return
+		return e
 	}
-	e = _db.Update(func(t *bolt.Tx) (e error) {
+	return _db.Update(func(t *bolt.Tx) (e error) {
 		bucket := t.Bucket([]byte(data.SettingsBucket))
 		if bucket == nil {
 			e = fmt.Errorf("bucket not exist : %s", data.SettingsBucket)
@@ -252,5 +252,4 @@ func (m Settings) PutLast(val *data.Element) (e error) {
 		e = bucket.Put([]byte(data.SettingsLast), b)
 		return
 	})
-	return
 }

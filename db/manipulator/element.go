@@ -292,3 +292,51 @@ func (Element) Clear(subscription uint64) (e error) {
 	})
 	return
 }
+func (m Element) Import(vals []*data.Element) error {
+	return _db.Update(func(tx *bolt.Tx) (e error) {
+		bucket := tx.Bucket([]byte(data.ElementBucket))
+		if bucket == nil {
+			e = fmt.Errorf("bucket not exist : %s", data.StrategyBucket)
+			return
+		}
+		c := bucket.Cursor()
+		for k, _ := c.First(); k != nil; k, _ = c.Next() {
+			if e = bucket.DeleteBucket(k); e != nil {
+				return e
+			}
+		}
+		for _, val := range vals {
+			e = m.put(tx, val)
+			if e != nil {
+				return
+			}
+		}
+		return
+	})
+}
+func (Element) put(t *bolt.Tx, ele *data.Element) (e error) {
+	bucket := t.Bucket([]byte(data.ElementBucket))
+	if bucket == nil {
+		e = fmt.Errorf("bucket not exist : %s", data.ElementBucket)
+		return
+	}
+
+	key, e := data.EncodeID(ele.Subscription)
+	if e != nil {
+		return
+	}
+	bucket, e = bucket.CreateBucketIfNotExists(key)
+	if e != nil {
+		return
+	}
+
+	val, e := ele.Encoder()
+	if e != nil {
+		return
+	}
+	e = bucket.Put(key, val)
+	if e != nil {
+		return
+	}
+	return
+}

@@ -174,3 +174,26 @@ func (m User) Password(name, password string) (e error) {
 	})
 	return
 }
+func (m User) Import(vals []data.UserRaw) error {
+	return _db.Update(func(tx *bolt.Tx) (e error) {
+		bucket := tx.Bucket([]byte(data.UserBucket))
+		if bucket == nil {
+			e = fmt.Errorf("bucket not exist : %s", data.StrategyBucket)
+			return
+		}
+		c := bucket.Cursor()
+		for k, _ := c.First(); k != nil; k, _ = c.Next() {
+			if e = bucket.Delete(k); e != nil {
+				return e
+			}
+		}
+
+		for _, val := range vals {
+			e = bucket.Put(utils.StringToBytes(val.Name), utils.StringToBytes(val.Password))
+			if e != nil {
+				return
+			}
+		}
+		return
+	})
+}

@@ -270,3 +270,38 @@ func (m Strategy) Remove(name string) error {
 		return
 	})
 }
+func (m Strategy) Import(vals []*data.Strategy) error {
+	for _, val := range vals {
+		if val.Name == data.StrategyDefault && val.Value != 0 {
+			return fmt.Errorf("'%s.value' must be 0", data.StrategyDefault)
+		}
+	}
+	return _db.Update(func(tx *bolt.Tx) (e error) {
+		bucket := tx.Bucket([]byte(data.StrategyBucket))
+		if bucket == nil {
+			e = fmt.Errorf("bucket not exist : %s", data.StrategyBucket)
+			return
+		}
+		c := bucket.Cursor()
+		for k, _ := c.First(); k != nil; k, _ = c.Next() {
+			if string(k) != data.StrategyDefault {
+				if e = bucket.Delete(k); e != nil {
+					return e
+				}
+			}
+		}
+
+		var b []byte
+		for _, val := range vals {
+			b, e = val.Encoder()
+			if e != nil {
+				return
+			}
+			e = bucket.Put([]byte(val.Name), b)
+			if e != nil {
+				return
+			}
+		}
+		return
+	})
+}
