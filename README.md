@@ -34,7 +34,7 @@ docker run \
     --name v2ray-web \
     -p 8080:80/tcp \
     -p 1080:1080/tcp \
-    -p 28118:8118/tcp \
+    -p 8118:8118/tcp \
     -v /data:YourConfigDir  \
     -d king011/v2ray-web:v1.6.0
 ```
@@ -51,7 +51,7 @@ docker run \
     --cap-add=NET_ADMIN --cap-add=NET_RAW \
     -p 8080:80/tcp \
     -p 1080:1080/tcp \
-    -p 28118:8118/tcp \
+    -p 8118:8118/tcp \
     -v /data:YourConfigDir  \
     -d king011/v2ray-web:v1.7.2
 ```

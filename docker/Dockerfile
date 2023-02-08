@@ -11,7 +11,6 @@ RUN set -eux; \
     tar -zxvf /cnf/bin.tar.gz -C /opt/v2ray-web; \
     cp /cnf/v2ray-web.jsonnet /opt/v2ray-web/; \
     mv /cnf/proxychains.conf /etc/proxychains.conf; \
-    cp /cnf/v2ray-web /opt/v2ray-web/v2ray-web; \
     rm /cnf -rf; 
 
 Copy docker-entrypoint.sh /usr/local/bin/

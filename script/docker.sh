@@ -15,7 +15,7 @@ function help(){
     echo
     echo "Flags:"
     echo "  -r, --run           run docker"
-    echo "  -p, --push           push to hub"
+    echo "  -p, --push          push to hub"
     echo "  -h, --help          help for $Command"
 }
 
@@ -63,8 +63,6 @@ fi
 
 cd "$Dir/docker"
 cp ../bin/linux.amd64.tar.gz ./cnf/bin.tar.gz
-cp ../bin/v2ray-web ./cnf/v2ray-web
-upx ./cnf/v2ray-web
 args=(
     sudo docker build --network host -t "\"$Docker:$Version\"" .
 )
