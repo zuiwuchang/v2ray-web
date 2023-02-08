@@ -22,7 +22,6 @@ function help(){
 
 ARGS=`getopt -o hrp --long help,run,push -n "$Command" -- "$@"`
 eval set -- "${ARGS}"
-go=0
 push=0
 run=0
 while true
@@ -34,10 +33,6 @@ do
         ;;
         -r|--run)
             run=1
-            shift
-        ;;
-        -g|--go)
-            go=1
             shift
         ;;
         -p|--push)
@@ -66,9 +61,10 @@ if [[ "$run" == 1 ]];then
     exit $?
 fi
 
-
 cd "$Dir/docker"
 cp ../bin/linux.amd64.tar.gz ./cnf/bin.tar.gz
+cp ../bin/v2ray-web ./cnf/v2ray-web
+upx ./cnf/v2ray-web
 args=(
     sudo docker build --network host -t "\"$Docker:$Version\"" .
 )

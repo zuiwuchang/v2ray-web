@@ -1,12 +1,7 @@
-FROM ubuntu:22.04
+FROM alpine:3.17.1
 
-# 安裝一些額外工具
-ENV DEBIAN_FRONTEND=noninteractive
-RUN set -eux; \
-    apt-get update; \
-    apt-get install -y --no-install-recommends iptables iproute2 net-tools iputils-ping dnsutils ca-certificates; \
-    apt-get install -y --no-install-recommends curl wget vim proxychains; \
-    rm -rf /var/lib/apt/lists/*;
+RUN apk add --no-cache \
+    iptables iproute2 bash
 
 # 拷貝 v2ray-web
 Copy cnf /cnf
@@ -16,6 +11,7 @@ RUN set -eux; \
     tar -zxvf /cnf/bin.tar.gz -C /opt/v2ray-web; \
     cp /cnf/v2ray-web.jsonnet /opt/v2ray-web/; \
     mv /cnf/proxychains.conf /etc/proxychains.conf; \
+    cp /cnf/v2ray-web /opt/v2ray-web/v2ray-web; \
     rm /cnf -rf; 
 
 Copy docker-entrypoint.sh /usr/local/bin/
