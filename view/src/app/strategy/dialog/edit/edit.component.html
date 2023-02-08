@@ -11,12 +11,13 @@
         <div>
             <mat-form-field>
                 <mat-label i18n>Name</mat-label>
-                <input matInput [disabled]="disabled" cdkFocusInitial required [(ngModel)]="strategy.name" name="name">
+                <input matInput [disabled]="disabled" readonly="true" required [(ngModel)]="strategy.name" name="name">
                 <mat-error i18n>Name Invalid</mat-error>
             </mat-form-field>
             <mat-form-field>
                 <mat-label i18n>Strategy Value</mat-label>
-                <input type="number" matInput [disabled]="disabled" required [(ngModel)]="strategy.value" name="value">
+                <input type="number" matInput cdkFocusInitial [disabled]="disabled" required
+                    [(ngModel)]="strategy.value" name="value">
                 <mat-error i18n>Strategy Value Invalid</mat-error>
             </mat-form-field>
             <mat-form-field>
