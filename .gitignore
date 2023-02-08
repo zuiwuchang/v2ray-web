@@ -27,6 +27,7 @@
 /bin/v2ray-web.db
 /bin/view/
 /bin/v2ray-web-service.exe
+/bin/temp/
 
 # statik
 /assets/

@@ -81,6 +81,24 @@ func (m User) List() (result []data.User, e error) {
 	})
 	return
 }
+func (m User) ListRaw() (result []data.UserRaw, e error) {
+	e = _db.View(func(t *bolt.Tx) (e error) {
+		bucket := t.Bucket([]byte(data.UserBucket))
+		if bucket == nil {
+			e = fmt.Errorf("bucket not exist : %s", data.UserBucket)
+			return
+		}
+		bucket.ForEach(func(k, v []byte) error {
+			result = append(result, data.UserRaw{
+				Name:     utils.BytesToString(k),
+				Password: utils.BytesToString(v),
+			})
+			return nil
+		})
+		return
+	})
+	return
+}
 
 // Add 添加用戶
 func (m User) Add(name, password string) (e error) {

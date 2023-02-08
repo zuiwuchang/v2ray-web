@@ -12,8 +12,12 @@ import (
 var _db *bolt.DB
 
 // Init 初始化 數據庫
-func Init(cnf *configure.Database) (e error) {
-	db, e := bolt.Open(cnf.Source, 0600, nil)
+func Init(cnf *configure.Database, opts ...*bolt.Options) (e error) {
+	var opt *bolt.Options
+	if len(opts) > 0 {
+		opt = opts[0]
+	}
+	db, e := bolt.Open(cnf.Source, 0600, opt)
 	if e != nil {
 		if ce := logger.Logger.Check(zap.FatalLevel, "open databases error"); ce != nil {
 			ce.Write(

@@ -14,7 +14,7 @@ import (
 )
 
 // Run .
-func Run(cnf *configure.Configure, debug bool) {
+func Run(cnf *configure.Configure, debug, none bool) {
 	if !debug {
 		gin.SetMode(gin.ReleaseMode)
 	}
@@ -66,8 +66,9 @@ func Run(cnf *configure.Configure, debug bool) {
 			)
 		}
 	}
-	server.onStart()
-
+	if !none {
+		server.onStart()
+	}
 	if cnf.HTTP.Safe() {
 		if ce := logger.Logger.Check(zap.InfoLevel, "https serve"); ce != nil {
 			ce.Write(

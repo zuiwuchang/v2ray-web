@@ -15,7 +15,7 @@ import (
 
 func init() {
 	var filename, addr string
-	var noupgrade, debug bool
+	var noupgrade, debug, none bool
 	basePath := utils.BasePath()
 	cmd := &cobra.Command{
 		Use:   `web`,
@@ -55,7 +55,7 @@ func init() {
 			if !noupgrade {
 				go upgrade.DefaultUpgrade().Serve()
 			}
-			web.Run(cnf, debug)
+			web.Run(cnf, debug, none)
 		},
 	}
 	flags := cmd.Flags()
@@ -78,5 +78,6 @@ func init() {
 		false,
 		`Disable automatic upgrades`,
 	)
+	flags.BoolVar(&none, `none`, false, `Do not start v2ray nor set iptables`)
 	rootCmd.AddCommand(cmd)
 }
