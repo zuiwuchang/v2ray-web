@@ -18,6 +18,7 @@ import (
 var upgrader = websocket.Upgrader{
 	ReadBufferSize:  1024,
 	WriteBufferSize: 1024,
+	CheckOrigin:     checkOrigin,
 }
 
 // Offered accept Offered
@@ -185,7 +186,16 @@ func Compression() gin.HandlerFunc {
 
 // Upgrade .
 func (h Helper) Upgrade(w http.ResponseWriter, r *http.Request, responseHeader http.Header) (*websocket.Conn, error) {
-	return upgrader.Upgrade(w, r, responseHeader)
+	ws, e := upgrader.Upgrade(w, r, responseHeader)
+	if e != nil {
+		if ce := logger.Logger.Check(zap.WarnLevel, `websocket error`); ce != nil {
+			ce.Write(
+				zap.String(`path`, r.URL.Path),
+				zap.Error(e),
+			)
+		}
+	}
+	return ws, e
 }
 
 // JSON .
