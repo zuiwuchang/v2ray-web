@@ -305,8 +305,12 @@ func (m Element) Import(vals []*data.Element) error {
 				return e
 			}
 		}
+		if len(vals) == 0 {
+			return
+		}
+		im := newImportElement(tx)
 		for _, val := range vals {
-			e = m.put(tx, val)
+			e = im.put(val)
 			if e != nil {
 				return
 			}
@@ -314,29 +318,61 @@ func (m Element) Import(vals []*data.Element) error {
 		return
 	})
 }
-func (Element) put(t *bolt.Tx, ele *data.Element) (e error) {
-	bucket := t.Bucket([]byte(data.ElementBucket))
+
+type importElement struct {
+	tx     *bolt.Tx
+	bucket *bolt.Bucket
+	keys   map[uint64]*bolt.Bucket
+}
+
+func newImportElement(tx *bolt.Tx) *importElement {
+	return &importElement{
+		tx:   tx,
+		keys: make(map[uint64]*bolt.Bucket),
+	}
+}
+
+func (i *importElement) getBucket(key uint64) (bucket *bolt.Bucket, e error) {
+	bucket, ok := i.keys[key]
+	if ok {
+		return
+	}
+	bucket = i.bucket
 	if bucket == nil {
-		e = fmt.Errorf("bucket not exist : %s", data.ElementBucket)
-		return
+		bucket = i.tx.Bucket([]byte(data.ElementBucket))
+		if bucket == nil {
+			e = fmt.Errorf("bucket not exist : %s", data.ElementBucket)
+			return
+		}
+		i.bucket = bucket
 	}
 
-	key, e := data.EncodeID(ele.Subscription)
+	b, e := data.EncodeID(key)
 	if e != nil {
 		return
 	}
-	bucket, e = bucket.CreateBucketIfNotExists(key)
+	bucket, e = bucket.CreateBucketIfNotExists(b)
 	if e != nil {
 		return
 	}
+	i.keys[key] = bucket
+	i.bucket = bucket
+	return
+}
 
+func (i *importElement) put(ele *data.Element) (e error) {
+	bucket, e := i.getBucket(ele.Subscription)
+	if e != nil {
+		return
+	}
+	key, e := data.EncodeID(ele.ID)
+	if e != nil {
+		return
+	}
 	val, e := ele.Encoder()
 	if e != nil {
 		return
 	}
-	e = bucket.Put(key, val)
-	if e != nil {
-		return
-	}
+	bucket.Put(key, val)
 	return
 }
