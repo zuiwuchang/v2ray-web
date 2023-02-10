@@ -16,8 +16,8 @@ func checkOrigin(r *http.Request) bool {
 	if err != nil {
 		return false
 	}
-	host, _ := splitHostPort(u.Host)
-	return equalASCIIFold(host, r.Host)
+	host, _ := splitHostPort(r.Host)
+	return equalASCIIFold(host, u.Hostname())
 }
 
 // equalASCIIFold returns true if s is equal to t with ASCII case folding as
