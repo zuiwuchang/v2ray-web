@@ -34,7 +34,7 @@ if [[ "$@" == "default-command" ]];then
             /opt/v2ray-web/v2ray-web import --db /data/v2ray-web.db -p "$V2RAY_PROXY"
         fi
         if [[ "$V2RAY_LAST" != "" ]]; then
-            /opt/v2ray-web/v2ray-web import --db /data/v2ray-web.db -i "$V2RAY_LAST"
+            /opt/v2ray-web/v2ray-web import --db /data/v2ray-web.db -l "$V2RAY_LAST"
         fi
     fi
     if [[ "$V2RAY_ADDR" == "" ]];then
