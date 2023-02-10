@@ -33,9 +33,15 @@ if [[ "$@" == "default-command" ]];then
         if [[ "$V2RAY_PROXY" != "" ]]; then
             /opt/v2ray-web/v2ray-web import --db /data/v2ray-web.db -p "$V2RAY_PROXY"
         fi
+        if [[ "$V2RAY_LAST" != "" ]]; then
+            /opt/v2ray-web/v2ray-web import --db /data/v2ray-web.db -i "$V2RAY_LAST"
+        fi
     fi
-
-    exec /opt/v2ray-web/v2ray-web web --no-upgrade
+    if [[ "$V2RAY_ADDR" == "" ]];then
+        exec /opt/v2ray-web/v2ray-web web --no-upgrade
+    else
+        exec /opt/v2ray-web/v2ray-web web --no-upgrade -a "$V2RAY_ADDR"
+    fi
 else
     exec "$@"
 fi

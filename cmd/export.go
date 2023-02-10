@@ -46,7 +46,7 @@ func init() {
 		settings, strategy, v2ray, subscription,
 		iptables,
 		iptablesView, iptablesClear, iptablesInit,
-		users, proxy string
+		users, proxy, last string
 		basePath = utils.BasePath()
 	)
 
@@ -138,6 +138,16 @@ func init() {
 				exportJSON(proxy, v)
 				fmt.Println(` - proxy to:`, proxy)
 			}
+			if last != `` {
+				initDB(basePath, db)
+				var mSettings manipulator.Settings
+				v, e := mSettings.GetLast()
+				if e != nil {
+					log.Fatalln(e)
+				}
+				exportJSON(last, v)
+				fmt.Println(` - last to:`, last)
+			}
 		},
 	}
 	flags := cmd.Flags()
@@ -189,6 +199,11 @@ func init() {
 		`p`,
 		``,
 		`if non-empty export proxy element to this file`,
+	)
+	flags.StringVarP(&last, `last`,
+		`l`,
+		``,
+		`if non-empty export last start proxy`,
 	)
 
 	rootCmd.AddCommand(cmd)

@@ -59,7 +59,8 @@ function doexport
         --iptables-clear temp/iptables-clear.txt \
         --iptables-init temp/iptables-init.txt \
         -u temp/user.json \
-        -p temp/proxy.json
+        -p temp/proxy.json \
+        -l temp/last.json
 }
 function doimport
 {
@@ -85,7 +86,8 @@ function doimport
         --iptables-clear temp/iptables-clear.txt \
         --iptables-init temp/iptables-init.txt \
         -u temp/user.json \
-        -p temp/proxy.json
+        -p temp/proxy.json \
+        -l temp/last.json 
 }
 case "$1" in
     help|-h|--help)

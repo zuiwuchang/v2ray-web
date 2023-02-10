@@ -1,3 +1,7 @@
+# v1.7.4
+* 修復 check origin 實現問題
+* import export 添加支持最後啓動的代理
+
 # v1.7.3
 * websocket check origin 時，忽略端口以方便設置反向代理
 * 修復導入 proxy 錯誤

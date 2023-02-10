@@ -18,7 +18,7 @@ func init() {
 		settings, strategy, v2ray, subscription,
 		iptables,
 		iptablesView, iptablesClear, iptablesInit,
-		users, proxy string
+		users, proxy, last string
 		basePath = utils.BasePath()
 	)
 	cmd := &cobra.Command{
@@ -144,6 +144,19 @@ func init() {
 				}
 				fmt.Println(` - proxy from:`, proxy)
 			}
+			if last != `` {
+				var v data.Element
+				importJSON(last, &v)
+
+				initDB(basePath, db)
+				var mSettings manipulator.Settings
+
+				e := mSettings.PutLast(&v)
+				if e != nil {
+					log.Fatalln(e)
+				}
+				fmt.Println(` - last from:`, last)
+			}
 		},
 	}
 	flags := cmd.Flags()
@@ -196,7 +209,11 @@ func init() {
 		``,
 		`if non-empty import proxy element from this file`,
 	)
-
+	flags.StringVarP(&last, `last`,
+		`l`,
+		``,
+		`if non-empty import last start proxy`,
+	)
 	rootCmd.AddCommand(cmd)
 }
 func importJSON(filepath string, v interface{}) {
