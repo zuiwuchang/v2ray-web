@@ -1,6 +1,8 @@
 package net
 
-import "net/url"
+import (
+	"net/url"
+)
 
 func analyzeVless(str string) (result *Outbound) {
 	u, e := url.Parse(str)

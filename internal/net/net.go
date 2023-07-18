@@ -147,18 +147,62 @@ func analyzeVMess(str string) (result *Outbound) {
 		}
 		return
 	}
+
 	b = replaceNumber.ReplaceAll(b, []byte(`":"$1",`))
-	var node Outbound
+	var node struct { // Outbound 可用的 出棧 配置
+		// 給人類看的 名稱
+		Name string `json:"ps,omitempty"`
+
+		// 連接地址
+		Add string `json:"add,omitempty"`
+		// 連接端口
+		Port json.Number `json:"port,omitempty"`
+		// 連接主機名
+		Host string `json:"host,omitempty"`
+
+		// 加密方案
+		TLS string `json:"tls,omitempty"`
+
+		// 使用的網路協議
+		Net string `json:"net,omitempty"`
+
+		// websocket 請求路徑
+		Path string `json:"path,omitempty"`
+
+		// 用戶身份識別碼
+		UserID string `json:"id,omitempty"`
+		// 另外一個可選的用戶id
+		AlterID json.Number `json:"aid,omitempty"`
+		// Security 加密方式
+		Security string `json:"type,omitempty"`
+		// 用戶等級
+		Level json.Number `json:"v,omitempty"`
+		// xtls 流控
+		Flow string `json:"flow,omitempty"`
+	}
 	e = json.Unmarshal(b, &node)
 	if e != nil {
 		if ce := logger.Logger.Check(zap.WarnLevel, "unmarshal outbound error"); ce != nil {
 			ce.Write(
 				zap.Error(e),
-				zap.String("value", str),
+				zap.String("value", string(b)),
 			)
 		}
 		return
 	}
-	result = &node
+	result = &Outbound{
+		Name:     node.Name,
+		Add:      node.Add,
+		Port:     string(node.Port),
+		Host:     node.Host,
+		TLS:      node.TLS,
+		Net:      node.Net,
+		Path:     node.Path,
+		UserID:   node.UserID,
+		AlterID:  string(node.AlterID),
+		Security: node.Security,
+		Level:    string(node.Level),
+		Flow:     node.Flow,
+	}
 	return
 }
