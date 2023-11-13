@@ -1,3 +1,12 @@
+# Deprecated, Please use the new project [xray-webui](https://github.com/zuiwuchang/xray-webui)
+
+這麼項目已經被遺棄不會再有任何更新。因爲我已經完全重新實現了新的項目 [xray-webui](https://github.com/zuiwuchang/xray-webui)，它包含了目前 v2ray-web 的所有用戶功能，並且更靈活與強大，如果你還是有繼續使用此類軟體的需求請使用新的  [xray-webui](https://github.com/zuiwuchang/xray-webui)。
+
+xray-webui 和 v2ray-web 的區別主要有兩點。
+
+1.  v2ray-web 直接嵌入了 xray/v2ray 的內核源碼，所以運行更高效對 xray/v2ray 的控制也更不容易出錯，但用戶無法替換 xray/v2ray 核心。 xray-webui 使用進程來和  xray/v2ray  通信，並且這些通信由腳本完成，用戶可以輕易的替換  xray/v2ray 內核，甚至將 xray/v2ray 替換成任意其它代理核心
+2. v2ray-web 在代碼層面硬編碼了對訂閱地址的解析以及相關 ui，如果一個訂閱協議發生了變化或有了新的代理協議無法即時得到支持。 xray-webui 對訂閱地址的生成解析以及網頁ui都由腳本提供的元數據自動生成，當有了新的協議或新的協議特性時只需要更新腳本就能獲得最新的支持
+
 # v2ray-web
 
 v2ray-web 是 v2ray-core 的一個 web接口的 ui程序 爲桌面系統提供了一個 簡單且一致的 操作方案
